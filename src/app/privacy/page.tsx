@@ -67,8 +67,9 @@ export default function Privacy() {
           </p>
           <h2>Analytics and advertising</h2>
           <p>
-            When configured, Google Tag Manager and Google Ads may process site
-            interactions and confirmed form conversions. These services may use
+            We use Google Analytics 4 to measure website visits, interactions,
+            and confirmed review requests. When configured, Google Tag Manager
+            and Google Ads may also process these events. These services may use
             cookies or similar technologies according to their settings and your
             browser preferences. We do not include your form answers or contact
             details in our analytics events. You can manage cookies through your

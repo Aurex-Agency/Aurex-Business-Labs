@@ -83,3 +83,13 @@ The payback retains the existing 21-business-day conditions and covers completin
 - Production build, lint, strict type checking, API checks, 24 browser tests, and 4 accessibility tests passed. Calendar regression fixtures test our integration without creating appointments or sending extra live leads. Accessibility checks cover the popup shell; the third-party calendar is controlled by GHL.
 - Loaded the actual GHL widget in a separate read-only browser check. It displays the 30-minute Website Revenue Review, date/time availability, and timezone. No appointment was booked.
 - Updated CTA and booking screenshots are in artifacts/video-cta-WIDTH.png and artifacts/booking-calendar-WIDTH.png.
+
+## GA4 integration
+
+The supplied GA4 property G-N6CM45VW84 is enabled through the shared Google tag loader. The existing CTA, form, calendar, portfolio, and FAQ events are routed to that property without form answers or contact details. Confirmed lead events retain the single-use receipt guard, so direct visits and refreshed thank-you pages do not count again.
+
+Lint, strict type checking, production build, API verification, 26 browser tests, and 4 accessibility cases passed. All Google requests are intercepted in regression tests. New checks verify one loader/configuration, one CTA event, and one confirmed lead event with no conversion on an unconfirmed or refreshed thank-you page. A separate live deployment check verifies tag delivery without submitting another lead.
+
+GA4 can be disabled with an explicitly empty NEXT_PUBLIC_GA4_ID or overridden with another valid measurement ID. Optional Google Ads shares the gtag.js loader. Avoid duplicating the same destinations/events through GTM. GA4 admin settings, enhanced measurement settings, and key-event designation were not changed.
+
+Implementation reference: https://developers.google.com/tag-platform/gtagjs/routing

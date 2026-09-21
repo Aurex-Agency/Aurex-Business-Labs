@@ -1,3 +1,4 @@
+import { blockGoogleTracking } from "./analytics-helpers";
 import { test, expect, type Page } from "@playwright/test";
 async function stepOne(page: Page) {
   await page.locator("#firstName").fill("Alex");
@@ -25,6 +26,7 @@ async function stepTwo(page: Page) {
     .fill("Our website needs a clearer quote request process.");
 }
 test.beforeEach(async ({ page }) => {
+  await blockGoogleTracking(page);
   await page.route(
     "https://api.leadconnectorhq.com/widget/booking/**",
     (route) =>
@@ -38,7 +40,7 @@ test.beforeEach(async ({ page }) => {
   );
   await page.goto("/revenue-website");
 });
-test("primary heading, canonical, real portfolio, and no default tracking", async ({
+test("primary heading, canonical, real portfolio, and approved GA4 tag", async ({
   page,
 }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
@@ -58,7 +60,11 @@ test("primary heading, canonical, real portfolio, and no default tracking", asyn
     await expect(
       page.getByRole("heading", { name, exact: true }),
     ).toBeVisible();
-  await expect(page.locator('script[src*="googletagmanager"]')).toHaveCount(0);
+  await expect(
+    page.locator(
+      'script[src="https://www.googletagmanager.com/gtag/js?id=G-N6CM45VW84"]',
+    ),
+  ).toHaveCount(1);
 });
 test("primary CTA and all desktop navigation anchors reach destinations", async ({
   page,

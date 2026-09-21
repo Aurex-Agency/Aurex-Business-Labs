@@ -1,5 +1,9 @@
+import { blockGoogleTracking } from "./analytics-helpers";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+test.beforeEach(async ({ page }) => {
+  await blockGoogleTracking(page);
+});
 const tags = ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"];
 test("@a11y mobile booking dialog has an accessible name and controls", async ({
   page,

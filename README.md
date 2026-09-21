@@ -33,6 +33,7 @@ For local development only, set `LEAD_DEV_MODE=true` with no webhook. Submission
 | `NEXT_PUBLIC_BOOKING_URL`                 | Optional override for the supplied GHL booking calendar.                      |
 | `NEXT_PUBLIC_CONTACT_PHONE`               | Optional real phone number displayed in the footer.                  |
 | `NEXT_PUBLIC_CONTACT_EMAIL`               | Optional real email displayed in the footer and privacy policy.      |
+| `NEXT_PUBLIC_GA4_ID` | Defaults to approved property G-N6CM45VW84. Set empty to disable GA4. |
 | `NEXT_PUBLIC_GTM_ID`                      | Optional GTM container ID, in GTM- format.                           |
 | `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID`    | Optional Google Ads ID, in AW- format.                               |
 | `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` | Conversion action label paired with the Ads ID.                      |
@@ -42,9 +43,9 @@ Public environment variables are embedded at build time. Rebuild after changing 
 
 ## Analytics
 
-No marketing scripts or event pushes are enabled without a valid tracking ID. Events cover hero, secondary and pricing CTAs, phone, form start, step completion, submission attempt/success/error, calendar, selected work, and FAQ opens. No form answers or personal information enter analytics events.
+GA4 is enabled for the supplied public measurement ID G-N6CM45VW84. NEXT_PUBLIC_GA4_ID can override it; an explicitly empty value disables direct GA4 tracking. Google tag initialization and the gtag.js loader are shared with the optional Google Ads integration to avoid loading the library twice. GA4 receives the existing site events through gtag, with an explicit send_to destination. GTM data-layer events remain available when a GTM container is configured. Events cover hero, secondary and pricing CTAs, phone, form start, step completion, submission attempt/success/error, calendar, selected work, and FAQ opens. No form answers or personal information enter analytics events.
 
-A successful server response creates a temporary receipt in session storage. The thank-you page consumes the receipt once, within 30 minutes, before emitting lead_submit_success and the optional Google Ads conversion. Opening or refreshing the thank-you page alone does not produce a conversion. Development simulation does not produce a conversion. If browser storage is blocked, delivery still works but conversion tracking can be unavailable. If GTM is configured alongside direct Ads conversion tracking, do not add a second GTM Ads conversion tag for the same action.
+A successful server response creates a temporary receipt in session storage. The thank-you page consumes the receipt once, within 30 minutes, before emitting lead_submit_success and the optional Google Ads conversion. Opening or refreshing the thank-you page alone does not produce a conversion. Development simulation does not produce a conversion. If browser storage is blocked, delivery still works but conversion tracking can be unavailable. If GTM is configured alongside direct GA4 or Ads tracking, do not configure it to send the same events to the same destination again. To let GTM own GA4, explicitly set NEXT_PUBLIC_GA4_ID empty. GA4 key-event settings are managed in the Analytics property; the code does not change those admin settings.
 
 ## Routes and source files
 
@@ -85,7 +86,7 @@ npm run test:e2e
 npm run test:a11y
 ```
 
-The browser suite requires a server without a live webhook or analytics IDs. The supplied booking URL is the default; browser regression tests stub the calendar and embed script. When `.env.local` has a live webhook, start the test server with `GHL_WEBHOOK_URL= npm run start -- --hostname 127.0.0.1 --port 3002` and run tests with `PLAYWRIGHT_BASE_URL=http://127.0.0.1:3002`. The explicit empty environment variable overrides `.env.local`. It mocks browser submissions, validates server rejection behavior, checks keyboard interactions, and measures overflow at 360, 390, 430, 768, 1024, 1280, 1440, and 1920 pixels. Axe checks the landing page, form error state, mobile navigation, thank-you page, and privacy page. API verification mocks upstream fetch and checks successful forwarding, normalized values, attribution, failure, timeout, and production simulation rejection.
+The browser suite requires a server without a live webhook and with the approved default GA4 ID. Google requests are intercepted in tests, so no automated test visits or fabricated conversions reach Analytics. The supplied booking URL is the default; browser regression tests stub the calendar and embed script. When `.env.local` has a live webhook, start the test server with `GHL_WEBHOOK_URL= npm run start -- --hostname 127.0.0.1 --port 3002` and run tests with `PLAYWRIGHT_BASE_URL=http://127.0.0.1:3002`. The explicit empty environment variable overrides `.env.local`. It mocks browser submissions, validates server rejection behavior, checks keyboard interactions, and measures overflow at 360, 390, 430, 768, 1024, 1280, 1440, and 1920 pixels. Axe checks the landing page, form error state, mobile navigation, thank-you page, and privacy page. API verification mocks upstream fetch and checks successful forwarding, normalized values, attribution, failure, timeout, and production simulation rejection.
 
 To test an existing production server:
 

@@ -13,10 +13,14 @@ export type AnalyticsEvent =
   | "faq_open";
 declare global {
   interface Window {
-    dataLayer?: Record<string, unknown>[];
+    dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
   }
 }
+const configuredGa4Id = process.env.NEXT_PUBLIC_GA4_ID ?? "G-N6CM45VW84";
+export const ga4Id = /^G-[A-Z0-9]+$/.test(configuredGa4Id)
+  ? configuredGa4Id
+  : undefined;
 export const gtmId = /^GTM-[A-Z0-9]+$/.test(
   process.env.NEXT_PUBLIC_GTM_ID || "",
 )
@@ -28,9 +32,19 @@ export const adsId = /^AW-\d+$/.test(
   ? process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID
   : undefined;
 export function track(event: AnalyticsEvent, details?: Record<string, string>) {
-  if (typeof window === "undefined" || (!gtmId && !adsId)) return;
+  if (typeof window === "undefined" || (!gtmId && !adsId && !ga4Id)) return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event, ...details });
+  if (gtmId) window.dataLayer.push({ event, ...details });
+  if (ga4Id || adsId) {
+    window.gtag =
+      window.gtag ||
+      function () {
+        // Preserve Google's documented arguments-object queue format.
+        // eslint-disable-next-line prefer-rest-params
+        window.dataLayer?.push(arguments);
+      };
+  }
+  if (ga4Id) window.gtag?.("event", event, { ...details, send_to: ga4Id });
 }
 export function confirmedConversion(receipt: string) {
   track("lead_submit_success", { transaction_id: receipt });

@@ -43,6 +43,6 @@ This block is written and re-added by `next dev` . verify at `node_modules/next/
 - LEAD_DEV_MODE=true allows redacted local simulation only outside production.
 - Analytics must remain disabled without IDs. Conversions require confirmed submission, not a page view.
 - Run npm run lint, npm run typecheck, npm run build, npm run test:e2e, npm run test:a11y, and npm run test:api.
-- Set PLAYWRIGHT_BASE_URL to test an existing production server. Browser tests assume tracking variables are unset and the default GHL calendar is used. The calendar and embed script are stubbed during regression tests. With the live webhook in .env.local, use a separate test server started with GHL_WEBHOOK_URL= on port 3002 to prevent test leads from reaching GHL.
+- Set PLAYWRIGHT_BASE_URL to test an existing production server. Browser tests assume the approved default GA4 ID and default GHL calendar are used, with optional GTM/Ads IDs unset. Google requests are intercepted so tests cannot send analytics traffic. The calendar and embed script are stubbed during regression tests. With the live webhook in .env.local, use a separate test server started with GHL_WEBHOOK_URL= on port 3002 to prevent test leads from reaching GHL.
 - Capture and inspect requested viewport screenshots in artifacts/. Do not publish test artifacts.
 - agentRules is disabled in next.config.ts so framework-generated prose does not reintroduce prohibited punctuation. Maintain this document manually.
