@@ -162,12 +162,14 @@ try {
     { ...firstTouch, storedAt: "invalid" },
     { ...firstTouch, expiresAt: now + 2 * ttl },
     { ...firstTouch, gclid: "x".repeat(501) },
-  ])
+  ]) {
     assert.equal(
       (await POST(request({ ...payload, attribution: { firstTouch: touch } })))
         .status,
-      400,
+      200,
     );
+    assert.deepEqual(JSON.parse(forwarded.body).attribution, {});
+  }
   assert.equal(
     (
       await POST(
@@ -244,6 +246,16 @@ try {
     (await POST(request({ ...minimal, email: "invalid" }))).status,
     400,
   );
+  const invalidEmail = await POST(request({ ...minimal, email: "invalid" }));
+  assert.equal(invalidEmail.status, 400);
+  assert.deepEqual((await invalidEmail.json()).fieldErrors, {
+    email: "Enter a valid email address.",
+  });
+  const trapped = await POST(
+    request({ ...minimal, companyWebsite: "autofilled-company.example" }),
+  );
+  assert.equal(trapped.status, 400);
+  assert.match((await trapped.json()).message, /autofill/);
   const localRequest = (origin) =>
     new NextRequest("http://127.0.0.1:3001/api/leads", {
       method: "POST",

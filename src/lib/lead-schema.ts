@@ -120,10 +120,11 @@ export const attributionSchema = attributionFieldsSchema
     };
   });
 export const submissionSchema = leadSchema.extend({
-  companyWebsite: z.string().max(0),
+  companyWebsite: z.string().max(2000),
   startedAt: z.number().finite(),
   sourcePage: z.literal("/revenue-website"),
-  attribution: attributionSchema.default({}),
+  // Campaign metadata must never prevent an otherwise valid inquiry.
+  attribution: attributionSchema.catch({}).default({}),
 });
 export type LeadSubmission = z.input<typeof submissionSchema>;
 export type GhlLeadPayload = Omit<

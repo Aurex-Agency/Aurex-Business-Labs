@@ -109,3 +109,11 @@ The form now submits directly from a single screen with four required contact fi
 The shared Google tag configures GA4 plus AW-18192936048 once each. Browser tests verify the exact Google Ads conversion destination `AW-18192936048/zv3HCJH3sYAdEPDYiOND`, the receipt transaction ID, one conversion per accepted submission, and no conversion on direct thank-you visits, refreshes, expired receipts, or development simulations. Google requests and lead delivery remain mocked during automated verification.
 
 Lint, TypeScript, API verification, production build, 46 browser tests, and 4 accessibility cases pass. Desktop and mobile form screenshots were inspected at 1440px and 390px; they are saved as ignored artifacts/simple-form-1440.png and artifacts/simple-form-390.png.
+
+## Submission validation recovery
+
+A fresh live form's contact payload passed schema validation during a deliberately expired probe, which prevented delivery to GHL. The specific reported visitor failure could not be reproduced from that clean session. Two hidden rejection paths were hardened: invalid optional attribution no longer rejects an otherwise valid lead, and the honeypot is hidden from autofill layout with a neutral field name and password-manager exclusion hints. Nonempty honeypots still reject submission with a specific recovery message. Visible field failures now return field-specific messages and focus the error summary while preserving answers.
+
+Regression coverage sends the real browser-generated payload through the actual local production endpoint with GHL disabled, exercising both valid and malformed attribution. API tests verify malformed metadata is omitted before forwarding, visible validation errors identify the field, and spam protection remains enforced.
+
+A second live probe with malformed hidden attribution reproduced the exact reported generic message before deployment. All live probes used an intentionally expired startedAt value to prevent any GHL delivery. Lint, type checking, API tests, the production build, 49 browser tests, and 4 accessibility cases passed for the fix.

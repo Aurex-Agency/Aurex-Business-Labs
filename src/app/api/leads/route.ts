@@ -32,10 +32,38 @@ export async function POST(request: NextRequest) {
     return fail("Please check the form and try again.", 400);
   }
   const result = submissionSchema.safeParse(raw);
-  if (!result.success)
-    return fail("Please check your answers and try again.", 400);
+  if (!result.success) {
+    const visibleFields = new Set([
+      "firstName",
+      "lastName",
+      "businessName",
+      "email",
+      "phone",
+      "website",
+      "challenge",
+    ]);
+    const fieldErrors = Object.fromEntries(
+      result.error.issues
+        .filter((issue) => visibleFields.has(String(issue.path[0])))
+        .map((issue) => [String(issue.path[0]), issue.message]),
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        message: Object.keys(fieldErrors).length
+          ? "Please correct the highlighted fields. Your other answers are still here."
+          : "This form could not be validated. Please reload the page and try again.",
+        fieldErrors,
+      },
+      { status: 400 },
+    );
+  }
   const { companyWebsite, startedAt, ...lead } = result.data;
-  if (companyWebsite) return fail("Please check the form and try again.", 400);
+  if (companyWebsite)
+    return fail(
+      "The spam check was filled in, possibly by browser autofill. Please reload the page and enter your details manually.",
+      400,
+    );
   const age = Date.now() - startedAt;
   if (age < 2500 || age > 24 * 60 * 60 * 1000)
     return fail(

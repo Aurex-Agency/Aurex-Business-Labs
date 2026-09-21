@@ -67,7 +67,7 @@ Existing paths `attribution.utm_source`, `attribution.utm_medium`, `attribution.
 - Storage is shared only within the same origin and browser profile. New tabs recover localStorage; an open tab re-reads it before form submission. Clearing browser storage or browser-imposed eviction can shorten retention. If one store is blocked, the other is used; if both are blocked, in-memory capture survives only within the current document.
 - Legacy session-only data is migrated once using the migration time because the old format did not record capture time. Unknown keys are discarded. Malformed, expired, future-dated, and invalid-duration stored touches are ignored.
 - Only allowlisted attribution fields are stored. Form answers, names, email addresses, phone numbers, and business details are never copied into attribution storage. Landing/referrer addresses exclude credentials, query strings, and fragments. Campaign values are bounded to 500 characters; oversized identifiers are ignored rather than truncated into a different ID. Do not put personal information in campaign parameter values or URL paths.
-- The API validates both touches, strips unknown fields, drops expired/future-dated touches, and derives flat aliases from the valid latest-touch. The request size limit is 96 KiB measured in UTF-8 bytes, accommodating both touches and compatibility aliases.
+- The API validates both touches, strips unknown fields, drops expired/future-dated touches, and derives flat aliases from the valid latest-touch. Malformed optional attribution is discarded instead of rejecting a valid lead. The request size limit is 96 KiB measured in UTF-8 bytes, accommodating both touches and compatibility aliases.
 
 ## New mapping example
 

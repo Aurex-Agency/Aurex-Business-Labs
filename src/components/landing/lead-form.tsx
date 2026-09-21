@@ -36,6 +36,7 @@ export function LeadForm() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LeadInput>({
     resolver: resolveLead,
@@ -73,10 +74,30 @@ export function LeadForm() {
         signal: AbortSignal.timeout(15000),
       });
       const result = await response.json();
-      if (!response.ok || !result.success || !result.receipt)
+      if (!response.ok || !result.success || !result.receipt) {
+        const visibleFields = [
+          "firstName",
+          "lastName",
+          "businessName",
+          "email",
+          "phone",
+          "website",
+          "challenge",
+        ] as const;
+        for (const field of visibleFields) {
+          if (typeof result.fieldErrors?.[field] === "string") {
+            setError(field, {
+              type: "server",
+              message: result.fieldErrors[field],
+            });
+            setShowErrors(true);
+          }
+        }
+        requestAnimationFrame(() => summary.current?.focus());
         throw new Error(
           result.message || "We could not send your request. Please try again.",
         );
+      }
       try {
         sessionStorage.setItem(
           "aurex-confirmed-lead",
@@ -197,14 +218,16 @@ export function LeadForm() {
                 </ul>
               </div>
             )}
-            <div className="honeypot" aria-hidden="true">
-              <label htmlFor="companyWebsite">Leave this empty</label>
+            <div className="honeypot" aria-hidden="true" hidden>
+              <label htmlFor="contact-check">Leave this empty</label>
               <input
                 ref={honey}
-                id="companyWebsite"
-                name="companyWebsite"
+                id="contact-check"
+                name="contact_check"
                 tabIndex={-1}
                 autoComplete="off"
+                data-lpignore="true"
+                data-1p-ignore="true"
               />
             </div>
             <fieldset disabled={busy}>

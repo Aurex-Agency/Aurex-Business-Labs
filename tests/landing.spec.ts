@@ -485,3 +485,60 @@ test("revised offer and payback commitment are prominent and consistent", async 
   );
   await expect(page.locator(".hero-video")).toHaveCount(1);
 });
+
+test("server validation identifies a field and preserves the visitor's answers", async ({
+  page,
+}) => {
+  await page.route("**/api/leads", (route) =>
+    route.fulfill({
+      status: 400,
+      json: {
+        success: false,
+        message:
+          "Please correct the highlighted fields. Your other answers are still here.",
+        fieldErrors: { email: "Enter a valid email address." },
+      },
+    }),
+  );
+  await fillContactForm(page);
+  await page
+    .getByRole("button", { name: "Request My Free Review", exact: true })
+    .click();
+  await expect(page.locator("#email-error")).toHaveText(
+    "Enter a valid email address.",
+  );
+  await expect(page.locator(".error-summary")).toBeFocused();
+  await expect(page.locator("#businessName")).toHaveValue("Example Services");
+  await expect(page.locator("#contact-check")).toBeHidden();
+  await expect(page.locator("#contact-check")).toHaveAttribute(
+    "name",
+    "contact_check",
+  );
+});
+
+for (const campaignData of ["valid", "malformed"] as const) {
+  test(`real endpoint accepts browser-generated contact fields with ${campaignData} attribution`, async ({
+    page,
+  }) => {
+    await page.route("**/api/leads", (route) => {
+      const payload = route.request().postDataJSON();
+      if (campaignData === "malformed")
+        payload.attribution = { firstTouch: { storedAt: "old-client-date" } };
+      // The production test server has GHL_WEBHOOK_URL empty. Passing validation
+      // must reach its fail-closed 503 response, never a fabricated success.
+      return route.continue({
+        postData: JSON.stringify({ ...payload, startedAt: Date.now() - 10000 }),
+      });
+    });
+    await fillContactForm(page);
+    const response = page.waitForResponse("**/api/leads");
+    await page
+      .getByRole("button", { name: "Request My Free Review", exact: true })
+      .click();
+    expect((await response).status()).toBe(503);
+    await expect(page.getByRole("status")).toContainText(
+      "could not send your request right now",
+    );
+    await expect(page.locator("#email")).toHaveValue("alex@example.com");
+  });
+}
