@@ -195,6 +195,55 @@ try {
     (await POST(request({ ...payload, challenge: "😀".repeat(30000) }))).status,
     413,
   );
+  const minimal = {
+    firstName: "Alex",
+    lastName: "Example",
+    businessName: "Example Services",
+    email: "alex@example.com",
+    companyWebsite: "",
+    startedAt: Date.now() - 10000,
+    sourcePage: "/revenue-website",
+    attribution: modern.attribution,
+  };
+  assert.equal((await POST(request(minimal))).status, 200);
+  const minimalDelivered = JSON.parse(forwarded.body);
+  assert.equal(minimalDelivered.email, "alex@example.com");
+  for (const key of [
+    "city",
+    "service",
+    "customerValue",
+    "source",
+    "timeline",
+    "budget",
+    "challenge",
+    "phone",
+  ])
+    assert.equal(minimalDelivered[key], undefined);
+  assert.equal(
+    (await POST(request({ ...minimal, phone: "", website: "", challenge: "" })))
+      .status,
+    200,
+  );
+  assert.equal(
+    (await POST(request({ ...minimal, challenge: "Hi" }))).status,
+    200,
+  );
+  assert.equal(
+    (await POST(request({ ...minimal, phone: "invalid" }))).status,
+    400,
+  );
+  assert.equal(
+    (await POST(request({ ...minimal, website: "invalid" }))).status,
+    400,
+  );
+  assert.equal(
+    (await POST(request({ ...minimal, challenge: "x".repeat(3001) }))).status,
+    400,
+  );
+  assert.equal(
+    (await POST(request({ ...minimal, email: "invalid" }))).status,
+    400,
+  );
   const localRequest = (origin) =>
     new NextRequest("http://127.0.0.1:3001/api/leads", {
       method: "POST",

@@ -28,17 +28,8 @@ async function fillAndSubmit(page: Page) {
     website: "example.com",
     email: "alex@example.com",
     phone: "6625550100",
-    city: "Tupelo",
   }))
     await page.locator(`#${id}`).fill(value);
-  await page
-    .getByRole("button", { name: "Continue to the opportunity" })
-    .click();
-  await page.locator("#service").fill("Equipment sales");
-  await page.locator("#customerValue").selectOption("$5,000 to $10,000");
-  await page.locator("#timeline").selectOption("Within 30 days");
-  await page.locator("#source").fill("Google");
-  await page.locator("#budget").selectOption("$5,000 to $10,000");
   await page
     .locator("#challenge")
     .fill("We need a better website for our business.");
@@ -326,6 +317,18 @@ test("submission sends both touches after query removal, stores no form PII, and
         ).length,
     )
     .toBe(1);
+  expect(
+    (await googleCommands(page)).filter(([, name]) => name === "conversion"),
+  ).toEqual([
+    [
+      "event",
+      "conversion",
+      {
+        send_to: "AW-18192936048/zv3HCJH3sYAdEPDYiOND",
+        transaction_id: "attribution-test-receipt",
+      },
+    ],
+  ]);
   await page.reload();
   await expect(page.locator("#google-tag-config")).toHaveCount(1);
   expect(
@@ -333,4 +336,7 @@ test("submission sends both touches after query removal, stores no form PII, and
       ([, name]) => name === "lead_submit_success",
     ),
   ).toHaveLength(0);
+  expect(
+    (await googleCommands(page)).some(([, name]) => name === "conversion"),
+  ).toBe(false);
 });

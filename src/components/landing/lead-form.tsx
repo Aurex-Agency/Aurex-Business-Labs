@@ -2,8 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, type FieldPath, type Resolver } from "react-hook-form";
-import { ArrowLeft, ArrowUpRight, Check, LoaderCircle } from "lucide-react";
-import { customerValues, timelines, budgets } from "@/lib/lead-options";
+import { ArrowUpRight, LoaderCircle } from "lucide-react";
 import type { LeadInput, LeadSubmission } from "@/lib/lead-schema";
 import { captureAttribution } from "@/lib/attribution";
 import { PaybackPromise } from "./payback-promise";
@@ -20,18 +19,8 @@ const resolveLead: Resolver<LeadInput> = async (values) => {
   );
   return { values: {}, errors };
 };
-const stepOne: FieldPath<LeadInput>[] = [
-  "firstName",
-  "lastName",
-  "businessName",
-  "website",
-  "email",
-  "phone",
-  "city",
-];
 export function LeadForm() {
   const router = useRouter();
-  const [step, setStep] = useState(1);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -39,7 +28,6 @@ export function LeadForm() {
   const started = useRef(0);
   const began = useRef(false);
   const honey = useRef<HTMLInputElement>(null);
-  const heading = useRef<HTMLHeadingElement>(null);
   const summary = useRef<HTMLDivElement | null>(null);
   const focusSummary = useCallback((node: HTMLDivElement | null) => {
     summary.current = node;
@@ -47,7 +35,6 @@ export function LeadForm() {
   }, []);
   const {
     register,
-    trigger,
     handleSubmit,
     formState: { errors },
   } = useForm<LeadInput>({
@@ -60,9 +47,6 @@ export function LeadForm() {
       website: "",
       email: "",
       phone: "",
-      city: "",
-      service: "",
-      source: "",
       challenge: "",
     },
     shouldUnregister: false,
@@ -71,17 +55,6 @@ export function LeadForm() {
   useEffect(() => {
     started.current = Date.now();
   }, []);
-  const focusHeading = () =>
-    requestAnimationFrame(() => heading.current?.focus());
-  async function next() {
-    setShowErrors(true);
-    if (await trigger(stepOne)) {
-      track("form_step_one_complete");
-      setShowErrors(false);
-      setStep(2);
-      focusHeading();
-    } else requestAnimationFrame(() => summary.current?.focus());
-  }
   async function submit(values: LeadInput) {
     setBusy(true);
     setStatus("Sending your request securely…");
@@ -137,12 +110,13 @@ export function LeadForm() {
     <div className={`field ${wide ? "wide" : ""}`} key={name}>
       <label htmlFor={name}>
         {label}
-        {name === "website" && <span> (optional)</span>}
+        {(name === "website" || name === "phone") && <span> (optional)</span>}
       </label>
       <input
         id={name}
         type={type}
         autoComplete={autocomplete}
+        aria-required={name !== "website" && name !== "phone"}
         {...register(name)}
         aria-invalid={!!errors[name]}
         aria-describedby={errors[name] ? `${name}-error` : undefined}
@@ -154,39 +128,7 @@ export function LeadForm() {
       )}
     </div>
   );
-  const select = (
-    name: "customerValue" | "timeline" | "budget",
-    label: string,
-    options: readonly string[],
-  ) => (
-    <div className="field" key={name}>
-      <label htmlFor={name}>{label}</label>
-      <select
-        id={name}
-        {...register(name)}
-        defaultValue=""
-        aria-invalid={!!errors[name]}
-        aria-describedby={errors[name] ? `${name}-error` : undefined}
-      >
-        <option value="" disabled>
-          Select an option
-        </option>
-        {options.map((o) => (
-          <option key={o}>{o}</option>
-        ))}
-      </select>
-      {errors[name] && (
-        <span className="field-error" id={`${name}-error`}>
-          {errors[name]?.message}
-        </span>
-      )}
-    </div>
-  );
-  const visibleErrors = Object.entries(errors).filter(([key]) =>
-    step === 1
-      ? stepOne.includes(key as FieldPath<LeadInput>)
-      : !stepOne.includes(key as FieldPath<LeadInput>),
-  );
+  const visibleErrors = Object.entries(errors);
   return (
     <section className="section review-section" id="review">
       <div className="container review-layout">
@@ -196,9 +138,8 @@ export function LeadForm() {
             See what your website may be <em>leaving on the table.</em>
           </h2>
           <p>
-            Tell us about the business and current website. Aurex will review
-            the experience, conversion path, tracking, and follow-up process
-            before the call.
+            Share your contact details, then choose a time for your free review.
+            We can talk through your goals together on the call.
           </p>
           <div className="review-promise">
             <span className="little-rule" />
@@ -219,15 +160,6 @@ export function LeadForm() {
           <PaybackPromise compact />
         </div>
         <div className="form-shell">
-          <div className="form-progress" aria-label={`Step ${step} of 2`}>
-            <span className={step === 1 ? "current" : "done"}>
-              <b>{step > 1 ? <Check size={13} /> : 1}</b>Your business
-            </span>
-            <i />
-            <span className={step === 2 ? "current" : ""}>
-              <b>2</b>The opportunity
-            </span>
-          </div>
           <form
             noValidate
             onFocus={() => {
@@ -236,27 +168,17 @@ export function LeadForm() {
                 track("form_start");
               }
             }}
-            onSubmit={(e) => {
-              if (step === 1) {
-                e.preventDefault();
-                void next();
-              } else
-                void handleSubmit(submit, () => {
-                  setShowErrors(true);
-                  requestAnimationFrame(() => summary.current?.focus());
-                })(e);
-            }}
+            onSubmit={handleSubmit(submit, () => {
+              setShowErrors(true);
+              requestAnimationFrame(() => summary.current?.focus());
+            })}
           >
             <div className="form-title">
-              <span className="micro-label">STEP 0{step} / 02</span>
-              <h3 ref={heading} tabIndex={-1}>
-                {step === 1 ? "About Your Business" : "About the Opportunity"}
-              </h3>
-              <p>
-                {step === 1
-                  ? "First, a little context so we can come prepared."
-                  : "Help us understand what a better website could do."}
-              </p>
+              <span className="micro-label">
+                LET&apos;S TALK ABOUT YOUR WEBSITE
+              </span>
+              <h3>Book Your Free Review</h3>
+              <p>Just the basics. You can choose your call time next.</p>
             </div>
             {showErrors && visibleErrors.length > 0 && (
               <div
@@ -285,7 +207,7 @@ export function LeadForm() {
                 autoComplete="off"
               />
             </div>
-            <fieldset disabled={busy} hidden={step !== 1}>
+            <fieldset disabled={busy}>
               <legend className="sr-only">About your business</legend>
               <div className="form-grid">
                 {input("firstName", "First name", "text", "given-name")}
@@ -300,40 +222,13 @@ export function LeadForm() {
                 {input("website", "Website URL", "text", "url", true)}
                 {input("email", "Email", "email", "email")}
                 {input("phone", "Phone", "tel", "tel")}
-                {input("city", "City", "text", "address-level2", true)}
-              </div>
-            </fieldset>
-            <fieldset disabled={busy} hidden={step !== 2}>
-              <legend className="sr-only">About the opportunity</legend>
-              <div className="form-grid">
-                {input(
-                  "service",
-                  "Primary product or service",
-                  "text",
-                  undefined,
-                  true,
-                )}
-                {select(
-                  "customerValue",
-                  "Average value of a new customer",
-                  customerValues,
-                )}
-                {select("timeline", "Desired project timeline", timelines)}
-                {input(
-                  "source",
-                  "Current primary source of new business",
-                  "text",
-                  undefined,
-                  true,
-                )}
-                {select("budget", "Project budget", budgets)}
                 <div className="field wide">
                   <label htmlFor="challenge">
-                    Biggest website or growth challenge
+                    Anything you&apos;d like us to know? <span>(optional)</span>
                   </label>
                   <textarea
                     id="challenge"
-                    rows={4}
+                    rows={3}
                     {...register("challenge")}
                     aria-invalid={!!errors.challenge}
                     aria-describedby={
@@ -356,22 +251,6 @@ export function LeadForm() {
               {status}
             </div>
             <div className="form-actions">
-              {step === 2 && (
-                <button
-                  type="button"
-                  className="back-button"
-                  disabled={busy}
-                  onClick={() => {
-                    setStep(1);
-                    setStatus("");
-                    setShowErrors(false);
-                    focusHeading();
-                  }}
-                >
-                  <ArrowLeft size={17} />
-                  Back
-                </button>
-              )}
               <button className="button" disabled={busy} type="submit">
                 {busy ? (
                   <>
@@ -380,9 +259,7 @@ export function LeadForm() {
                   </>
                 ) : (
                   <>
-                    {step === 1
-                      ? "Continue to the opportunity"
-                      : "Request My Free Review"}
+                    Request My Free Review
                     <ArrowUpRight size={18} />
                   </>
                 )}

@@ -29,6 +29,10 @@ That historical sample covers the original flat fields only. It does not include
 | submittedAt   | Submission timestamp in UTC                             |
 | receipt       | Unique submission ID for reconciliation                 |
 
+## Simplified form
+
+First name, last name, business name, and email remain required. Website, phone, and `challenge` (the optional message) are optional. City, service, customer value, source, timeline, and budget are no longer asked on the website; they remain optional in the API for compatibility with already-open older forms. Do not require these fields in the receiving workflow, and only update existing CRM details when a value is supplied. The contact field names and attribution mappings are unchanged.
+
 ## Attribution fields
 
 Map first-touch and latest-touch into separate GHL custom fields. All campaign values are optional and case-sensitive. Preserve click identifiers exactly; do not lowercase, trim, or numerically convert them in GHL.

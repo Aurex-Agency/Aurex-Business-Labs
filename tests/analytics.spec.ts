@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => {
   await blockGoogleTracking(page);
 });
 
-test("GA4 initializes once and sends one CTA event without form data", async ({
+test("GA4 and Ads initialize once and sends one CTA event without form data", async ({
   page,
 }) => {
   await page.goto("/revenue-website");
@@ -18,6 +18,11 @@ test("GA4 initializes once and sends one CTA event without form data", async ({
         ).length,
     )
     .toBe(1);
+  expect(
+    (await googleCommands(page)).filter(
+      ([command, id]) => command === "config" && id === "AW-18192936048",
+    ),
+  ).toHaveLength(1);
   await page
     .getByRole("link", { name: "Book My Free Website Review", exact: true })
     .click();
@@ -38,7 +43,7 @@ test("GA4 initializes once and sends one CTA event without form data", async ({
   );
 });
 
-test("GA4 counts a confirmed lead once and never counts a direct thank-you visit", async ({
+test("GA4 and Ads count a confirmed lead once and never counts a direct thank-you visit", async ({
   page,
 }) => {
   await page.goto("/revenue-website/thank-you");
@@ -47,6 +52,9 @@ test("GA4 counts a confirmed lead once and never counts a direct thank-you visit
     (await googleCommands(page)).some(
       ([, name]) => name === "lead_submit_success",
     ),
+  ).toBe(false);
+  expect(
+    (await googleCommands(page)).some(([, name]) => name === "conversion"),
   ).toBe(false);
   await page.evaluate(() =>
     sessionStorage.setItem(
@@ -76,6 +84,18 @@ test("GA4 counts a confirmed lead once and never counts a direct thank-you visit
     "lead_submit_success",
     { transaction_id: "analytics-test-receipt", send_to: "G-N6CM45VW84" },
   ]);
+  expect(
+    (await googleCommands(page)).filter(([, name]) => name === "conversion"),
+  ).toEqual([
+    [
+      "event",
+      "conversion",
+      {
+        send_to: "AW-18192936048/zv3HCJH3sYAdEPDYiOND",
+        transaction_id: "analytics-test-receipt",
+      },
+    ],
+  ]);
   await page.reload();
   await expect(page.locator("#google-tag-config")).toHaveCount(1);
   expect(
@@ -83,4 +103,37 @@ test("GA4 counts a confirmed lead once and never counts a direct thank-you visit
       ([, name]) => name === "lead_submit_success",
     ),
   ).toBe(false);
+  expect(
+    (await googleCommands(page)).some(([, name]) => name === "conversion"),
+  ).toBe(false);
 });
+
+for (const scenario of ["development", "expired"] as const) {
+  test(`GA4 and Ads ignore a ${scenario} submission receipt`, async ({
+    page,
+  }) => {
+    await page.goto("/revenue-website/thank-you");
+    await page.evaluate(
+      (scenario) =>
+        sessionStorage.setItem(
+          "aurex-confirmed-lead",
+          JSON.stringify({
+            receipt: "ignored-receipt",
+            time: Date.now() - (scenario === "expired" ? 31 * 60 * 1000 : 0),
+            development: scenario === "development",
+          }),
+        ),
+      scenario,
+    );
+    await page.reload();
+    await expect(page.locator("#google-tag-config")).toHaveCount(1);
+    expect(
+      (await googleCommands(page)).some(
+        ([, name]) => name === "conversion" || name === "lead_submit_success",
+      ),
+    ).toBe(false);
+    expect(
+      await page.evaluate(() => sessionStorage.getItem("aurex-confirmed-lead")),
+    ).toBeNull();
+  });
+}

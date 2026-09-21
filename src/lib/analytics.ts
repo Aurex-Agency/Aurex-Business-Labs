@@ -4,7 +4,6 @@ export type AnalyticsEvent =
   | "pricing_cta_click"
   | "phone_click"
   | "form_start"
-  | "form_step_one_complete"
   | "lead_submit_attempt"
   | "lead_submit_success"
   | "lead_submit_error"
@@ -26,11 +25,15 @@ export const gtmId = /^GTM-[A-Z0-9]+$/.test(
 )
   ? process.env.NEXT_PUBLIC_GTM_ID
   : undefined;
-export const adsId = /^AW-\d+$/.test(
-  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID || "",
-)
-  ? process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID
+const approvedAdsId = "AW-18192936048";
+const configuredAdsId =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID ?? approvedAdsId;
+export const adsId = /^AW-\d+$/.test(configuredAdsId)
+  ? configuredAdsId
   : undefined;
+export const adsLabel =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL ??
+  (adsId === approvedAdsId ? "zv3HCJH3sYAdEPDYiOND" : undefined);
 export function track(event: AnalyticsEvent, details?: Record<string, string>) {
   if (typeof window === "undefined" || (!gtmId && !adsId && !ga4Id)) return;
   window.dataLayer = window.dataLayer || [];
@@ -48,10 +51,9 @@ export function track(event: AnalyticsEvent, details?: Record<string, string>) {
 }
 export function confirmedConversion(receipt: string) {
   track("lead_submit_success", { transaction_id: receipt });
-  const label = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL;
-  if (adsId && label && window.gtag)
+  if (adsId && adsLabel && window.gtag)
     window.gtag("event", "conversion", {
-      send_to: `${adsId}/${label}`,
+      send_to: `${adsId}/${adsLabel}`,
       transaction_id: receipt,
     });
 }

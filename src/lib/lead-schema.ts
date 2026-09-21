@@ -16,6 +16,15 @@ const clean = (min: number, max: number, message: string) =>
       z.string().min(min, message).max(max, "Please shorten this response."),
     );
 import { customerValues, timelines, budgets } from "./lead-options";
+const optionalText = (max: number) =>
+  clean(0, max, "")
+    .transform((value) => value || undefined)
+    .optional();
+const optionalChoice = <T extends readonly [string, ...string[]]>(values: T) =>
+  z
+    .enum(values)
+    .or(z.literal("").transform(() => undefined))
+    .optional();
 export const leadSchema = z.object({
   firstName: clean(1, 80, "Enter your first name."),
   lastName: clean(1, 80, "Enter your last name."),
@@ -38,9 +47,8 @@ export const leadSchema = z.object({
         return false;
       }
     }, "Enter a valid website, such as example.com.")
-    .transform((v) =>
-      v ? (/^https?:\/\//i.test(v) ? v : `https://${v}`) : "",
-    ),
+    .transform((v) => (v ? (/^https?:\/\//i.test(v) ? v : `https://${v}`) : ""))
+    .optional(),
   email: z
     .string()
     .trim()
@@ -52,19 +60,22 @@ export const leadSchema = z.object({
     .max(30)
     .refine(
       (v) =>
-        /^\+?[\d\s().-]+$/.test(v) &&
-        v.replace(/\D/g, "").length >= 10 &&
-        v.replace(/\D/g, "").length <= 15,
+        !v ||
+        (/^\+?[\d\s().-]+$/.test(v) &&
+          v.replace(/\D/g, "").length >= 10 &&
+          v.replace(/\D/g, "").length <= 15),
       "Enter a valid phone number.",
     )
-    .transform((v) => v.replace(/[^\d+]/g, "")),
-  city: clean(1, 100, "Enter your city."),
-  service: clean(1, 200, "Tell us your primary product or service."),
-  customerValue: z.enum(customerValues, { error: "Choose a customer value." }),
-  source: clean(1, 200, "Tell us how customers find you."),
-  timeline: z.enum(timelines, { error: "Choose a timeline." }),
-  budget: z.enum(budgets, { error: "Choose a budget." }),
-  challenge: clean(10, 3000, "Tell us a little more, at least 10 characters."),
+    .transform((v) => (v ? v.replace(/[^\d+]/g, "") : undefined))
+    .optional(),
+  // Older open forms may still send these details. They never gate a new lead.
+  city: optionalText(100),
+  service: optionalText(200),
+  customerValue: optionalChoice(customerValues),
+  source: optionalText(200),
+  timeline: optionalChoice(timelines),
+  budget: optionalChoice(budgets),
+  challenge: optionalText(3000),
 });
 export type LeadInput = z.input<typeof leadSchema>;
 const campaignShape = Object.fromEntries(

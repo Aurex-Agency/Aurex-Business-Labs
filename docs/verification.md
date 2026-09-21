@@ -101,3 +101,11 @@ Verified against the optimized production build with the webhook disabled on por
 The new browser suite covers all five UTM fields and case-preserving GCLID, WBRAID, GBRAID, MSCLKID, and FBCLID; query-preserving root redirects; same-tab navigation and query removal; new-tab restoration after closing the original tab; first-touch preservation and latest-touch replacement; stale-tab reconciliation on submission; exact 90-day and independent touch expiration; legacy migration; malformed and blocked storage; absence of form PII in both stores; submitted payload contents; and no duplicate lead conversion on thank-you refresh after a real form flow with a mocked acceptance response.
 
 API tests verify both snapshots and compatibility aliases arrive at the mocked GHL endpoint without case changes, stale aliases cannot revive expired snapshots, malformed timestamps and oversized identifiers are rejected, unknown PII fields and URL query/fragment data are stripped, and UTF-8 request size limits hold. Existing delivery, timeout, origin, and fail-closed checks remain passing. No live leads or analytics events were sent during automated verification.
+
+## Google Ads and simplified review form
+
+The form now submits directly from a single screen with four required contact fields. Phone, website, and message are optional, and the former qualification step has been removed. API checks confirm minimal submissions succeed, optional values remain validated when supplied, and older complete payloads still work. Browser tests cover minimal submission, optional-field validation, delivery retry, and automatic booking after acceptance.
+
+The shared Google tag configures GA4 plus AW-18192936048 once each. Browser tests verify the exact Google Ads conversion destination `AW-18192936048/zv3HCJH3sYAdEPDYiOND`, the receipt transaction ID, one conversion per accepted submission, and no conversion on direct thank-you visits, refreshes, expired receipts, or development simulations. Google requests and lead delivery remain mocked during automated verification.
+
+Lint, TypeScript, API verification, production build, 46 browser tests, and 4 accessibility cases pass. Desktop and mobile form screenshots were inspected at 1440px and 390px; they are saved as ignored artifacts/simple-form-1440.png and artifacts/simple-form-390.png.

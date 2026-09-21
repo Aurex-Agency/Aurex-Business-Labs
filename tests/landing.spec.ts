@@ -1,26 +1,12 @@
-import { blockGoogleTracking } from "./analytics-helpers";
+import { blockGoogleTracking, googleCommands } from "./analytics-helpers";
 import { test, expect, type Page } from "@playwright/test";
-async function stepOne(page: Page) {
+async function fillContactForm(page: Page) {
   await page.locator("#firstName").fill("Alex");
   await page.locator("#lastName").fill("Example");
   await page.locator("#businessName").fill("Example Services");
   await page.locator("#website").fill("example.com");
   await page.locator("#email").fill("alex@example.com");
   await page.locator("#phone").fill("6625550100");
-  await page.locator("#city").fill("Tupelo");
-  await page
-    .getByRole("button", { name: "Continue to the opportunity" })
-    .click();
-  await expect(
-    page.getByRole("heading", { name: "About the Opportunity" }),
-  ).toBeVisible();
-}
-async function stepTwo(page: Page) {
-  await page.locator("#service").fill("Commercial equipment");
-  await page.locator("#customerValue").selectOption("$5,000 to $10,000");
-  await page.locator("#timeline").selectOption("Within 30 days");
-  await page.locator("#source").fill("Google Search");
-  await page.locator("#budget").selectOption("$5,000 to $10,000");
   await page
     .locator("#challenge")
     .fill("Our website needs a clearer quote request process.");
@@ -77,7 +63,7 @@ test("primary CTA and all desktop navigation anchors reach destinations", async 
     .click();
   await expect(page).toHaveURL(/#review$/);
   await expect(
-    page.getByRole("heading", { name: "About Your Business" }),
+    page.getByRole("heading", { name: "Book Your Free Review" }),
   ).toBeInViewport();
   for (const [name, id] of [
     ["The System", "system"],
@@ -160,9 +146,7 @@ test("VSL is visible without autoplay or an initial video download", async ({
 test("incomplete form provides inline errors and accessible summary", async ({
   page,
 }) => {
-  await page
-    .getByRole("button", { name: "Continue to the opportunity" })
-    .click();
+  await page.getByRole("button", { name: "Request My Free Review" }).click();
   await expect(page.locator(".error-summary")).toBeFocused();
   await expect(page.locator("#firstName")).toHaveAttribute(
     "aria-invalid",
@@ -172,18 +156,53 @@ test("incomplete form provides inline errors and accessible summary", async ({
     "Enter your first name.",
   );
   await expect(
-    page.getByRole("heading", { name: "About Your Business" }),
+    page.getByRole("heading", { name: "Book Your Free Review" }),
   ).toBeVisible();
 });
-test("valid first step advances and back preserves answers", async ({
+test("short form submits with only contact basics and no second step", async ({
   page,
 }) => {
-  await stepOne(page);
-  await expect(
-    page.getByRole("heading", { name: "About the Opportunity" }),
-  ).toBeFocused();
-  await page.getByRole("button", { name: "Back", exact: true }).click();
-  await expect(page.locator("#firstName")).toHaveValue("Alex");
+  let payload: Record<string, unknown> = {};
+  await page.route("**/api/leads", (route) => {
+    payload = route.request().postDataJSON();
+    return route.fulfill({ json: { success: true, receipt: "minimal-lead" } });
+  });
+  await page.locator("#firstName").fill("Alex");
+  await page.locator("#lastName").fill("Example");
+  await page.locator("#businessName").fill("Example Services");
+  await page.locator("#email").fill("alex@example.com");
+  await expect(page.locator(".form-progress")).toHaveCount(0);
+  for (const key of [
+    "city",
+    "service",
+    "customerValue",
+    "source",
+    "timeline",
+    "budget",
+  ]) {
+    await expect(page.locator(`#${key}`)).toHaveCount(0);
+  }
+  await page
+    .getByRole("button", { name: "Request My Free Review", exact: true })
+    .click();
+  await expect(page).toHaveURL(/thank-you#book$/);
+  expect(payload.email).toBe("alex@example.com");
+  expect(payload.challenge).toBeUndefined();
+  expect(payload.phone).toBeUndefined();
+  expect(payload.budget).toBeUndefined();
+});
+test("optional phone and website are validated only when supplied", async ({
+  page,
+}) => {
+  await fillContactForm(page);
+  await page.locator("#phone").fill("bad-number");
+  await page.locator("#website").fill("not-a-website");
+  await page
+    .getByRole("button", { name: "Request My Free Review", exact: true })
+    .click();
+  await expect(page.locator("#phone-error")).toBeVisible();
+  await expect(page.locator("#website-error")).toBeVisible();
+  await expect(page.locator("#email")).toHaveValue("alex@example.com");
 });
 test("valid lead includes attribution and redirects only after server acceptance", async ({
   page,
@@ -198,8 +217,7 @@ test("valid lead includes attribution and redirects only after server acceptance
       json: { success: true, receipt: "mock-accepted-receipt" },
     });
   });
-  await stepOne(page);
-  await stepTwo(page);
+  await fillContactForm(page);
   await page
     .getByRole("button", { name: "Request My Free Review", exact: true })
     .click();
@@ -251,8 +269,7 @@ test("failed delivery preserves answers and supports retry", async ({
         : { json: { success: true, receipt: "retry-receipt" } },
     );
   });
-  await stepOne(page);
-  await stepTwo(page);
+  await fillContactForm(page);
   await page
     .getByRole("button", { name: "Request My Free Review", exact: true })
     .click();
@@ -260,6 +277,11 @@ test("failed delivery preserves answers and supports retry", async ({
     "could not be delivered",
   );
   await expect(page.locator(".booking-dialog")).toHaveCount(0);
+  expect(
+    (await googleCommands(page)).some(
+      ([, name]) => name === "conversion" || name === "lead_submit_success",
+    ),
+  ).toBe(false);
   await expect(page.locator("#challenge")).toHaveValue(
     "Our website needs a clearer quote request process.",
   );

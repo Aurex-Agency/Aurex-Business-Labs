@@ -43,9 +43,7 @@ test("@a11y form error state and mobile menu have no WCAG violations", async ({
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/revenue-website");
-  await page
-    .getByRole("button", { name: "Continue to the opportunity" })
-    .click();
+  await page.getByRole("button", { name: "Request My Free Review" }).click();
   let result = await new AxeBuilder({ page })
     .include("#review")
     .withTags(tags)

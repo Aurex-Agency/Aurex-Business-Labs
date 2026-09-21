@@ -3,14 +3,14 @@
 1. Verify the empty remote and current stable dependencies. Use the requested Next.js App Router stack.
 2. Build an editorial midnight-blue and cool-white layout with Aurex-blue rules, generous typography, official brand assets, and varied section compositions.
 3. Build the interactive example lead journey and desktop sticky four-stage system, with stacked mobile storytelling.
-4. Connect the validated two-step form, safe webhook delivery, 90-day first-touch and latest-touch attribution, and confirmed conversion analytics.
+4. Connect the validated single-screen contact form, safe webhook delivery, 90-day first-touch and latest-touch attribution, and confirmed conversion analytics.
 5. Complete secondary routes, metadata, documentation, browser coverage, visual review, and production verification.
 
 The palette is centralized in src/app/globals.css. Geist handles interface and body copy; Instrument Serif adds editorial emphasis. Sections alternate dense technical demonstrations with open typography and a pale-blue portfolio surface. The visual concept is a precision-built business system, not a dashboard of fabricated metrics.
 
 ## Interaction architecture
 
-Static marketing sections are server-rendered. Client boundaries are limited to navigation, the lead engine, sticky system narrative, accordion event tracking, attribution, the two-step form, and analytics links. Motion animation features load through LazyMotion. The hero now uses the supplied native VSL player with a static poster, optional captions, no autoplay, and no initial video download. The original interactive example component remains available in source. The four-stage story uses Motion scroll values on desktop and individual illustrations in normal flow on mobile.
+Static marketing sections are server-rendered. Client boundaries are limited to navigation, the lead engine, sticky system narrative, accordion event tracking, attribution, the single-screen contact form, and analytics links. Motion animation features load through LazyMotion. The hero now uses the supplied native VSL player with a static poster, optional captions, no autoplay, and no initial video download. The original interactive example component remains available in source. The four-stage story uses Motion scroll values on desktop and individual illustrations in normal flow on mobile.
 
 ## Accessibility and conversion detail
 
