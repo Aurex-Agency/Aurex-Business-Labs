@@ -1,11 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { captureAttribution } from "@/lib/attribution";
 export function MobileStickyCta() {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
-    captureAttribution();
     let pastHero = false;
     let atReview = false;
     const hero = document.getElementById("hero");

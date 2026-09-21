@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { submissionSchema } from "@/lib/lead-schema";
+import { submissionSchema, type GhlLeadPayload } from "@/lib/lead-schema";
 export const runtime = "nodejs";
+// Room for two bounded attribution snapshots plus backward-compatible aliases.
+const MAX_BODY_BYTES = 96 * 1024;
 const fail = (message: string, status: number) =>
   NextResponse.json({ success: false, message }, { status });
 export async function POST(request: NextRequest) {
@@ -18,12 +20,13 @@ export async function POST(request: NextRequest) {
     return fail("Please submit the form from our website.", 403);
   if (!request.headers.get("content-type")?.includes("application/json"))
     return fail("Please submit a valid form.", 415);
-  if (Number(request.headers.get("content-length") || 0) > 24000)
+  if (Number(request.headers.get("content-length") || 0) > MAX_BODY_BYTES)
     return fail("Please shorten your response.", 413);
   let raw: unknown;
   try {
     const text = await request.text();
-    if (text.length > 24000) return fail("Please shorten your response.", 413);
+    if (Buffer.byteLength(text, "utf8") > MAX_BODY_BYTES)
+      return fail("Please shorten your response.", 413);
     raw = JSON.parse(text);
   } catch {
     return fail("Please check the form and try again.", 400);
@@ -68,7 +71,7 @@ export async function POST(request: NextRequest) {
         ...lead,
         submittedAt: new Date().toISOString(),
         receipt,
-      }),
+      } satisfies GhlLeadPayload),
       signal: AbortSignal.timeout(10000),
       redirect: "error",
       cache: "no-store",

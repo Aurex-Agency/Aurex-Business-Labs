@@ -331,7 +331,7 @@ test("server rejects malformed, invalid, automated, and cross-origin requests", 
   });
   expect(cross.status()).toBe(403);
   const oversized = await request.post("/api/leads", {
-    data: { challenge: "x".repeat(25000) },
+    data: { challenge: "x".repeat(100000) },
   });
   expect(oversized.status()).toBe(413);
 });

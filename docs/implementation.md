@@ -3,7 +3,7 @@
 1. Verify the empty remote and current stable dependencies. Use the requested Next.js App Router stack.
 2. Build an editorial midnight-blue and cool-white layout with Aurex-blue rules, generous typography, official brand assets, and varied section compositions.
 3. Build the interactive example lead journey and desktop sticky four-stage system, with stacked mobile storytelling.
-4. Connect the validated two-step form, safe webhook delivery, temporary attribution, and confirmed conversion analytics.
+4. Connect the validated two-step form, safe webhook delivery, 90-day first-touch and latest-touch attribution, and confirmed conversion analytics.
 5. Complete secondary routes, metadata, documentation, browser coverage, visual review, and production verification.
 
 The palette is centralized in src/app/globals.css. Geist handles interface and body copy; Instrument Serif adds editorial emphasis. Sections alternate dense technical demonstrations with open typography and a pale-blue portfolio surface. The visual concept is a precision-built business system, not a dashboard of fabricated metrics.

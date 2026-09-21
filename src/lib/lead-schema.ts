@@ -1,4 +1,12 @@
 import { z } from "zod";
+import {
+  ATTRIBUTION_TTL,
+  campaignKeys,
+  attributionFields,
+  attributionPageUrl,
+  type CampaignKey,
+  type Attribution,
+} from "./attribution";
 const clean = (min: number, max: number, message: string) =>
   z
     .string()
@@ -59,26 +67,58 @@ export const leadSchema = z.object({
   challenge: clean(10, 3000, "Tell us a little more, at least 10 characters."),
 });
 export type LeadInput = z.input<typeof leadSchema>;
+const campaignShape = Object.fromEntries(
+  campaignKeys.map((key) => [key, z.string().max(500).optional()]),
+) as Record<CampaignKey, z.ZodOptional<z.ZodString>>;
+const attributionFieldsSchema = z.object({
+  ...campaignShape,
+  landingPage: z.string().max(2000).transform(attributionPageUrl).optional(),
+  referrer: z.string().max(2000).transform(attributionPageUrl).optional(),
+});
+export const attributionTouchSchema = attributionFieldsSchema
+  .extend({
+    storedAt: z.number().int().nonnegative(),
+    expiresAt: z.number().int().nonnegative(),
+  })
+  .refine((touch) => touch.expiresAt - touch.storedAt === ATTRIBUTION_TTL, {
+    message: "Attribution must expire 90 days after capture.",
+  });
+export const attributionSchema = attributionFieldsSchema
+  .extend({
+    firstTouch: attributionTouchSchema.optional(),
+    latestTouch: attributionTouchSchema.optional(),
+  })
+  .transform((value): Attribution => {
+    const now = Date.now();
+    const valid = (touch: typeof value.firstTouch) =>
+      touch && touch.storedAt <= now && touch.expiresAt > now
+        ? touch
+        : undefined;
+    const firstTouch = valid(value.firstTouch);
+    const latestTouch = valid(value.latestTouch);
+    // Modern records derive legacy aliases from latest-touch only. Never revive
+    // expired modern data through a stale flat alias. Accept older open forms.
+    const fields =
+      value.firstTouch || value.latestTouch
+        ? attributionFields(latestTouch)
+        : attributionFields(value);
+    return {
+      ...fields,
+      ...(firstTouch && { firstTouch }),
+      ...(latestTouch && { latestTouch }),
+    };
+  });
 export const submissionSchema = leadSchema.extend({
   companyWebsite: z.string().max(0),
   startedAt: z.number().finite(),
   sourcePage: z.literal("/revenue-website"),
-  attribution: z
-    .object(
-      Object.fromEntries(
-        [
-          "utm_source",
-          "utm_medium",
-          "utm_campaign",
-          "utm_term",
-          "utm_content",
-          "gclid",
-          "msclkid",
-          "fbclid",
-          "landingPage",
-          "referrer",
-        ].map((key) => [key, z.string().max(2000).optional()]),
-      ),
-    )
-    .default({}),
+  attribution: attributionSchema.default({}),
 });
+export type LeadSubmission = z.input<typeof submissionSchema>;
+export type GhlLeadPayload = Omit<
+  z.output<typeof submissionSchema>,
+  "companyWebsite" | "startedAt"
+> & {
+  submittedAt: string;
+  receipt: string;
+};

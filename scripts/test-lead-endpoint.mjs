@@ -16,13 +16,15 @@ const compile = (source) =>
 const options = moduleUrl(
   compile(await fs.readFile("src/lib/lead-options.ts", "utf8")),
 );
+const attributionModule = moduleUrl(
+  compile(await fs.readFile("src/lib/attribution.ts", "utf8")),
+);
 const schema = compile(
   await fs.readFile("src/lib/lead-schema.ts", "utf8"),
 ).replace('from "zod"', `from "${pathToFileURL(require.resolve("zod")).href}"`);
-const schemaWithOptions = schema.replace(
-  'from "./lead-options"',
-  `from "${options}"`,
-);
+const schemaWithOptions = schema
+  .replace('from "./attribution"', `from "${attributionModule}"`)
+  .replace('from "./lead-options"', `from "${options}"`);
 const route = compile(await fs.readFile("src/app/api/leads/route.ts", "utf8"))
   .replace('from "@/lib/lead-schema"', `from "${moduleUrl(schemaWithOptions)}"`)
   .replace(
@@ -60,14 +62,14 @@ const payload = {
     landingPage: "https://aurexbusinesslab.com/revenue-website",
   },
 };
-const request = () =>
+const request = (body = payload) =>
   new NextRequest("https://aurexbusinesslab.com/api/leads", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       origin: "https://aurexbusinesslab.com",
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
 try {
   process.env.NODE_ENV = "production";
@@ -91,6 +93,108 @@ try {
   assert.ok(forwarded.signal);
   assert.equal(forwarded.redirect, "error");
   assert.equal(delivered.companyWebsite, undefined);
+  const ttl = 90 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  const firstTouch = {
+    utm_source: "Google",
+    utm_medium: "cpc",
+    utm_campaign: "Original",
+    utm_term: "Equipment",
+    utm_content: "Video",
+    gclid: "AbC-First_GCLID",
+    storedAt: now - 1000,
+    expiresAt: now - 1000 + ttl,
+    landingPage: "https://example.com/landing?email=private@example.com#secret",
+    email: "private@example.com",
+  };
+  const latestTouch = {
+    utm_source: "Microsoft",
+    wbraid: "AbC-WBRAID",
+    gbraid: "XyZ-GBRAID",
+    msclkid: "MiXeD-MSCLKID",
+    fbclid: "MiXeD-FBCLID",
+    storedAt: now,
+    expiresAt: now + ttl,
+    referrer: "https://user:password@example.org/from?phone=123#secret",
+  };
+  const modern = {
+    ...payload,
+    attribution: { firstTouch, latestTouch, gclid: "StaleAlias", phone: "123" },
+  };
+  assert.equal((await POST(request(modern))).status, 200);
+  const modernDelivered = JSON.parse(forwarded.body).attribution;
+  const { email: omittedEmail, ...expectedFirst } = firstTouch;
+  assert.ok(omittedEmail);
+  assert.deepEqual(modernDelivered.firstTouch, {
+    ...expectedFirst,
+    landingPage: "https://example.com/landing",
+  });
+  assert.deepEqual(modernDelivered.latestTouch, {
+    ...latestTouch,
+    referrer: "https://example.org/from",
+  });
+  for (const key of ["wbraid", "gbraid", "msclkid", "fbclid"])
+    assert.equal(modernDelivered[key], latestTouch[key]);
+  assert.equal(modernDelivered.gclid, undefined);
+  assert.equal(modernDelivered.phone, undefined);
+  const expiredTouch = {
+    ...firstTouch,
+    storedAt: now - ttl - 1000,
+    expiresAt: now - 1000,
+  };
+  assert.equal(
+    (
+      await POST(
+        request({
+          ...payload,
+          attribution: {
+            firstTouch: expiredTouch,
+            latestTouch: expiredTouch,
+            gclid: "DoNotRevive",
+          },
+        }),
+      )
+    ).status,
+    200,
+  );
+  assert.deepEqual(JSON.parse(forwarded.body).attribution, {});
+  for (const touch of [
+    { ...firstTouch, storedAt: "invalid" },
+    { ...firstTouch, expiresAt: now + 2 * ttl },
+    { ...firstTouch, gclid: "x".repeat(501) },
+  ])
+    assert.equal(
+      (await POST(request({ ...payload, attribution: { firstTouch: touch } })))
+        .status,
+      400,
+    );
+  assert.equal(
+    (
+      await POST(
+        request({
+          ...payload,
+          attribution: {
+            latestTouch: {
+              ...latestTouch,
+              storedAt: now + ttl,
+              expiresAt: now + 2 * ttl,
+            },
+          },
+        }),
+      )
+    ).status,
+    200,
+  );
+  assert.deepEqual(JSON.parse(forwarded.body).attribution, {});
+  // Check the real UTF-8 byte limit, including requests without Content-Length.
+  assert.equal(
+    (await POST(request({ ...payload, challenge: "x".repeat(100000) }))).status,
+    413,
+  );
+  assert.equal(
+    (await POST(request({ ...payload, challenge: "😀".repeat(30000) }))).status,
+    413,
+  );
   const localRequest = (origin) =>
     new NextRequest("http://127.0.0.1:3001/api/leads", {
       method: "POST",

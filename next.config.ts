@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 const config: NextConfig = {
   poweredByHeader: false,
   agentRules: false,
+  async redirects() {
+    // Config redirects preserve campaign parameters before the landing page loads.
+    return [{ source: "/", destination: "/revenue-website", permanent: false }];
+  },
   async headers() {
     return [
       {

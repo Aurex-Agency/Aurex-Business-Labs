@@ -57,13 +57,16 @@ export default function Privacy() {
           </p>
           <h2>Campaign information and browser storage</h2>
           <p>
-            We temporarily store campaign parameters, advertising click
-            identifiers, the landing page address, and referring page in your
-            browser&apos;s session storage. These may be sent with your form to
-            help us understand how you found Aurex. Session storage normally
-            ends when you close the browser tab. We also use a temporary
-            confirmation record to avoid counting a review request more than
-            once.
+            We store first-touch and latest-touch campaign parameters,
+            advertising click identifiers, and page addresses in first-party
+            browser storage for up to 90 days per touch, with a copy in session
+            storage for the active visit. These may be sent with your form to
+            help us understand how you found Aurex. Form answers and contact
+            details are not stored in these attribution records. Unrelated URL
+            query parameters and fragments are excluded. You can remove these
+            records by clearing this website&apos;s browser storage. We also use
+            a temporary confirmation record to avoid counting a review request
+            more than once.
           </p>
           <h2>Analytics and advertising</h2>
           <p>

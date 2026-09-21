@@ -13,8 +13,8 @@ Verified September 21, 2026 against a local optimized production build.
 
 ## Browser and accessibility coverage
 
-- 24 Playwright interaction and responsive tests: passed.
-- 3 Axe test cases passed, covering the landing page, form error state, mobile menu, thank-you page, and privacy page.
+- 43 Playwright interaction, attribution, analytics, and responsive tests: passed.
+- 4 Axe test cases passed, covering the landing page, form error state, mobile menu, thank-you page, and privacy page.
 - Keyboard navigation, Escape focus return, FAQ disclosures, form errors, step advancement and back navigation, accepted submission, failed submission and retry, campaign attribution, and server-side rejection behavior.
 - The supplied VSL replaces the previous hero demo. Playback, seeking, captions, no autoplay, and no initial video download are verified. All four desktop scroll-story states remain covered.
 - No horizontal overflow at 360, 390, 430, 768, 1024, 1280, 1440, and 1920 pixels.
@@ -93,3 +93,11 @@ Lint, strict type checking, production build, API verification, 26 browser tests
 GA4 can be disabled with an explicitly empty NEXT_PUBLIC_GA4_ID or overridden with another valid measurement ID. Optional Google Ads shares the gtag.js loader. Avoid duplicating the same destinations/events through GTM. GA4 admin settings, enhanced measurement settings, and key-event designation were not changed.
 
 Implementation reference: https://developers.google.com/tag-platform/gtagjs/routing
+
+## Attribution hardening
+
+Verified against the optimized production build with the webhook disabled on port 3002. Lint, strict type checking, API tests, 43 Playwright browser tests, 4 accessibility tests, and the production build all pass. Duplicate generated Next type files were cleared by the production rebuild before the final successful type check.
+
+The new browser suite covers all five UTM fields and case-preserving GCLID, WBRAID, GBRAID, MSCLKID, and FBCLID; query-preserving root redirects; same-tab navigation and query removal; new-tab restoration after closing the original tab; first-touch preservation and latest-touch replacement; stale-tab reconciliation on submission; exact 90-day and independent touch expiration; legacy migration; malformed and blocked storage; absence of form PII in both stores; submitted payload contents; and no duplicate lead conversion on thank-you refresh after a real form flow with a mocked acceptance response.
+
+API tests verify both snapshots and compatibility aliases arrive at the mocked GHL endpoint without case changes, stale aliases cannot revive expired snapshots, malformed timestamps and oversized identifiers are rejected, unknown PII fields and URL query/fragment data are stripped, and UTF-8 request size limits hold. Existing delivery, timeout, origin, and fail-closed checks remain passing. No live leads or analytics events were sent during automated verification.

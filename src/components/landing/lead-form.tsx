@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useForm, type FieldPath, type Resolver } from "react-hook-form";
 import { ArrowLeft, ArrowUpRight, Check, LoaderCircle } from "lucide-react";
 import { customerValues, timelines, budgets } from "@/lib/lead-options";
-import type { LeadInput } from "@/lib/lead-schema";
+import type { LeadInput, LeadSubmission } from "@/lib/lead-schema";
 import { captureAttribution } from "@/lib/attribution";
 import { PaybackPromise } from "./payback-promise";
 import { track } from "@/lib/analytics";
@@ -96,7 +96,7 @@ export function LeadForm() {
           startedAt: started.current,
           sourcePage: "/revenue-website",
           attribution: captureAttribution(),
-        }),
+        } satisfies LeadSubmission),
         signal: AbortSignal.timeout(15000),
       });
       const result = await response.json();

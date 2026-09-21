@@ -18,7 +18,7 @@ Open http://localhost:3000/revenue-website. The root redirects there with a temp
 
 Set `GHL_WEBHOOK_URL` to a GoHighLevel inbound webhook using HTTPS. The endpoint is server-only. Configure the receiving workflow to map the validated JSON fields into your contact and opportunity fields, then handle the consent-aware response workflow in GoHighLevel. This repository implements the delivery integration; it does not configure a GoHighLevel account or send SMS itself.
 
-The payload includes firstName, lastName, businessName, website, email, phone, city, service, customerValue, source, timeline, budget, challenge, sourcePage, submittedAt, receipt, and attribution. The attribution object contains UTM parameters, gclid, msclkid, fbclid, landingPage, and referrer when available. Contacts are normalized before forwarding. The receiver should return a successful HTTP status only when it accepts the lead.
+The payload includes firstName, lastName, businessName, website, email, phone, city, service, customerValue, source, timeline, budget, challenge, sourcePage, submittedAt, receipt, and attribution. The attribution object contains separate firstTouch and latestTouch snapshots with the five UTM fields, gclid, wbraid, gbraid, msclkid, fbclid, landingPage, referrer, storedAt, and expiresAt when available. Session storage covers the active visit; first-party localStorage retains each touch for 90 days without extending first-touch on return visits. Existing flat attribution fields remain latest-touch aliases. Click identifiers retain exact capitalization, and form PII never enters attribution storage. See [GHL field mapping](docs/ghl-field-mapping.md) for the complete contract. Contacts are normalized before forwarding. The receiver should return a successful HTTP status only when it accepts the lead.
 
 Production returns 503 when no webhook is configured, or 502 when delivery fails. The UI preserves form answers for retry. Webhook requests have a 10-second timeout and do not follow redirects. The client waits up to 15 seconds. Honeypot, timestamp, same-origin, content-type, size, and schema checks provide basic abuse protection. A host-level rate limit can be added if spam warrants it; the form is intentionally free of custom infrastructure.
 
@@ -26,18 +26,18 @@ For local development only, set `LEAD_DEV_MODE=true` with no webhook. Submission
 
 ## Environment variables
 
-| Variable                                  | Purpose                                                              |
-| ----------------------------------------- | -------------------------------------------------------------------- |
-| `GHL_WEBHOOK_URL`                         | Required for real lead delivery. Secret, server-only HTTPS endpoint. |
-| `NEXT_PUBLIC_SITE_URL`                    | Site origin. Defaults to https://aurexbusinesslab.com.               |
-| `NEXT_PUBLIC_BOOKING_URL`                 | Optional override for the supplied GHL booking calendar.                      |
-| `NEXT_PUBLIC_CONTACT_PHONE`               | Optional real phone number displayed in the footer.                  |
-| `NEXT_PUBLIC_CONTACT_EMAIL`               | Optional real email displayed in the footer and privacy policy.      |
-| `NEXT_PUBLIC_GA4_ID` | Defaults to approved property G-N6CM45VW84. Set empty to disable GA4. |
-| `NEXT_PUBLIC_GTM_ID`                      | Optional GTM container ID, in GTM- format.                           |
-| `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID`    | Optional Google Ads ID, in AW- format.                               |
-| `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` | Conversion action label paired with the Ads ID.                      |
-| `LEAD_DEV_MODE`                           | Explicit redacted development simulation, disabled by default.       |
+| Variable                                  | Purpose                                                               |
+| ----------------------------------------- | --------------------------------------------------------------------- |
+| `GHL_WEBHOOK_URL`                         | Required for real lead delivery. Secret, server-only HTTPS endpoint.  |
+| `NEXT_PUBLIC_SITE_URL`                    | Site origin. Defaults to https://aurexbusinesslab.com.                |
+| `NEXT_PUBLIC_BOOKING_URL`                 | Optional override for the supplied GHL booking calendar.              |
+| `NEXT_PUBLIC_CONTACT_PHONE`               | Optional real phone number displayed in the footer.                   |
+| `NEXT_PUBLIC_CONTACT_EMAIL`               | Optional real email displayed in the footer and privacy policy.       |
+| `NEXT_PUBLIC_GA4_ID`                      | Defaults to approved property G-N6CM45VW84. Set empty to disable GA4. |
+| `NEXT_PUBLIC_GTM_ID`                      | Optional GTM container ID, in GTM- format.                            |
+| `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID`    | Optional Google Ads ID, in AW- format.                                |
+| `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` | Conversion action label paired with the Ads ID.                       |
+| `LEAD_DEV_MODE`                           | Explicit redacted development simulation, disabled by default.        |
 
 Public environment variables are embedded at build time. Rebuild after changing them. Never put a secret in a NEXT_PUBLIC variable. Real .env files are ignored.
 
@@ -54,7 +54,7 @@ A successful server response creates a temporary receipt in session storage. The
 - `src/app/globals.css`: design tokens, bespoke layouts, responsive behavior.
 - `src/components/landing/`: navigation, interactive lead engine, scroll story, FAQ, form, and shared components.
 - `src/lib/lead-schema.ts` and `src/app/api/leads/route.ts`: validation and webhook delivery.
-- `src/lib/analytics.ts` and `src/lib/attribution.ts`: analytics and temporary campaign attribution.
+- `src/lib/analytics.ts` and `src/lib/attribution.ts`: analytics and 90-day first-touch/latest-touch campaign attribution.
 - `src/app/revenue-website/thank-you/page.tsx`: noindex confirmation and GHL booking popup.
 - `src/app/privacy/page.tsx`: basic privacy disclosure. It is not represented as attorney-reviewed.
 - `src/app/opengraph-image.tsx`: locally generated social card. The sitemap excludes the thank-you route.
@@ -88,13 +88,12 @@ npm run test:a11y
 
 The browser suite requires a server without a live webhook and with the approved default GA4 ID. Google requests are intercepted in tests, so no automated test visits or fabricated conversions reach Analytics. The supplied booking URL is the default; browser regression tests stub the calendar and embed script. When `.env.local` has a live webhook, start the test server with `GHL_WEBHOOK_URL= npm run start -- --hostname 127.0.0.1 --port 3002` and run tests with `PLAYWRIGHT_BASE_URL=http://127.0.0.1:3002`. The explicit empty environment variable overrides `.env.local`. It mocks browser submissions, validates server rejection behavior, checks keyboard interactions, and measures overflow at 360, 390, 430, 768, 1024, 1280, 1440, and 1920 pixels. Axe checks the landing page, form error state, mobile navigation, thank-you page, and privacy page. API verification mocks upstream fetch and checks successful forwarding, normalized values, attribution, failure, timeout, and production simulation rejection.
 
-To test an existing production server:
+To test a separate local production server with live lead delivery disabled:
 
 ```sh
-npm run start -- --hostname 127.0.0.1 --port 3001
-PLAYWRIGHT_BASE_URL=http://127.0.0.1:3001 npm run test:e2e
-PLAYWRIGHT_BASE_URL=http://127.0.0.1:3001 npm run test:a11y
-npm run test:visual
+GHL_WEBHOOK_URL= npm run start -- --hostname 127.0.0.1 --port 3002
+PLAYWRIGHT_BASE_URL=http://127.0.0.1:3002 npm run test:e2e
+PLAYWRIGHT_BASE_URL=http://127.0.0.1:3002 npm run test:a11y
 ```
 
 Visual review defaults to port 3001 and saves full-page captures to artifacts/review-WIDTHxHEIGHT.png, plus hero, portfolio, and form views. These are deliberately excluded from the shipped website. Reports are in docs/verification.md and artifacts/.

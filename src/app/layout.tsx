@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { AttributionCapture } from "@/components/landing/attribution-capture";
 import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
 import { site } from "@/lib/site-config";
@@ -55,6 +57,9 @@ export default function RootLayout({
           Skip to content
         </a>
         <MotionProvider>{children}</MotionProvider>
+        <Suspense fallback={null}>
+          <AttributionCapture />
+        </Suspense>
         <AnalyticsScripts />
       </body>
     </html>
