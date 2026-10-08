@@ -119,13 +119,35 @@ export const attributionSchema = attributionFieldsSchema
       ...(latestTouch && { latestTouch }),
     };
   });
-export const submissionSchema = leadSchema.extend({
+const submissionFields = {
   companyWebsite: z.string().max(2000),
   startedAt: z.number().finite(),
-  sourcePage: z.literal("/revenue-website"),
   // Campaign metadata must never prevent an otherwise valid inquiry.
   attribution: attributionSchema.catch({}).default({}),
+};
+export const auditSchema = leadSchema.extend({
+  role: clean(1, 100, "Enter your role."),
+  trade: clean(1, 100, "Choose your trade."),
+  annualRevenue: clean(1, 100, "Choose an annual revenue range."),
+  monthlyLeads: clean(1, 100, "Choose a lead volume range."),
+  marketingSpend: clean(1, 100, "Choose a marketing spend range."),
+  primaryService: clean(1, 200, "Enter your priority service."),
+  jobValue: clean(1, 100, "Choose a job value range."),
+  bottleneck: clean(1, 3000, "Describe your biggest bottleneck."),
+  hasStaff: z.enum(["Yes", "No"]),
+  capacity: z.enum(["Yes", "Limited", "No"]),
+  tracksSales: z.enum(["Yes", "Partially", "No"]),
+  investmentReady: z.enum(["Yes", "Need to evaluate", "No"]),
+  caseStudyInterest: z.enum(["Yes", "Maybe", "No"]),
+  smsConsent: z.boolean().default(false),
 });
+export const submissionSchema = z.union([
+  auditSchema.extend({ ...submissionFields, sourcePage: z.literal("/apply") }),
+  leadSchema.extend({
+    ...submissionFields,
+    sourcePage: z.literal("/revenue-website"),
+  }),
+]);
 export type LeadSubmission = z.input<typeof submissionSchema>;
 export type GhlLeadPayload = Omit<
   z.output<typeof submissionSchema>,

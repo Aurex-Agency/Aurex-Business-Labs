@@ -1,26 +1,27 @@
-import { Brand } from "@/components/landing/site-header";
+import { Shell, PageHero } from "@/components/authority/shared";
+import { Action } from "@/components/authority/interactions";
 export default function NotFound() {
   return (
-    <>
-      <header className="secondary-header">
-        <div className="container">
-          <Brand />
+    <Shell>
+      <PageHero
+        eyebrow="Page not found"
+        path="/404"
+        title="This Page Is Not Here"
+        description="The address may have changed. Explore the Revenue Capture System or return to the homepage."
+      >
+        <div className="a-actions">
+          <Action href="/" event="secondary_cta_click">
+            Back to home
+          </Action>
+          <Action
+            href="/revenue-capture-system"
+            event="secondary_cta_click"
+            secondary
+          >
+            Explore the system
+          </Action>
         </div>
-      </header>
-      <main id="main" className="container">
-        <div className="thank-you-layout">
-          <span className="eyebrow">404 / A DIFFERENT DIRECTION</span>
-          <h1>
-            This page
-            <br />
-            is <em>off the map.</em>
-          </h1>
-          <p>Let&apos;s get you back to a clear next step.</p>
-          <a className="button" href="/revenue-website">
-            Explore the Revenue Website System ↗
-          </a>
-        </div>
-      </main>
-    </>
+      </PageHero>
+    </Shell>
   );
 }

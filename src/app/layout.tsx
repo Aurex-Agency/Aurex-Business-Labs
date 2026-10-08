@@ -20,6 +20,13 @@ const serif = Instrument_Serif({
 });
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    other: process.env.BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION }
+      : undefined,
+  },
+  alternates: { types: { "application/rss+xml": "/rss.xml" } },
   title: { default: site.title, template: "%s | Aurex Business Labs" },
   description: site.description,
   openGraph: {
@@ -33,7 +40,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Aurex Business Labs. Turn your website into a sales system.",
+        alt: "Aurex Business Labs. Revenue systems for residential contractors.",
       },
     ],
   },
