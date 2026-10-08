@@ -1,10 +1,16 @@
+import { roofingProof, publishableProof } from "@/lib/proof";
 import Image from "next/image";
 import Link from "next/link";
 import type { Article } from "@/content/articles";
 import { site } from "@/lib/site-config";
 import { breadcrumbs } from "@/lib/seo";
 import { nav } from "@/content/navigation";
-import { Action, ContactLink, Navigation } from "./interactions";
+import {
+  Action,
+  ContactLink,
+  Navigation,
+  VideoTestimonial,
+} from "./interactions";
 import { ScrollProgress } from "@/components/studio/motion";
 export function Schema({ data }: { data: unknown }) {
   return (
@@ -46,11 +52,11 @@ export function Footer() {
       <div className="s-footer-top">
         <Brand />
         <p>
-          Considered strategy.
+          Customer acquisition.
           <br />
-          Distinctive digital experiences.
+          Lead-to-sale systems.
           <br />
-          Connected business systems.
+          Recovered and repeat revenue.
         </p>
         <nav aria-label="Footer navigation">
           {[...nav, ["Contact", "/contact"]].map(([label, href]) => (
@@ -229,14 +235,15 @@ export function FinalCTA() {
   return (
     <section className="s-contact-band">
       <div>
-        <p className="s-kicker">Something on your mind?</p>
+        <p className="s-kicker">Where are opportunities going cold?</p>
         <p className="s-contact-note">
-          A new direction. A better experience.
-          <br />A business ready for its next chapter.
+          Find the gaps from first lead to sold job.
+          <br />
+          Request a Revenue Leakage Audit.
         </p>
       </div>
-      <Action href="/contact" event="contact_cta_click">
-        Let’s talk.
+      <Action href="/apply" event="audit_cta_click">
+        Find the gaps.
       </Action>
     </section>
   );
@@ -283,5 +290,82 @@ export function ArticleCard({
         Read the guide ↗
       </Link>
     </article>
+  );
+}
+
+export function ProofCard() {
+  const approved = publishableProof(roofingProof);
+  return (
+    <article className="a-proof">
+      <div>
+        <p className="a-label">Roofing / North Mississippi</p>
+        <h3>
+          {approved
+            ? `$${roofingProof.results[0].amount.toLocaleString("en-US")} in ${roofingProof.resultType}`
+            : "A clearer path from lead to revenue"}
+        </h3>
+        <p>
+          {approved
+            ? roofingProof.results[0].label
+            : "See how Aurex built a lead-to-revenue system for a North Mississippi roofing company."}
+        </p>
+        {approved && (
+          <>
+            <p>{roofingProof.problem}</p>
+            <List items={roofingProof.workPerformed} />
+            <p>
+              {roofingProof.dateRange?.label} · Attribution:{" "}
+              {roofingProof.attributionStatus}
+            </p>
+          </>
+        )}
+        <Link className="a-inline" href="/results/roofing-revenue-system">
+          Explore the roofing case study <span aria-hidden="true">↗</span>
+        </Link>
+      </div>
+      <div className="a-proof-note">
+        <span className="a-label">Our evidence standard</span>
+        <p>
+          We separate verified results, influenced results, and estimates. We do
+          not present raw leads as sold-job revenue.
+        </p>
+        <Link className="a-inline" href="/results/methodology">
+          How we measure results ↗
+        </Link>
+      </div>
+    </article>
+  );
+}
+export function ProofMedia() {
+  return (
+    <>
+      {site.proofRecords.filter(publishableProof).flatMap((p) =>
+        p.screenshots.slice(0, 2).map((s) => (
+          <figure className="a-card" key={s.src}>
+            <Image
+              src={s.src}
+              alt={s.alt}
+              width={1200}
+              height={750}
+              className="a-responsive"
+            />
+            <figcaption>{s.caption}</figcaption>
+          </figure>
+        )),
+      )}
+      {site.proofRecords
+        .filter((p) => publishableProof(p) && p.testimonialUrl && p.video)
+        .slice(0, 3)
+        .map((p) => (
+          <VideoTestimonial
+            key={p.id}
+            url={p.testimonialUrl!}
+            title={p.video!.title}
+            summary={p.video!.summary}
+            poster={p.video!.thumbnail}
+            transcript={p.video!.transcript}
+          />
+        ))}
+    </>
   );
 }

@@ -40,7 +40,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Aurex Business Labs. Strategy, websites and connected systems.",
+        alt: "Aurex Business Labs. Customer acquisition and revenue systems for residential contractors.",
       },
     ],
   },

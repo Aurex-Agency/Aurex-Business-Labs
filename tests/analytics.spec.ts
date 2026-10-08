@@ -50,17 +50,17 @@ test("failed submission never emits a conversion", async ({ page }) => {
     ),
   ).toBe(false);
 });
-test("contact CTA and project view use consistent event names", async ({
+test("audit CTA and project view use consistent event names", async ({
   page,
 }) => {
   await page.goto("/");
   await page
-    .getByRole("link", { name: "Let’s talk", exact: true })
+    .getByRole("link", { name: "Request an audit", exact: true })
     .first()
     .click();
   await expect
     .poll(async () =>
-      (await googleCommands(page)).some(([, n]) => n === "contact_cta_click"),
+      (await googleCommands(page)).some(([, n]) => n === "audit_cta_click"),
     )
     .toBe(true);
   await page.goto("/work/norton-equipment");

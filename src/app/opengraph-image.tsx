@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 export const alt =
-  "Aurex Business Labs. Strategy, websites and connected systems.";
+  "Aurex Business Labs. Customer acquisition and revenue systems for residential contractors.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export default function Image() {
@@ -29,9 +29,9 @@ export default function Image() {
           lineHeight: 1.05,
         }}
       >
-        <span>Good business.</span>
+        <span>More booked jobs.</span>
         <span>
-          <span style={{ color: "#19bce5" }}>Great presence.</span>
+          <span style={{ color: "#19bce5" }}>More from each lead.</span>
         </span>
       </div>
       <div
@@ -43,7 +43,7 @@ export default function Image() {
           justifyContent: "space-between",
         }}
       >
-        <span>Strategy. Design. Connection.</span>
+        <span>Capture. Convert. Recover. Compound.</span>
         <span>aurexbusinesslab.com</span>
       </div>
     </div>,

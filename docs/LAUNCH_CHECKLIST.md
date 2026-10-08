@@ -5,7 +5,7 @@ Record an owner, date and evidence for each completed item. Do not treat a passi
 Business facts:
 
 - [ ] Brand spelling correct
-- [ ] No retired offer, pricing or sales application in public content
+- [ ] Revenue Capture System positioning retained; pricing and payment schedules absent
 - [ ] Founder information verified
 - [ ] Contact information verified
 
@@ -78,5 +78,5 @@ AI visibility:
 - [ ] Confirm the proxy strips untrusted IP headers and deploy shared rate limiting as needed.
 - [ ] Confirm consent and retention requirements before enabling analytics or reminders.
 - [ ] Capture and inspect 375px, 768px and 1440px screenshots. Keep artifacts out of deployment.
-- [ ] Verify all six 301 redirects and campaign query preservation.
+- [ ] Verify all three 301 redirects and campaign query preservation.
 - [ ] Confirm no unapproved financial claim appears in HTML, metadata, feeds or schema.

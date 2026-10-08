@@ -4,7 +4,9 @@ import { blockGoogleTracking } from "./analytics-helpers";
 import { fillContact, submitContact } from "./form-helpers";
 test.beforeEach(async ({ page }) => blockGoogleTracking(page));
 for (const path of publicRoutes)
-  test(`route ${path}: content, schema and offer removal`, async ({ page }) => {
+  test(`route ${path}: content, schema and contractor positioning without pricing`, async ({
+    page,
+  }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
     page.on("console", (m) => {
@@ -22,7 +24,7 @@ for (const path of publicRoutes)
       .allTextContents())
       expect(JSON.parse(raw)["@context"]).toBe("https://schema.org");
     expect(await page.content()).not.toMatch(
-      /Revenue Capture System|Revenue Leakage Audit|\$17,000|45-Day Core Launch|120-day partnership|two new implementation/,
+      /\$17,000|\$8,000|45-Day Core Launch|two new implementation|Great presence\./,
     );
     expect(errors).toEqual([]);
   });
@@ -38,16 +40,13 @@ test("all internal links resolve", async ({ page, request }) => {
   for (const p of paths)
     expect((await request.get(p)).status(), p).toBeLessThan(400);
 });
-test("retired offer routes redirect without losing campaign parameters", async ({
+test("legacy routes redirect without losing campaign parameters", async ({
   request,
 }) => {
   for (const [from, to] of [
-    ["/revenue-website", "/approach"],
-    ["/revenue-capture-system", "/approach"],
-    ["/apply", "/contact"],
-    ["/revenue-website/thank-you", "/contact"],
-    ["/results", "/work"],
-    ["/results/roofing-revenue-system", "/work"],
+    ["/approach", "/revenue-capture-system"],
+    ["/revenue-website", "/revenue-capture-system"],
+    ["/revenue-website/thank-you", "/apply"],
   ]) {
     const r = await request.get(`${from}?utm_source=fixture`, {
       maxRedirects: 0,
@@ -62,8 +61,10 @@ test("desktop navigation, project journey and mobile dialog keyboard control", a
   await page.goto("/");
   await page
     .getByRole("navigation", { name: "Main navigation", exact: true })
-    .getByRole("link", { name: "Work", exact: true })
+    .getByRole("link", { name: "The System", exact: true })
     .click();
+  await expect(page).toHaveURL(/\/revenue-capture-system$/);
+  await page.goto("/work");
   await expect(page).toHaveURL(/\/work$/);
   await page.getByRole("link", { name: /Norton Equipment Co/ }).click();
   await expect(page).toHaveURL(/\/work\/norton-equipment$/);
@@ -134,7 +135,9 @@ test("production without delivery configuration fails closed", async ({
   });
   expect(r.status()).toBe(503);
 });
-test("feeds contain no retired offer", async ({ request }) => {
+test("feeds keep contractor positioning without prices", async ({
+  request,
+}) => {
   for (const p of [
     "/sitemap.xml",
     "/llms.txt",
@@ -145,7 +148,7 @@ test("feeds contain no retired offer", async ({ request }) => {
     const r = await request.get(p);
     expect(r.status()).toBe(200);
     expect(await r.text()).not.toMatch(
-      /Revenue Capture System|Revenue Leakage Audit|17,000|\/apply|\/revenue-capture-system/,
+      /17,000|8,000|Great presence|Strategy, Websites/,
     );
   }
   expect((await request.get("/not-real")).status()).toBe(404);
@@ -183,6 +186,66 @@ test("scroll motion responds and reduced-motion keeps the complete experience", 
   expect(await art.evaluate((el) => getComputedStyle(el).transform)).toBe(
     still,
   );
-  await expect(page.locator(".s-project")).toHaveCount(4);
-  await expect(page.locator(".s-chapter")).toHaveCount(3);
+  await expect(
+    page.getByRole("heading", {
+      name: "More booked jobs. More from each lead.",
+    }),
+  ).toBeVisible();
+  await expect(page.locator(".s-chapter")).toHaveCount(4);
+});
+
+test("homepage preserves the contractor offer and audit path without pricing", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByText("Aurex Revenue Capture System", { exact: true }).first(),
+  ).toBeVisible();
+  for (const name of ["Capture.", "Convert.", "Recover.", "Compound."])
+    await expect(
+      page.getByRole("heading", { name, exact: true }),
+    ).toBeVisible();
+  await page
+    .getByRole("link", { name: "Request an audit", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/apply$/);
+  await expect(page.locator('[name="investmentReady"]')).toHaveCount(0);
+  await expect(page.locator('[name="smsConsent"]')).not.toBeChecked();
+  await page
+    .getByRole("button", { name: "Request My Revenue Leakage Audit" })
+    .click();
+  await expect(page.locator("#firstName")).toBeFocused();
+  for (const [id, value] of Object.entries({
+    firstName: "Alex",
+    lastName: "Example",
+    email: "alex@example.com",
+    businessName: "Example Roofing",
+    role: "Owner",
+    primaryService: "Roof replacement",
+    bottleneck: "Estimates need better follow-up",
+  }))
+    await page.locator(`#${id}`).fill(value);
+  for (const [id, value] of Object.entries({
+    trade: "Roofing",
+    annualRevenue: "Prefer to discuss",
+    monthlyLeads: "20 to 50",
+    marketingSpend: "Not sure",
+    jobValue: "Varies",
+    hasStaff: "Yes",
+    capacity: "Yes",
+    tracksSales: "Partially",
+    caseStudyInterest: "Maybe",
+  }))
+    await page.locator(`#${id}`).selectOption(value);
+  await page.route("**/api/leads", (route) => {
+    const data = route.request().postDataJSON();
+    expect(data.sourcePage).toBe("/apply");
+    expect(data.investmentReady).toBeUndefined();
+    expect(data.smsConsent).toBe(false);
+    return route.fulfill({ json: { success: true, receipt: "audit-fixture" } });
+  });
+  await page
+    .getByRole("button", { name: "Request My Revenue Leakage Audit" })
+    .click();
+  await expect(page.locator("form")).toHaveCount(0);
 });

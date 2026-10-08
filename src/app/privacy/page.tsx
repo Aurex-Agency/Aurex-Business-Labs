@@ -35,6 +35,19 @@ export default function Page() {
               </p>
             </section>
             <section>
+              <h2>Audit applications</h2>
+              <p>
+                The audit form also collects your role, trade, business revenue
+                range, lead volume, marketing spend, priority service, job
+                value, bottleneck, staffing, capacity, sales tracking and
+                case-study interest. We use these answers to prepare the
+                diagnostic and assess fit. Optional SMS reminder consent is
+                separate and unchecked. Message frequency varies; message and
+                data rates may apply. Reply STOP to opt out or HELP for help.
+                Consent is not required to apply or purchase.
+              </p>
+            </section>
+            <section>
               <h2>Processing and retention</h2>
               <p>
                 Messages are sent through a server-side connection to our

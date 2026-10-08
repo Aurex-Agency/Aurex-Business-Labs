@@ -287,7 +287,7 @@ try {
   assert.equal(JSON.parse(forwarded.body).role, "Owner");
   assert.equal(
     (await POST(request({ ...audit, investmentReady: undefined }))).status,
-    400,
+    200,
   );
   assert.equal(
     (await POST(request({ ...audit, hasStaff: "invented" }))).status,

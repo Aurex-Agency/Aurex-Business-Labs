@@ -137,7 +137,7 @@ export const auditSchema = leadSchema.extend({
   hasStaff: z.enum(["Yes", "No"]),
   capacity: z.enum(["Yes", "Limited", "No"]),
   tracksSales: z.enum(["Yes", "Partially", "No"]),
-  investmentReady: z.enum(["Yes", "Need to evaluate", "No"]),
+  investmentReady: z.enum(["Yes", "Need to evaluate", "No"]).optional(),
   caseStudyInterest: z.enum(["Yes", "Maybe", "No"]),
   smsConsent: z.boolean().default(false),
 });

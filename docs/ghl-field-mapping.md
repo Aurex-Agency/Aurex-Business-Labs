@@ -117,3 +117,7 @@ The source answer describes the business's current customer acquisition, while a
 The form's companyWebsite honeypot and startedAt timing check are removed before forwarding. Do not map them. A successful website response contains the same receipt included in the webhook payload.
 
 Automated tests use a separate server with GHL_WEBHOOK_URL explicitly empty and mock upstream fetches. They must not generate additional live mapping samples.
+
+## Revenue Leakage Audit
+
+The restored `/apply` form sends the audit-schema business-fit fields and optional, unchecked `smsConsent`. It never requires or sends an investment-readiness answer. Preserve first/latest attribution and only enroll SMS reminders when explicitly consented. A confirmed submission is not a confirmed appointment or sale.

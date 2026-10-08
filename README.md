@@ -1,6 +1,6 @@
 # Aurex Business Labs
 
-A work-led studio website built with Next.js App Router, React, TypeScript and Motion. Real portfolio imagery, oversized Geist and Instrument Serif typography, responsive project galleries and a scroll-linked narrative carry the experience. The public website contains no packaged offer or pricing.
+Aurex Business Labs is a customer acquisition and revenue systems company for established residential contractors. The redesigned site uses expressive typography, a moving customer-journey diagram and a sticky four-stage narrative. The Revenue Capture System and Revenue Leakage Audit remain central. Pricing, payment terms and monetary assurances are not public.
 
 ## Development
 
@@ -19,7 +19,7 @@ Use Node.js 22 or newer. Run `npm ci`, configure `.env.local` from `.env.example
 
 ## Routes
 
-The primary journey is `/`, `/work`, four `/work/[slug]` project pages, `/approach`, `/about`, `/insights` and `/contact`. Educational articles, the scorecard webinar, methodology and legal pages remain available. Search endpoints include sitemap, robots, RSS, llms.txt and social metadata. See `URL_MIGRATION_MAP.md` for retired URLs.
+The primary journey is `/`, `/revenue-capture-system`, `/results`, `/results/roofing-revenue-system`, `/apply`, `/about` and `/insights`. Secondary portfolio pages and `/contact` remain available. Educational articles, the scorecard webinar, methodology and legal pages remain available. Search endpoints include sitemap, robots, RSS, llms.txt and social metadata. See `URL_MIGRATION_MAP.md` for retired URLs.
 
 ## Verification
 

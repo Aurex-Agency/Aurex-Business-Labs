@@ -34,7 +34,7 @@ The browser suite intercepts external requests and mocks successful contact deli
 
 Map `firstName`, `lastName`, `email`, `businessName`, optional `phone` and `website`, required `challenge`, `sourcePage`, `submittedAt`, `receipt` and first/latest attribution. The current form sends `sourcePage: /contact`. Do not require legacy qualification or investment fields in the receiving workflow. The form does not enroll contacts in marketing or SMS. A successful submission confirms inline and fires `contact_submit`; it does not represent a booking or sale.
 
-Legacy calendar and form environment settings no longer replace the public contact form. See `docs/ghl-field-mapping.md` for attribution mapping.
+The audit form sends sourcePage `/apply` and the business-fit fields in `auditSchema`, including optional SMS consent. Map these separately from the general contact form. Investment readiness is not asked. A confirmed audit submission exposes the configured calendar on demand or links to the audit booking URL. Calendar opens are not confirmed bookings. Neither native form is replaced by a generic form embed. See `docs/ghl-field-mapping.md` for attribution mapping.
 
 Use `NEXT_PUBLIC_ZOOM_REGISTRATION_URL` first and `NEXT_PUBLIC_GHL_WEBINAR_FORM_URL` as fallback. Without either, registration is visibly unavailable. Supply both real `WEBINAR_START_ISO` and `WEBINAR_END_ISO` with explicit offset for a specific session; otherwise only the recurring Thursday 11 a.m. Central schedule appears. Keep occurrences current and rebuild. Daylight saving is handled by America/Chicago display formatting.
 

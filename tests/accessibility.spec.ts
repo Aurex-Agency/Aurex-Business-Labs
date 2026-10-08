@@ -34,3 +34,18 @@ test("@a11y mobile menu, error associations and skip navigation", async ({
     (await new AxeBuilder({ page }).withTags(tags).analyze()).violations,
   ).toEqual([]);
 });
+
+test("@a11y audit errors and form associations", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/apply");
+  await page
+    .getByRole("button", { name: "Request My Revenue Leakage Audit" })
+    .click();
+  await expect(page.locator("#firstName")).toHaveAttribute(
+    "aria-describedby",
+    "firstName-error",
+  );
+  expect(
+    (await new AxeBuilder({ page }).withTags(tags).analyze()).violations,
+  ).toEqual([]);
+});

@@ -5,7 +5,7 @@ import { ContactLink } from "@/components/authority/interactions";
 import { ContactForm } from "@/components/studio/contact-form";
 export const metadata = pageMeta(
   "Start a Conversation",
-  "Tell Aurex Business Labs what you are thinking about. A new direction, a distinctive website, or a more connected business.",
+  "Tell Aurex Business Labs what you are thinking about. Customer acquisition, lead handling, recovery or repeat business.",
   "/contact",
 );
 export default function Contact() {
@@ -14,7 +14,7 @@ export default function Contact() {
       <PageHero
         eyebrow="Start a conversation"
         path="/contact"
-        title="What’s your next chapter?"
+        title="Let’s talk about your next stage of growth."
         description="Tell us a little about your business and what you have in mind. You don’t need a perfect brief to start a good conversation."
       />
       <section
@@ -23,7 +23,7 @@ export default function Contact() {
       >
         <aside className="s-contact-aside">
           <h2>
-            Good work starts
+            Better decisions start
             <br />
             <em>with a conversation.</em>
           </h2>

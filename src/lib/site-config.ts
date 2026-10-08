@@ -14,7 +14,7 @@ export function webUrl(value: string | undefined) {
 const brandName = "Aurex Business Labs";
 const canonicalUrl = "https://aurexbusinesslab.com";
 const companyDescription =
-  "Aurex Business Labs brings strategy, distinctive websites, and connected business systems together for established businesses. We help make the customer experience clearer, from a first impression to the next conversation.";
+  "Aurex Business Labs is a customer acquisition and revenue systems company for established residential contractors. Through the Aurex Revenue Capture System, we help contractors generate qualified opportunities, improve lead response and booking, recover missed revenue, and build repeat and referral systems.";
 export const site = {
   brandName,
   name: brandName,
@@ -38,11 +38,12 @@ export const site = {
     webUrl(process.env.SITE_YOUTUBE_URL),
     webUrl(process.env.SITE_FACEBOOK_URL),
   ].filter((v): v is string => !!v),
+  flagshipService: "Aurex Revenue Capture System",
   companyDescription,
   description: companyDescription,
   shortDescription:
-    "Strategy, distinctive websites, and connected systems for established businesses.",
-  title: "Aurex Business Labs | Strategy, Websites & Connected Systems",
+    "Customer acquisition and revenue systems for established residential contractors.",
+  title: "Aurex Business Labs | Revenue Systems for Residential Contractors",
   proofRecords: [roofingProof] as ProofRecord[],
   booking:
     webUrl(process.env.NEXT_PUBLIC_GHL_CALENDAR_EMBED_URL) ||
@@ -69,7 +70,10 @@ export const publicRoutes = [
   "/work/triple-r-trailers",
   "/work/wood-eye-clinic",
   "/work/nettech",
-  "/approach",
+  "/revenue-capture-system",
+  "/results",
+  "/results/roofing-revenue-system",
+  "/apply",
   "/about",
   "/contact",
   "/insights",

@@ -16,7 +16,7 @@ This block is written and re-added by `next dev` . verify at `node_modules/next/
 - Be clear, direct, practical, locally grounded, and business-focused.
 - Do not use em dash characters in copy, code comments, metadata, or documentation.
 - Never fabricate testimonials, ratings, customer counts, performance metrics, awards, or scarcity.
-- No packaged offer, pricing, launch assurance or sales application belongs on the public website. The current experience is work, approach and a simple contact conversation.
+- The core positioning is customer acquisition and revenue systems for established residential contractors. Preserve the Aurex Revenue Capture System, Capture / Convert / Recover / Compound method, results and Revenue Leakage Audit. Do not publish pricing, payment schedules, investment-readiness questions, discounts, capacity scarcity or monetary launch assurances.
 - Financial proof and client media require both verified status and publication permission in src/lib/proof.ts.
 - Approved portfolio examples: Norton Equipment Co, Triple R Trailers, Wood Eye Clinic, and NetTech.
 
@@ -35,7 +35,7 @@ This block is written and re-added by `next dev` . verify at `node_modules/next/
 - Legacy website-offer source is archived in docs/archive; its supporting copy and assets are retained.
 - src/components/studio contains the hero, portfolio motion, sticky narrative and contact form. src/components/authority contains shared chrome and editorial sections. src/components/landing retains shared attribution, analytics and motion utilities.
 - src/lib/lead-schema.ts owns client/server validation. src/app/api/leads/route.ts owns delivery.
-- The root route is the studio homepage. Retired offer routes redirect to /approach, application routes to /contact and results routes to /work. Contact submissions confirm inline only after delivery.
+- The root is the contractor revenue-system homepage. /revenue-capture-system, /results and /apply are active routes. /approach and /revenue-website redirect to /revenue-capture-system. The old thank-you URL redirects to /apply. Audit and contact submissions confirm only after delivery.
 - Read relevant Next.js documentation from node_modules/next/dist/docs before changing framework behavior.
 
 ## Configuration and verification

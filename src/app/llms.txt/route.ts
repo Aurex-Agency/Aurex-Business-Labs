@@ -7,8 +7,10 @@ export function GET() {
 
 ## Explore
 ${[
-  ["Selected work", "/work"],
-  ["Approach", "/approach"],
+  ["Revenue Capture System", "/revenue-capture-system"],
+  ["Results", "/results"],
+  ["Roofing case study", "/results/roofing-revenue-system"],
+  ["Revenue Leakage Audit", "/apply"],
   ["About", "/about"],
   ["Insights", "/insights"],
   ["Contact", "/contact"],
@@ -20,7 +22,7 @@ ${[
   .map(([label, path]) => `- [${label}](${site.url}${path})`)
   .join("\n")}
 
-The site presents capabilities and selected work. It does not publish a packaged offer or pricing. This supplementary index does not guarantee AI inclusion or citation.
+The Aurex Revenue Capture System connects Capture, Convert, Recover and Compound. This supplementary index does not guarantee AI inclusion or citation.
 `,
     { headers: { "Content-Type": "text/plain; charset=utf-8" } },
   );

@@ -10,7 +10,7 @@ import {
 } from "@/components/authority/shared";
 export const metadata = pageMeta(
   "About Aurex Business Labs",
-  "Business thinking and creative care, brought together. Meet the approach behind Aurex Business Labs.",
+  "Customer acquisition and revenue systems for established residential contractors.",
   "/about",
 );
 export default function About() {
@@ -20,32 +20,31 @@ export default function About() {
       <PageHero
         eyebrow="About Aurex Business Labs"
         path="/about"
-        title="A business mind. A designer’s eye."
-        description="We care about what a business is trying to do, and how it feels to interact with it. The strongest work gets both right."
+        title="Built around the sold job."
+        description="Aurex Business Labs connects acquisition, lead handling, opportunity recovery, referrals, and repeat business into one measurable system."
       />
       <Section eyebrow="Our point of view" title="">
         <h2 className="s-about-statement">
-          The way you show up
+          From marketing activity
           <br />
-          should reflect
+          to the outcomes
           <br />
-          <em>what you’re made of.</em>
+          <em>your business runs on.</em>
         </h2>
         <div className="a-two" style={{ marginTop: 55 }}>
           <p className="a-lead">
-            Aurex Business Labs brings strategy, distinctive websites, and
-            connected systems together.
+            Aurex Business Labs is a customer acquisition and revenue systems
+            company for established residential contractors.
           </p>
           <div>
             <p>
-              We work with established businesses that want their digital
-              presence to feel as considered as the work they do. That means
-              clear communication, purposeful design, and attention to what
-              happens after someone gets in touch.
+              We help contractors acquire customers, convert more opportunities,
+              recover missed revenue, and make each customer worth more.
             </p>
             <p style={{ marginTop: 24 }}>
-              No borrowed personality. No design decision without a reason. Just
-              a thoughtful response to the business in front of us.
+              The Aurex Revenue Capture System connects Capture, Convert,
+              Recover and Compound. Tracking supports every stage, from the
+              original inquiry to the sold job and the next referral.
             </p>
           </div>
         </div>
@@ -70,12 +69,12 @@ export default function About() {
         <div className="a-three">
           {[
             [
-              "Clarity over noise.",
-              "Make the important things easy to find, understand, and act on.",
+              "Own the next step.",
+              "Every inquiry, estimate and follow-up needs a clear owner and a clear next action.",
             ],
             [
-              "Character over convention.",
-              "Let the business shape the work. The result should feel specific, not interchangeable.",
+              "Fix the actual constraint.",
+              "Use the scorecard to find whether acquisition, response, booking, sales or capacity needs attention.",
             ],
             [
               "Evidence over promises.",

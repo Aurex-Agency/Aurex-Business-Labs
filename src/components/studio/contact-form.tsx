@@ -135,7 +135,7 @@ export function ContactForm() {
                 rows={4}
                 required
                 maxLength={3000}
-                placeholder="A new website, a clearer direction, a better way to connect things…"
+                placeholder="Lead response, open estimates, repeat business, or another question…"
                 aria-invalid={!!errors.challenge}
                 aria-describedby={
                   errors.challenge ? "challenge-error" : undefined

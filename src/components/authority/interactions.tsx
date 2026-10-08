@@ -34,8 +34,8 @@ export function Navigation() {
             {label}
           </Link>
         ))}
-        <Action href="/contact" event="contact_cta_click">
-          Let’s talk
+        <Action href="/apply" event="audit_cta_click">
+          Request an audit
         </Action>
       </nav>
       <button
@@ -65,15 +65,17 @@ export function Navigation() {
           </button>
         </div>
         <nav aria-label="Mobile navigation">
-          {[...nav, ["Contact", "/contact"]].map(([label, href], index) => (
-            <Link key={href} href={href} onClick={close}>
-              <span>0{index + 1}</span>
-              {label}
-              <span aria-hidden="true">↗</span>
-            </Link>
-          ))}
+          {[...nav, ["Request an audit", "/apply"]].map(
+            ([label, href], index) => (
+              <Link key={href} href={href} onClick={close}>
+                <span>0{index + 1}</span>
+                {label}
+                <span aria-hidden="true">↗</span>
+              </Link>
+            ),
+          )}
         </nav>
-        <p>Good business. Great presence.</p>
+        <p>Capture. Convert. Recover. Compound.</p>
       </dialog>
     </>
   );

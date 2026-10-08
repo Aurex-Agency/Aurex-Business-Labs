@@ -9,6 +9,7 @@ import {
 import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Action } from "@/components/authority/interactions";
 import { work, type Project } from "@/content/work";
 
 export function KineticHero() {
@@ -24,13 +25,15 @@ export function KineticHero() {
   return (
     <section className="s-hero" ref={ref}>
       <div className="s-hero-top">
-        <span className="s-kicker">Aurex Business Labs</span>
-        <span className="s-kicker">Strategy. Design. Connection.</span>
+        <span className="s-kicker">
+          For established residential contractors
+        </span>
+        <span className="s-kicker">Aurex Revenue Capture System</span>
       </div>
       <div className="s-hero-main">
         <m.h1 style={{ x: reduce ? 0 : titleX }}>
-          <span>Good business.</span>
-          <span className="s-serif">Great presence.</span>
+          <span>More booked jobs.</span>
+          <span className="s-serif">More from each lead.</span>
         </m.h1>
         <m.div
           className="s-hero-art"
@@ -39,48 +42,53 @@ export function KineticHero() {
           animate={reduce ? {} : { rotate: [-11, -8], y: [30, 0] }}
           transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="s-art-frame">
-            <div className="s-browser-bar">
-              <i />
-              <i />
-              <i />
-              <span>Made for the real world.</span>
-            </div>
-            <Image
-              src="/projects/norton.webp"
-              alt="Norton Equipment Co website design by Aurex Business Labs"
-              width={1440}
-              height={1000}
-              priority
-              sizes="(max-width: 700px) 80vw, 42vw"
-            />
+          <div className="s-revenue-map">
+            <span className="s-kicker">
+              The opportunity does not end at the lead.
+            </span>
+            {[
+              "Inquiry",
+              "Appointment",
+              "Estimate",
+              "Sold job",
+              "Repeat & referral",
+            ].map((step, i) => (
+              <div className="s-revenue-step" key={step}>
+                <span>0{i + 1}</span>
+                <strong>{step}</strong>
+                <span aria-hidden="true">↗</span>
+              </div>
+            ))}
+            <p>One connected customer journey.</p>
           </div>
-          <span className="s-art-caption">
-            Selected work / Norton Equipment Co
-          </span>
         </m.div>
         <span className="s-hero-cross" aria-hidden="true">
           ✳
         </span>
       </div>
       <div className="s-hero-bottom">
-        <a className="s-scroll-cue" href="#selected-work">
-          <span aria-hidden="true">↓</span>Take a closer look
-        </a>
+        <div className="r-hero-actions">
+          <Action href="/apply" event="audit_cta_click">
+            Request a Revenue Leakage Audit
+          </Action>
+          <Link className="s-text-link" href="/results/roofing-revenue-system">
+            See the roofing case study ↗
+          </Link>
+        </div>
         <p>
-          We bring sharp thinking, distinctive websites, and connected systems
-          to businesses with something real to offer.
+          Turn more marketing spend into booked appointments and sold jobs.
+          Recover open opportunities. Build repeat and referral revenue.
         </p>
         <Link
           className="s-round-link"
-          href="/contact"
-          aria-label="Start a conversation"
+          href="/apply"
+          aria-label="Request a Revenue Leakage Audit"
         >
           <span aria-hidden="true">↗</span>
         </Link>
       </div>
       <div className="s-hero-rule">
-        <span>Independent thinking. Deliberate execution.</span>
+        <span>Capture. Convert. Recover. Compound.</span>
         <span>Scroll to discover</span>
       </div>
     </section>
@@ -161,27 +169,35 @@ export function WorkGrid({ limit = 4 }: { limit?: number }) {
 const disciplines = [
   {
     number: "01",
-    title: "Find the right direction.",
-    label: "Strategy & positioning",
-    text: "Start with the business. Understand the customer, the decision they are making, and what needs to be clearer. That thinking gives every design decision a purpose.",
-    words: ["Customer journey", "Messaging", "Digital direction"],
+    title: "Capture.",
+    label: "Create qualified opportunities",
+    text: "Put the right homeowner offer in front of the right market through the appropriate acquisition channel and conversion assets.",
+    words: ["Homeowner offer", "Acquisition campaigns", "Conversion funnel"],
     symbol: "↗",
   },
   {
     number: "02",
-    title: "Make every interaction count.",
-    label: "Design & development",
-    text: "Give your business a presence that feels considered from the first impression to the smallest interaction. Clear structure. Distinctive design. A website that works as well as it looks.",
-    words: ["Web experiences", "Content & structure", "Responsive development"],
-    symbol: "✳",
+    title: "Convert.",
+    label: "Connect the lead to the appointment",
+    text: "Connect new inquiries to rapid response, qualification, booking, reminders, and a clear next step. Give your team a process they can follow.",
+    words: ["Lead response", "Booking", "Pipeline visibility"],
+    symbol: "↳",
   },
   {
     number: "03",
-    title: "Connect what happens next.",
-    label: "Systems & automation",
-    text: "A good website should fit the way your business works. Connect inquiries, follow-up, and useful measurement so a promising conversation has somewhere to go.",
-    words: ["Lead handling", "CRM connections", "Measurement"],
+    title: "Recover.",
+    label: "Follow up on the opportunities you earned",
+    text: "Follow up on unresponsive leads, missed appointments, delayed projects, and open estimates. Keep promising opportunities from disappearing into an inbox.",
+    words: ["Open estimates", "No-shows", "Dormant opportunities"],
     symbol: "⤴",
+  },
+  {
+    number: "04",
+    title: "Compound.",
+    label: "Make the next job count too",
+    text: "Turn completed jobs and past customers into reviews, referrals, repeat service, reactivation, and appropriate additional offers.",
+    words: ["Reviews & referrals", "Repeat service", "Customer reactivation"],
+    symbol: "✳",
   },
 ];
 export function StudioStory() {
@@ -194,15 +210,20 @@ export function StudioStory() {
   const spin = useTransform(scrollYProgress, [0, 1], [0, 150]);
   const line = useTransform(scrollYProgress, [0, 1], [0.05, 1]);
   return (
-    <section className="s-story" ref={ref} aria-labelledby="story-title">
+    <section
+      id="revenue-system"
+      className="s-story"
+      ref={ref}
+      aria-labelledby="story-title"
+    >
       <div className="s-story-aside">
-        <span className="s-kicker">How we think / 01-03</span>
+        <span className="s-kicker">The Aurex method / 01-04</span>
         <h2 id="story-title">
-          The details.
+          One system.
           <br />
-          The big picture.
+          Four jobs.
           <br />
-          <em>All connected.</em>
+          <em>Every opportunity.</em>
         </h2>
         <m.span
           className="s-story-mark"
@@ -211,8 +232,8 @@ export function StudioStory() {
         >
           ✳
         </m.span>
-        <Link className="s-text-link" href="/approach">
-          Inside our approach <span aria-hidden="true">↗</span>
+        <Link className="s-text-link" href="/revenue-capture-system">
+          Explore the system <span aria-hidden="true">↗</span>
         </Link>
         <div className="s-story-progress" aria-hidden="true">
           <m.div style={{ scaleX: reduce ? 1 : line }} />

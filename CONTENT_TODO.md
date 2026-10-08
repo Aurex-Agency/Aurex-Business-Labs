@@ -1,6 +1,6 @@
 # Content completion
 
-The public website intentionally contains no packaged offer, pricing, sales application or launch assurance.
+Preserve the contractor Revenue Capture System positioning. Keep pricing, payment schedules and monetary launch assurances off public pages.
 
 - Confirm legal entity, founder biography/photo, address, contact details and social URLs before adding them. No facts or client outcomes should be invented.
 - Review the four approved portfolio descriptions and provide additional project imagery when available.
@@ -10,4 +10,6 @@ The public website intentionally contains no packaged offer, pricing, sales appl
 - Approve article publication dates and legal templates. Review analytics consent and retention before enabling optional measurement.
 - Complete `docs/LAUNCH_CHECKLIST.md`.
 
-Historical offer and proof plans describe an earlier direction. They are not instructions to republish the removed offer. Financial proof remains gated by verification and written publication permission.
+The original business positioning remains authoritative. The later user instruction supersedes public pricing and commercial-term requirements. Financial proof remains gated by verification and written publication permission.
+
+- Map the restored audit fields and optional SMS consent in GHL. Never infer consent from a phone number. Investment readiness is no longer required.

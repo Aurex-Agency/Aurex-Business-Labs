@@ -80,8 +80,8 @@ export default async function Page({
             ))}
             <p>
               Continue with the{" "}
-              <Link className="a-inline" href="/approach">
-                Aurex Business Labs approach
+              <Link className="a-inline" href="/revenue-capture-system">
+                Aurex Revenue Capture System
               </Link>{" "}
               or read our{" "}
               <Link className="a-inline" href="/results/methodology">
