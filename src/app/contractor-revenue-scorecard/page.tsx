@@ -141,12 +141,12 @@ export default function Webinar() {
             ],
             [
               "Can Aurex help with our specific process?",
-              "Request a Revenue Leakage Audit for a working session focused on your business.",
+              "Get in touch to talk about your business and the process you want to improve.",
             ],
           ]}
         />
         <div className="a-actions">
-          <Action href="/apply">Request a Revenue Leakage Audit</Action>
+          <Action href="/contact">Start a conversation</Action>
           <Action href="/insights" secondary event="secondary_cta_click">
             Browse Contractor Insights
           </Action>

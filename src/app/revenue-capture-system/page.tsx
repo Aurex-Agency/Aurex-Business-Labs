@@ -5,200 +5,146 @@ import {
   PageHero,
   Section,
   List,
-  Phases,
-  Timeline,
-  Pricing,
-  Fit,
-  FAQ,
-  ProofCard,
-  ProofMedia,
-  ResultsDisclaimer,
   FinalCTA,
   Schema,
+  FAQ,
+  ProofCard,
 } from "@/components/authority/shared";
 import { Action } from "@/components/authority/interactions";
-import {
-  implementation,
-  operations,
-  excluded,
-  responsibilities,
-  launchChecks,
-} from "@/content/offer";
+import { StudioStory } from "@/components/studio/motion";
+import { timeline } from "@/content/offer";
 export const metadata = pageMeta(
   "Revenue Capture System for Contractors",
-  "Aurex helps established residential contractors generate qualified opportunities, improve booking, recover missed revenue, and build repeat and referral systems.",
+  site.companyDescription,
   "/revenue-capture-system",
 );
-export default function Page() {
+export default function System() {
   return (
     <Shell>
       <Schema
         data={{
           "@type": "Service",
           name: site.flagshipService,
-          description:
-            "A 120-Day Customer Acquisition and Revenue Expansion Partnership for Established Residential Contractors",
+          description: site.companyDescription,
           provider: organization,
           areaServed: site.serviceArea,
-          offers: {
-            "@type": "Offer",
-            price: site.pricing.total,
-            priceCurrency: "USD",
-            url: `${site.url}/revenue-capture-system`,
-            description:
-              "120-day engagement. Advertising and specified third-party costs are separate.",
-          },
         }}
       />
       <PageHero
-        eyebrow="Revenue Capture System"
+        eyebrow="Aurex Revenue Capture System"
         path="/revenue-capture-system"
-        title="Connect the Lead to the Appointment. The Job to the Next Opportunity."
-        description="A 120-Day Customer Acquisition and Revenue Expansion Partnership for Established Residential Contractors"
+        title="From the first lead to the next sold job."
+        description="A customer acquisition and revenue expansion partnership for established residential contractors."
       >
-        <Action href="/apply">Request a Revenue Leakage Audit</Action>
+        <Action href="/apply" event="audit_cta_click">
+          Request a Revenue Leakage Audit
+        </Action>
       </PageHero>
-      <Section
-        title="What does the Aurex Revenue Capture System include?"
-        light
-      >
-        <div className="a-reading">
-          <p>
-            The Aurex Revenue Capture System is a 120-day customer acquisition
-            and revenue-expansion partnership for established residential
-            contractors. During the initial implementation, Aurex maps your
-            lead-to-sale economics, strengthens one priority consumer offer,
-            builds one primary conversion funnel, prepares one acquisition
-            channel, installs rapid-response and booking workflows, creates one
-            high-value opportunity-recovery system, and connects source-to-sale
-            reporting. During the following 90 days, Aurex operates and improves
-            the campaign, creative, funnel, lead handling, booking process,
-            recovery system, and reporting. Aurex also installs a referral
-            foundation and one Customer Expansion Campaign designed to generate
-            the highest-value repeat-service, reactivation, referral, or
-            cross-sell opportunity appropriate for your business. The investment
-            is $8,000 for implementation followed by three monthly payments of
-            $3,000. Advertising and specified third-party costs are separate.
-          </p>
-        </div>
-      </Section>
-      <Section title="Built for Contractors Ready to Grow">
-        <Fit />
-      </Section>
-      <Section
-        eyebrow="The problem"
-        title="Most Agencies Stop at the Lead"
-        light
-      >
-        <p className="a-lead">
-          Aurex connects the lead to the appointment, the appointment to the
-          sold job, and the customer to the next purchase or referral.
+      <div className="s-approach-opening">
+        <p className="s-kicker">
+          Acquisition is the beginning.
+          <br />
+          Connect what happens next.
         </p>
-        <p className="a-closing">
-          Aurex helps established residential contractors turn more marketing
-          spend into booked appointments and sold jobs, recover opportunities
-          that did not close, and generate more repeat and referral revenue from
-          the customers they already earned.
-        </p>
-      </Section>
-      <Section title="One Revenue System. Four Jobs.">
-        <Phases />
-      </Section>
-      <Section
-        eyebrow="Tracking supports every phase"
-        title="The Aurex Revenue Command Center"
-        light
-      >
-        <p className="a-lead">
-          A shared view of sources, appointments, estimates, sales, collected
-          revenue, and recovery and customer-expansion activity.
-        </p>
-        <p className="a-closing">
-          We reconcile pipeline records with client-reported outcomes. A lead is
-          not a sale. A booked job is not collected revenue. The weekly
-          scorecard identifies the next constraint to fix.
-        </p>
-        <a className="a-inline" href="/results/methodology">
-          Read our attribution methodology ↗
-        </a>
-      </Section>
-      <Section
-        eyebrow="The agreed base scope"
-        title="Exact Implementation Deliverables"
-      >
-        <div className="a-columns">
-          <List items={implementation} />
-        </div>
-      </Section>
-      <Section title="Monthly Growth Operations" light>
-        <div className="a-columns">
-          <List items={operations} />
-        </div>
-      </Section>
-      <Section title="A Working Partnership">
+        <h2>
+          Your next opportunity
+          <br />
+          <em>may already be in the pipeline.</em>
+        </h2>
+      </div>
+      <StudioStory />
+      <Section eyebrow="A working system" title="What we connect.">
         <div className="a-two">
-          <article>
-            <h3>Client responsibilities</h3>
-            <List items={responsibilities} />
-          </article>
-          <article>
-            <h3>What is not included</h3>
-            <List items={excluded} />
-          </article>
+          <List
+            items={[
+              "The priority homeowner offer and acquisition campaign",
+              "The conversion funnel and lead-to-sale pipeline",
+              "Lead response, qualification, booking and reminders",
+              "Follow-up for open estimates, no-shows and dormant leads",
+              "Reviews, referrals and customer reactivation",
+              "Source-to-sale reporting and a shared weekly scorecard",
+            ]}
+          />
+          <div>
+            <h3>The Aurex Revenue Command Center</h3>
+            <p>
+              See sources, appointments, estimates, sold jobs, collected
+              revenue, and recovery activity together. Tracking supports all
+              four stages, so your next decision starts with the actual
+              constraint.
+            </p>
+            <p>
+              A lead is not a sale. A signed job is not collected cash. We
+              reconcile the pipeline with the outcomes your team reports.
+            </p>
+            <a className="s-text-link" href="/results/methodology">
+              How we measure results ↗
+            </a>
+          </div>
         </div>
-      </Section>
-      <Section title="Your First 120 Days" light>
-        <Timeline />
-      </Section>
-      <Section title="Proof Before Promises">
-        <ProofCard />
-        <ProofMedia />
-        <ResultsDisclaimer />
       </Section>
       <Section
-        eyebrow="Delivery assurance"
-        title="45-Day Core Launch and Tracking Assurance"
+        eyebrow="The first 120 days"
+        title="Build. Operate. Improve."
         light
       >
-        <div className="a-reading">
-          <p>
-            Once the Ready Date begins, Aurex will have the agreed core funnel,
-            campaign, GHL pipeline, lead-response workflows, booking process,
-            primary recovery workflow, and source-to-pipeline reporting live and
-            tested within 45 calendar days.
-          </p>
-          <p>
-            If Aurex misses that deadline for reasons within Aurex’s control,
-            the client receives a full credit for the first $3,000 management
-            payment, and management billing pauses until the agreed core system
-            is live.
-          </p>
-          <p>
-            Client-caused delays, platform reviews, account restrictions,
-            third-party outages, and material scope changes adjust or pause the
-            timeline.
-          </p>
-          <h3>What starts the Ready Date?</h3>
-          <p>
-            The Ready Date is confirmed in writing after the agreed scope,
-            required access, initial payment, necessary assets and approvals,
-            advertising budget, and client lead-handling owner are in place. The
-            signed agreement records the prerequisites and any timeline
-            adjustments.
-          </p>
-          <h3>What does live and tested mean?</h3>
-          <List items={launchChecks} />
-          <p>
-            This is a delivery assurance. It does not guarantee leads,
-            appointments, sales, revenue, profit or ROI.
-          </p>
+        <div className="r-timeline">
+          {timeline.map((t) => (
+            <article key={t.days}>
+              <p className="s-kicker">{t.days}</p>
+              <h3>{t.name}</h3>
+              <p>{t.text}</p>
+            </article>
+          ))}
         </div>
       </Section>
-      <Section title="The Initial Engagement">
-        <Pricing />
+      <Section title="A partnership with your team.">
+        <div className="a-two">
+          <p className="a-lead">
+            We build and operate the system around your customer journey. Your
+            team answers calls, handles estimates, closes work, and delivers the
+            service.
+          </p>
+          <List
+            items={[
+              "A profitable priority service or project",
+              "Staff who can respond to and manage new opportunities",
+              "Capacity to fulfill additional work",
+              "Access to accurate sales outcomes and customer records",
+              "An owner or general manager who can make decisions",
+            ]}
+          />
+        </div>
       </Section>
-      <Section title="Questions About the Partnership" light>
-        <FAQ />
+      <Section title="Proof before promises." light>
+        <ProofCard />
+      </Section>
+      <Section title="A few practical questions.">
+        <FAQ
+          items={[
+            ["What does Aurex Business Labs do?", site.companyDescription],
+            [
+              "Is this just advertising?",
+              "Acquisition is one part. Aurex also connects response, booking, recovery, repeat business, referrals and source-to-sale reporting.",
+            ],
+            [
+              "Do we need a new website?",
+              "Not necessarily. We assess the conversion assets needed for the priority service. A full website redesign is not the focus of the Revenue Capture System.",
+            ],
+            [
+              "Will Aurex answer every call or close every homeowner?",
+              "Your team owns live conversations, estimating, sales and fulfillment. Aurex supports them with workflows, scripts, visibility and follow-up systems.",
+            ],
+            [
+              "What happens in the Revenue Leakage Audit?",
+              "We map the current lead-to-sale process, identify where opportunities stall, and leave you with a scorecard and three priority actions.",
+            ],
+            [
+              "Are results guaranteed?",
+              "No. Outcomes depend on demand, the offer, response, sales, capacity and fulfillment. We distinguish verified results, influenced results and estimates.",
+            ],
+          ]}
+        />
       </Section>
       <FinalCTA />
     </Shell>

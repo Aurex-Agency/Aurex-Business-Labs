@@ -137,11 +137,22 @@ export const auditSchema = leadSchema.extend({
   hasStaff: z.enum(["Yes", "No"]),
   capacity: z.enum(["Yes", "Limited", "No"]),
   tracksSales: z.enum(["Yes", "Partially", "No"]),
-  investmentReady: z.enum(["Yes", "Need to evaluate", "No"]),
+  investmentReady: z.enum(["Yes", "Need to evaluate", "No"]).optional(),
   caseStudyInterest: z.enum(["Yes", "Maybe", "No"]),
   smsConsent: z.boolean().default(false),
 });
+export const contactSchema = leadSchema.extend({
+  challenge: clean(
+    10,
+    3000,
+    "Tell us a little about your project (at least 10 characters).",
+  ),
+});
 export const submissionSchema = z.union([
+  contactSchema.extend({
+    ...submissionFields,
+    sourcePage: z.literal("/contact"),
+  }),
   auditSchema.extend({ ...submissionFields, sourcePage: z.literal("/apply") }),
   leadSchema.extend({
     ...submissionFields,

@@ -44,14 +44,6 @@ export const site = {
   shortDescription:
     "Customer acquisition and revenue systems for established residential contractors.",
   title: "Aurex Business Labs | Revenue Systems for Residential Contractors",
-  pricing: {
-    total: 17000,
-    implementation: 8000,
-    monthly: 3000,
-    paymentDays: [31, 61, 91],
-    durationDays: 120,
-  },
-  capacityLimit: 2,
   proofRecords: [roofingProof] as ProofRecord[],
   booking:
     webUrl(process.env.NEXT_PUBLIC_GHL_CALENDAR_EMBED_URL) ||
@@ -73,16 +65,22 @@ export const site = {
 };
 export const publicRoutes = [
   "/",
+  "/work",
+  "/work/norton-equipment",
+  "/work/triple-r-trailers",
+  "/work/wood-eye-clinic",
+  "/work/nettech",
   "/revenue-capture-system",
   "/results",
   "/results/roofing-revenue-system",
-  "/results/methodology",
+  "/apply",
+  "/about",
+  "/contact",
   "/insights",
   "/insights/how-contractors-track-marketing-from-lead-to-sold-job",
   "/insights/cost-per-lead-vs-cost-per-sold-job",
   "/insights/how-to-follow-up-on-unclosed-contractor-estimates",
-  "/about",
-  "/apply",
+  "/results/methodology",
   "/contractor-revenue-scorecard",
   "/privacy",
   "/terms",

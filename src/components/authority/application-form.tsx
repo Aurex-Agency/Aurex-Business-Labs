@@ -53,7 +53,6 @@ const choices: Record<string, string[]> = {
   hasStaff: ["Yes", "No"],
   capacity: ["Yes", "Limited", "No"],
   tracksSales: ["Yes", "Partially", "No"],
-  investmentReady: ["Yes", "Need to evaluate", "No"],
   caseStudyInterest: ["Yes", "Maybe", "No"],
 };
 const groups = [
@@ -90,10 +89,6 @@ const groups = [
       ],
       ["capacity", "Do you have capacity for additional work?"],
       ["tracksSales", "Do you track sales outcomes?"],
-      [
-        "investmentReady",
-        "Prepared to consider the $17,000 initial engagement when the economics support it?",
-      ],
       ["caseStudyInterest", "Open to being featured as a case study?"],
     ],
   },

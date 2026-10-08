@@ -1,42 +1,15 @@
-# Content completion and launch blockers
+# Content completion
 
-Do not invent missing facts. Keep the numeric roofing claim and client media unpublished until both verification and publication permission are recorded in `src/lib/proof.ts`.
+Preserve the contractor Revenue Capture System positioning. Keep pricing, payment schedules and monetary launch assurances off public pages.
 
-## Business facts
+- Confirm legal entity, founder biography/photo, address, contact details and social URLs before adding them. No facts or client outcomes should be invented.
+- Review the four approved portfolio descriptions and provide additional project imagery when available.
+- Configure the server-only GHL webhook and map the contact message (`challenge`), identity and first/latest attribution fields. The contact form does not subscribe visitors to SMS or marketing.
+- Validate one authorized live contact after deployment. Automated regression uses synthetic upstream delivery and an isolated server.
+- If retaining the educational webinar, confirm its schedule and real registration URL.
+- Approve article publication dates and legal templates. Review analytics consent and retention before enabling optional measurement.
+- Complete `docs/LAUNCH_CHECKLIST.md`.
 
-- [ ] Confirm legal entity name, founder full name, factual biography, founding year and legitimate business location.
-- [ ] Supply approved founder photo with usage permission. No founder image is currently supplied.
-- [ ] Set verified phone, email and real social URLs. Confirm the contact and privacy-request process.
-- [x] Reuse the existing official blue symbol with Business Labs text wordmark. Original Agency lockup remains an unused source asset.
-- [ ] Confirm the configured two implementation starts per month reflects actual operating capacity.
-- [ ] Approve the Ready Date prerequisites and 45-day assurance in the signed engagement agreement.
+The original business positioning remains authoritative. The later user instruction supersedes public pricing and commercial-term requirements. Financial proof remains gated by verification and written publication permission.
 
-## Proof
-
-- [ ] Roofing client publication permission and identity/anonymization preference.
-- [ ] Exact result start/end dates and documented four-month window.
-- [ ] Supporting documentation for the reported $320,000 in tracked revenue, including source, opportunity, sale and revenue reconciliation.
-- [ ] Confirm starting situation, main constraint, baseline, implementation scope, timeline and attribution classification.
-- [ ] Reconcile refunds, cancellations, collected versus contracted amounts and duplicate jobs.
-- [ ] Supply redacted screenshot assets and explanatory captions.
-- [ ] Supply approved client quote, testimonial video URL, thumbnail, upload date, duration and accessible transcript/captions.
-- [ ] Set publication and update dates when the evidence is approved. Never imply sole causation from tracked revenue.
-- [ ] Add up to three additional testimonials only with complete evidence and permission. No empty cards are rendered.
-
-## Integrations
-
-- [ ] Configure the server-only GHL webhook and map all new audit fields, SMS consent and attribution snapshots to CRM fields.
-- [ ] Validate one authorized live submission after deployment, internal notification and client acknowledgement. Automated regression never sends live leads.
-- [ ] Configure the GHL calendar embed or normal audit booking URL. Configure optional form embed only if replacing the native flow intentionally.
-- [ ] Test CRM opt-out suppression and reminder consent. Embedded form configuration must preserve the same fields, separate unchecked SMS consent and attribution.
-- [ ] Configure Zoom registration and optional GHL webinar fallback. Confirm Thursday 11 a.m. Central schedule. Set exact real occurrence dates only when known.
-- [ ] Configure GA4/GTM/Meta/Ads IDs deliberately, avoid duplicate tagging and complete jurisdiction-appropriate consent review before enabling nonessential tags.
-- [ ] Set Google and Bing verification values, IndexNow key and production host origin.
-- [ ] Confirm CSP allows the actual configured integration domains; custom branded embed domains need explicit additions.
-- [ ] Add a trusted shared edge/WAF limiter for distributed hosting. The included limiter is bounded but process-local.
-
-## Legal and publication
-
-- [ ] Professional review of privacy, terms, results disclaimer, SMS language, releases, retention practices and contact process.
-- [ ] Review and approve the three cornerstone articles and their actual publication dates before launch.
-- [ ] Run the launch checklist, live calendar and registration checks, and production performance check.
+- Map the restored audit fields and optional SMS consent in GHL. Never infer consent from a phone number. Investment readiness is no longer required.

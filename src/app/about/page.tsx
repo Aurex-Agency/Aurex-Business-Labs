@@ -8,66 +8,50 @@ import {
   FinalCTA,
   Schema,
 } from "@/components/authority/shared";
-import { Action } from "@/components/authority/interactions";
 export const metadata = pageMeta(
-  "About Aurex Business Labs | Contractor Revenue Systems",
-  site.shortDescription,
+  "About Aurex Business Labs",
+  "Customer acquisition and revenue systems for established residential contractors.",
   "/about",
 );
-export default function Page() {
-  const facts = [
-    ["Official name", site.brandName],
-    ["Legal entity", site.legalName],
-    ["Founder", site.founderName],
-    ["Founded", site.foundedYear],
-    ["Location", site.address],
-    ["Service area", site.serviceArea],
-    ["Email", site.email],
-    ["Phone", site.phone],
-    ["Flagship service", site.flagshipService],
-  ].filter(([, value]) => value);
+export default function About() {
   return (
     <Shell>
-      <Schema
-        data={[
-          organization,
-          ...(site.founderName
-            ? [
-                {
-                  "@type": "Person",
-                  "@id": `${site.url}/about#founder`,
-                  name: site.founderName,
-                  ...(site.founderBio && { description: site.founderBio }),
-                  worksFor: { "@id": `${site.url}/#organization` },
-                },
-              ]
-            : []),
-        ]}
-      />
+      <Schema data={organization} />
       <PageHero
-        eyebrow="About"
+        eyebrow="About Aurex Business Labs"
         path="/about"
-        title="Built Around Business Outcomes"
-        description="Acquire customers. Convert more opportunities. Recover missed revenue. Make each customer worth more."
+        title="Built around the sold job."
+        description="Aurex Business Labs connects acquisition, lead handling, opportunity recovery, referrals, and repeat business into one measurable system."
       />
-      <Section title="What is Aurex Business Labs?" light>
-        <p className="a-lead">
-          Aurex Business Labs is a customer acquisition and revenue systems
-          company serving established residential contractors across the United
-          States. Its flagship service, the Aurex Revenue Capture System, helps
-          contractors generate qualified demand, improve lead handling, recover
-          missed opportunities, and build repeat and referral revenue.
-        </p>
-        <dl className="a-facts">
-          {facts.map(([name, value]) => (
-            <div key={name}>
-              <dt>{name}</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
-        {site.founderName && site.founderBio && (
-          <article className="a-reading">
+      <Section eyebrow="Our point of view" title="">
+        <h2 className="s-about-statement">
+          From marketing activity
+          <br />
+          to the outcomes
+          <br />
+          <em>your business runs on.</em>
+        </h2>
+        <div className="a-two" style={{ marginTop: 55 }}>
+          <p className="a-lead">
+            Aurex Business Labs is a customer acquisition and revenue systems
+            company for established residential contractors.
+          </p>
+          <div>
+            <p>
+              We help contractors acquire customers, convert more opportunities,
+              recover missed revenue, and make each customer worth more.
+            </p>
+            <p style={{ marginTop: 24 }}>
+              The Aurex Revenue Capture System connects Capture, Convert,
+              Recover and Compound. Tracking supports every stage, from the
+              original inquiry to the sold job and the next referral.
+            </p>
+          </div>
+        </div>
+      </Section>
+      {site.founderName && site.founderBio && (
+        <Section title={site.founderName} light>
+          <div className="a-two">
             {site.founderPhoto && (
               <Image
                 src={site.founderPhoto}
@@ -77,37 +61,24 @@ export default function Page() {
                 className="a-founder-photo"
               />
             )}
-            <h3>{site.founderName}</h3>
-            <p>{site.founderBio}</p>
-          </article>
-        )}
-      </Section>
-      <Section title="The Revenue Integrity Standard">
-        <p className="a-lead">
-          Before Aurex recommends an engagement, we calculate how many
-          additional sold jobs the full investment would need to produce or
-          recover.
-        </p>
-        <p className="a-closing">
-          When the business lacks the margins, team, capacity, or data required
-          to support a credible path to payback, we say so before taking the
-          engagement.
-        </p>
-      </Section>
-      <Section title="Our Operating Philosophy" light>
+            <p className="a-lead">{site.founderBio}</p>
+          </div>
+        </Section>
+      )}
+      <Section title="What we hold ourselves to." light>
         <div className="a-three">
           {[
             [
-              "Connect the work",
-              "Acquisition, lead handling, recovery, referrals and repeat business belong in one measurable process.",
+              "Own the next step.",
+              "Every inquiry, estimate and follow-up needs a clear owner and a clear next action.",
             ],
             [
-              "Share the responsibility",
-              "Aurex builds and improves the system. The client provides live conversations, accurate outcomes and the capacity to deliver.",
+              "Fix the actual constraint.",
+              "Use the scorecard to find whether acquisition, response, booking, sales or capacity needs attention.",
             ],
             [
-              "Keep the evidence clear",
-              "We distinguish verified results, influenced results and estimates. We do not turn leads into revenue on a report.",
+              "Evidence over promises.",
+              "Show the work. Be clear about what is known. Publish results only when the evidence and permissions support them.",
             ],
           ].map(([h, p]) => (
             <article className="a-card" key={h}>
@@ -115,14 +86,6 @@ export default function Page() {
               <p>{p}</p>
             </article>
           ))}
-        </div>
-        <div className="a-actions">
-          <Action href="/revenue-capture-system" event="secondary_cta_click">
-            Explore the Revenue Capture System
-          </Action>
-          <a className="a-inline" href="/results">
-            See results ↗
-          </a>
         </div>
       </Section>
       <FinalCTA />

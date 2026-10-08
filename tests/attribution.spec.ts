@@ -1,4 +1,4 @@
-import { fillAudit, submitAudit } from "./form-helpers";
+import { fillContact, submitContact } from "./form-helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { blockGoogleTracking, googleCommands } from "./analytics-helpers";
 import {
@@ -22,8 +22,8 @@ async function captured(page: Page) {
   return read(page);
 }
 async function fillAndSubmit(page: Page) {
-  await fillAudit(page);
-  await submitAudit(page);
+  await fillContact(page);
+  await submitContact(page);
 }
 
 test.beforeEach(async ({ page }) => {
@@ -61,7 +61,7 @@ for (const key of ["wbraid", "gbraid", "msclkid", "fbclid"] as const) {
   test(`captures ${key.toUpperCase()} with exact capitalization`, async ({
     page,
   }) => {
-    await page.goto(`/apply?${key}=AbC_123-XyZ`);
+    await page.goto(`/contact?${key}=AbC_123-XyZ`);
     const value = await captured(page);
     expect(value.firstTouch?.[key]).toBe("AbC_123-XyZ");
     expect(value.latestTouch?.[key]).toBe("AbC_123-XyZ");
@@ -71,11 +71,11 @@ for (const key of ["wbraid", "gbraid", "msclkid", "fbclid"] as const) {
 test("same-tab navigation and query removal retain both touches without renewing expiration", async ({
   page,
 }) => {
-  await page.goto("/apply?utm_source=google&gclid=InitialGCLID");
+  await page.goto("/contact?utm_source=google&gclid=InitialGCLID");
   const initial = await captured(page);
-  await page.evaluate(() => history.replaceState(null, "", "/apply#review"));
+  await page.evaluate(() => history.replaceState(null, "", "/contact#review"));
   await page.goto("/privacy");
-  await page.goto("/apply");
+  await page.goto("/contact");
   expect(await captured(page)).toEqual(initial);
   expect(await read(page, "localStorage")).toEqual(initial);
 });
@@ -84,12 +84,12 @@ test("new tab restores attribution after the original tab is closed", async ({
   page,
   context,
 }) => {
-  await page.goto("/apply?utm_source=google&wbraid=FirstBraid");
+  await page.goto("/contact?utm_source=google&wbraid=FirstBraid");
   const initial = await captured(page);
   await page.close();
   const next = await context.newPage();
   await blockGoogleTracking(next);
-  await next.goto("/apply");
+  await next.goto("/contact");
   expect(await captured(next)).toEqual(initial);
 });
 
@@ -99,7 +99,7 @@ test("first touch stays fixed while latest touch replaces rather than mixes camp
   const now = Date.now();
   await page.clock.setFixedTime(now);
   await page.goto(
-    "/apply?utm_source=google&gclid=FirstClick&utm_campaign=Original",
+    "/contact?utm_source=google&gclid=FirstClick&utm_campaign=Original",
   );
   const initial = await captured(page);
   await page.clock.setFixedTime(now + 10000);
@@ -125,11 +125,11 @@ test("stale open tab adopts the latest campaign from another tab on submission",
   page,
   context,
 }) => {
-  await page.goto("/apply?gclid=OriginalClick");
+  await page.goto("/contact?gclid=OriginalClick");
   const initial = await captured(page);
   const next = await context.newPage();
   await blockGoogleTracking(next);
-  await next.goto("/apply?gbraid=NewerClick");
+  await next.goto("/contact?gbraid=NewerClick");
   const newer = await captured(next);
   let payload: { attribution?: Attribution } = {};
   await page.route("**/api/leads", (route) => {
@@ -153,10 +153,10 @@ test("90-day expiration is exact and direct visits do not extend it", async ({
 }) => {
   const now = Date.now();
   await page.clock.setFixedTime(now);
-  await page.goto("/apply?gclid=ExpiredClick");
+  await page.goto("/contact?gclid=ExpiredClick");
   const initial = await captured(page);
   await page.clock.setFixedTime(now + TTL - 1);
-  await page.goto("/apply");
+  await page.goto("/contact");
   expect(await captured(page)).toEqual(initial);
   await page.clock.setFixedTime(now + TTL);
   await page.reload();
@@ -170,13 +170,13 @@ test("90-day expiration is exact and direct visits do not extend it", async ({
 test("first and latest touches expire independently", async ({ page }) => {
   const now = Date.now();
   await page.clock.setFixedTime(now);
-  await page.goto("/apply?gclid=OldClick");
+  await page.goto("/contact?gclid=OldClick");
   await captured(page);
   await page.clock.setFixedTime(now + TTL / 3);
-  await page.goto("/apply?wbraid=RecentClick");
+  await page.goto("/contact?wbraid=RecentClick");
   const recent = await captured(page);
   await page.clock.setFixedTime(now + TTL);
-  await page.goto("/apply");
+  await page.goto("/contact");
   const value = await captured(page);
   expect(value.firstTouch?.gclid).toBeUndefined();
   expect(value.latestTouch).toEqual(recent.latestTouch);
@@ -201,7 +201,7 @@ test("migrates legacy session data and strips unknown fields and URL query PII",
     },
     { key: KEY },
   );
-  await page.goto("/apply");
+  await page.goto("/contact");
   const value = await captured(page);
   expect(value.firstTouch).toMatchObject({
     gclid: "LegacyClick",
@@ -220,7 +220,7 @@ test("malformed storage recovers without blocking capture", async ({
     localStorage.setItem(key, "{bad");
     sessionStorage.setItem(key, "null");
   }, KEY);
-  await page.goto("/apply?gbraid=RecoverClick");
+  await page.goto("/contact?gbraid=RecoverClick");
   expect((await captured(page)).firstTouch?.gbraid).toBe("RecoverClick");
 });
 
@@ -238,11 +238,11 @@ for (const kind of ["localStorage", "sessionStorage", "both"] as const) {
           });
       }
     }, kind);
-    await page.goto("/apply?gclid=MemoryClick");
+    await page.goto("/contact?gclid=MemoryClick");
     // Wait for hydration and capture before removing the campaign from the URL.
     await expect(page.locator("#google-tag-config")).toHaveCount(1);
     await page.locator("#firstName").fill("Alex");
-    await page.evaluate(() => history.replaceState(null, "", "/apply"));
+    await page.evaluate(() => history.replaceState(null, "", "/contact"));
     let payload: { attribution?: Attribution } = {};
     await page.route("**/api/leads", (route) => {
       payload = route.request().postDataJSON();
@@ -263,14 +263,14 @@ test("submission sends both touches after query removal, stores no form PII, and
   page,
 }) => {
   await page.goto(
-    "/apply?utm_source=google&gclid=FirstId&email=private@example.com#phone=123",
+    "/contact?utm_source=google&gclid=FirstId&email=private@example.com#phone=123",
   );
   const first = await captured(page);
   await page.goto(
-    "/apply?utm_source=google&wbraid=LatestWbraid&gbraid=LatestGbraid",
+    "/contact?utm_source=google&wbraid=LatestWbraid&gbraid=LatestGbraid",
   );
   const latest = await captured(page);
-  await page.evaluate(() => history.replaceState(null, "", "/apply#review"));
+  await page.evaluate(() => history.replaceState(null, "", "/contact#review"));
   let payload: { attribution?: Attribution } = {};
   await page.route("**/api/leads", (route) => {
     payload = route.request().postDataJSON();
@@ -279,9 +279,7 @@ test("submission sends both touches after query removal, stores no form PII, and
     });
   });
   await fillAndSubmit(page);
-  await expect(page.getByRole("status")).toContainText(
-    "Your application has been received",
-  );
+  await expect(page.getByRole("status")).toContainText("Message received");
   expect(payload.attribution?.firstTouch).toEqual(first.firstTouch);
   expect(payload.attribution?.latestTouch).toEqual(latest.latestTouch);
   expect(payload.attribution).toMatchObject({
