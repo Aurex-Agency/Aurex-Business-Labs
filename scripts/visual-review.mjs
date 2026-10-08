@@ -1,50 +1,40 @@
 import { chromium } from "@playwright/test";
+import fs from "node:fs/promises";
 const browser = await chromium.launch({ headless: true });
-const sizes = [
-  [1440, 1200],
-  [1024, 900],
-  [768, 1024],
-  [390, 844],
-  [360, 800],
-  [430, 932],
-  [1280, 900],
-  [1920, 1200],
-];
-for (const [width, height] of sizes) {
+await fs.mkdir("artifacts", { recursive: true });
+for (const width of [375, 768, 1440]) {
   const page = await browser.newPage({
-    viewport: { width, height },
+    viewport: { width, height: 1000 },
     reducedMotion: "reduce",
   });
-  const errors = [];
-  page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("http://127.0.0.1:3001/revenue-website", {
-    waitUntil: "networkidle",
-  });
-  await page.evaluate(() => document.fonts.ready);
-  for (const img of await page.locator(".project-image").all()) {
-    await img.scrollIntoViewIfNeeded();
-    await img.evaluate((i) => i.decode());
-  }
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.screenshot({
-    path: `artifacts/review-${width}x${height}.png`,
-    fullPage: true,
-  });
-  await page.screenshot({ path: `artifacts/viewport-${width}x${height}.png` });
-  console.log(width, {
-    overflow: await page.evaluate(
-      () => document.documentElement.scrollWidth > innerWidth,
-    ),
-    errors,
-  });
-  if (width === 1440 || width === 390) {
-    await page.screenshot({ path: `artifacts/hero-${width}.png` });
-    for (const id of ["selected-work", "review"]) {
-      await page.locator(`#${id}`).scrollIntoViewIfNeeded();
-      await page.waitForTimeout(200);
-      await page.screenshot({ path: `artifacts/${id}-${width}.png` });
-    }
+  await page.route(/^https:\/\//, (route) =>
+    route.fulfill({ contentType: "application/javascript", body: "" }),
+  );
+  for (const [name, path] of [
+    ["home", "/"],
+    ["system", "/revenue-capture-system"],
+    ["apply", "/apply"],
+    ["article", "/insights/cost-per-lead-vs-cost-per-sold-job"],
+  ]) {
+    await page.goto(
+      `${process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3002"}${path}`,
+    );
+    await page.evaluate(() => document.fonts.ready);
+    await page.screenshot({
+      path: `artifacts/${name}-${width}-full.png`,
+      fullPage: true,
+    });
+    await page.screenshot({ path: `artifacts/${name}-${width}.png` });
+    if (
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > innerWidth,
+      )
+    )
+      throw new Error(`Overflow: ${path} at ${width}`);
   }
   await page.close();
 }
 await browser.close();
+console.log(
+  "Captured home, offer, application and article at 375, 768 and 1440 pixels.",
+);

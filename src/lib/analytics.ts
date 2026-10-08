@@ -1,4 +1,14 @@
 export type AnalyticsEvent =
+  | "audit_cta_click"
+  | "case_study_view"
+  | "webinar_register_click"
+  | "application_start"
+  | "application_submit"
+  | "calendar_open"
+  | "calendar_booked"
+  | "testimonial_play"
+  | "pricing_view"
+  | "email_click"
   | "hero_cta_click"
   | "secondary_cta_click"
   | "pricing_cta_click"
@@ -12,11 +22,12 @@ export type AnalyticsEvent =
   | "faq_open";
 declare global {
   interface Window {
+    fbq?: (...args: unknown[]) => void;
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
   }
 }
-const configuredGa4Id = process.env.NEXT_PUBLIC_GA4_ID ?? "G-N6CM45VW84";
+const configuredGa4Id = process.env.NEXT_PUBLIC_GA4_ID ?? "";
 export const ga4Id = /^G-[A-Z0-9]+$/.test(configuredGa4Id)
   ? configuredGa4Id
   : undefined;
@@ -25,17 +36,23 @@ export const gtmId = /^GTM-[A-Z0-9]+$/.test(
 )
   ? process.env.NEXT_PUBLIC_GTM_ID
   : undefined;
-const approvedAdsId = "AW-18192936048";
-const configuredAdsId =
-  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID ?? approvedAdsId;
+const configuredAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID ?? "";
 export const adsId = /^AW-\d+$/.test(configuredAdsId)
   ? configuredAdsId
   : undefined;
-export const adsLabel =
-  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL ??
-  (adsId === approvedAdsId ? "zv3HCJH3sYAdEPDYiOND" : undefined);
+export const adsLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL;
+export const metaPixelId = /^\d+$/.test(
+  process.env.NEXT_PUBLIC_META_PIXEL_ID || "",
+)
+  ? process.env.NEXT_PUBLIC_META_PIXEL_ID
+  : undefined;
 export function track(event: AnalyticsEvent, details?: Record<string, string>) {
-  if (typeof window === "undefined" || (!gtmId && !adsId && !ga4Id)) return;
+  if (
+    typeof window === "undefined" ||
+    (!gtmId && !adsId && !ga4Id && !metaPixelId)
+  )
+    return;
+  if (metaPixelId) window.fbq?.("trackCustom", event, details || {});
   window.dataLayer = window.dataLayer || [];
   if (gtmId) window.dataLayer.push({ event, ...details });
   if (ga4Id || adsId) {

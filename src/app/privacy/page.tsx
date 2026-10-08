@@ -1,112 +1,120 @@
-import type { Metadata } from "next";
-import { Brand } from "@/components/landing/site-header";
-import { SiteFooter } from "@/components/landing/site-footer";
-import { site } from "@/lib/site-config";
-export const metadata: Metadata = {
-  title: "Privacy policy",
-  description:
-    "How Aurex Business Labs handles information submitted through its Website Revenue Review form.",
-  alternates: { canonical: `${site.url}/privacy` },
-};
-export default function Privacy() {
+import { pageMeta } from "@/lib/seo";
+import { Shell, PageHero } from "@/components/authority/shared";
+export const metadata = pageMeta(
+  "Privacy Policy",
+  "How application information and measurement data are handled.",
+  "/privacy",
+);
+export default function Page() {
   return (
-    <>
-      <header className="secondary-header">
-        <div className="container">
-          <Brand />
-          <a className="text-link" href="/revenue-website">
-            Back to the website ↗
-          </a>
+    <Shell>
+      <PageHero
+        eyebrow="Legal"
+        path="/privacy"
+        title="Privacy Policy"
+        description="How application information and measurement data are handled."
+      />
+      <article className="a-section a-light">
+        <div className="a-wrap">
+          <div className="a-reading">
+            <section>
+              <h2>Review status</h2>
+              <p>
+                This privacy policy is a template requiring professional review
+                before launch. It describes the intended website workflow and
+                must be checked against the legal entity, vendors, retention
+                rules and jurisdictions actually used.
+              </p>
+            </section>
+            <section>
+              <h2>Information you provide</h2>
+              <p>
+                The audit application collects your name, work contact details,
+                company information, role, business ranges, operational answers
+                and optional SMS consent. Do not submit account passwords,
+                payment information or homeowner personal information.
+              </p>
+            </section>
+            <section>
+              <h2>How we use information</h2>
+              <p>
+                Aurex Business Labs uses your application to assess fit, respond
+                to your request, prepare the audit and coordinate an
+                appointment. The application is sent to the configured CRM
+                provider through a server-side integration. A successful
+                submission is recorded only after that delivery succeeds.
+              </p>
+            </section>
+            <section>
+              <h2>Attribution and analytics</h2>
+              <p>
+                This site stores first and latest campaign information in
+                browser storage for up to 90 days. This may include UTM values,
+                click identifiers, the landing-page path and referring-page
+                path. Arbitrary URL queries are not copied into page-address
+                fields. Configured analytics providers may receive page and
+                interaction events. Application answers are not included in our
+                analytics events. If an analytics ID is absent, that service
+                does not load.
+              </p>
+            </section>
+            <section>
+              <h2>Third-party services</h2>
+              <p>
+                Configured GHL forms and calendars load when you open them.
+                Webinar registration may take you to Zoom or GHL. These
+                providers process information under their own terms. Review
+                their notices before submitting. Contact, scheduling, analytics
+                and advertising providers must be confirmed during legal review.
+              </p>
+            </section>
+            <section>
+              <h2>SMS reminders</h2>
+              <p>
+                SMS consent is optional, unchecked by default, and separate from
+                requesting an audit. Consent is not required to purchase.
+                Message frequency varies and message or data rates may apply.
+                Reply STOP to opt out or HELP for help. Consent handling and
+                suppression must be configured in the CRM before reminders are
+                enabled.
+              </p>
+            </section>
+            <section>
+              <h2>Retention and requests</h2>
+              <p>
+                Application data is not stored in a local website database. The
+                receiving CRM may retain it. Aurex must document an appropriate
+                retention period and process for access, correction, deletion
+                and marketing opt-out requests before launch. Use a verified
+                contact channel published on the About page. If no channel is
+                published, request assistance through the audit application.
+              </p>
+            </section>
+            <section>
+              <h2>Security and changes</h2>
+              <p>
+                The site uses input validation, spam checks and basic rate
+                limiting. No system can promise absolute security. This policy
+                should be updated when the actual processing practices change;
+                it does not assert compliance with any particular law.
+              </p>
+            </section>
+            <p>
+              <a className="a-inline" href="/about">
+                Company information
+              </a>{" "}
+              ·{" "}
+              <a className="a-inline" href="/revenue-capture-system">
+                Offer and assurance
+              </a>{" "}
+              ·{" "}
+              <a className="a-inline" href="/results/methodology">
+                Results methodology
+              </a>
+            </p>
+          </div>
         </div>
-      </header>
-      <main id="main" className="container">
-        <article className="document-page">
-          <span className="eyebrow">YOUR INFORMATION, HANDLED WITH CARE</span>
-          <h1>
-            Privacy <em>policy.</em>
-          </h1>
-          <p>Last updated September 21, 2026</p>
-          <p>
-            This policy explains how Aurex Business Labs handles information
-            collected through this website and the Website Revenue Review form.
-          </p>
-          <h2>Information you provide</h2>
-          <p>
-            When you request a review, we collect the contact details, business
-            information, website address, and project information you submit.
-            Please do not include sensitive personal, financial, or medical
-            information in the form.
-          </p>
-          <h2>How we use your information</h2>
-          <p>
-            We use your information to evaluate your request, review your
-            website, respond to you, arrange a review, and discuss services
-            relevant to your business. Submitting the form allows us to contact
-            you by phone, email, or text about your request. Message and data
-            rates may apply. Consent is not a condition of purchase. You can ask
-            us to stop contacting you at any time, including by replying STOP to
-            a text message.
-          </p>
-          <h2>Service providers and lead delivery</h2>
-          <p>
-            Submitted information may be processed by our hosting, customer
-            relationship management, email, text messaging, and scheduling
-            providers as needed to handle your request. We do not sell your
-            personal information. Mobile phone information and messaging consent
-            are not shared with third parties for their own marketing.
-          </p>
-          <h2>Campaign information and browser storage</h2>
-          <p>
-            We store first-touch and latest-touch campaign parameters,
-            advertising click identifiers, and page addresses in first-party
-            browser storage for up to 90 days per touch, with a copy in session
-            storage for the active visit. These may be sent with your form to
-            help us understand how you found Aurex. Form answers and contact
-            details are not stored in these attribution records. Unrelated URL
-            query parameters and fragments are excluded. You can remove these
-            records by clearing this website&apos;s browser storage. We also use
-            a temporary confirmation record to avoid counting a review request
-            more than once.
-          </p>
-          <h2>Analytics and advertising</h2>
-          <p>
-            We use Google Analytics 4 to measure website visits, interactions,
-            and confirmed review requests. When configured, Google Tag Manager
-            and Google Ads may also process these events. These services may use
-            cookies or similar technologies according to their settings and your
-            browser preferences. We do not include your form answers or contact
-            details in our analytics events. You can manage cookies through your
-            browser and advertising preferences through Google.
-          </p>
-          <h2>Retention and security</h2>
-          <p>
-            We keep inquiry information for as long as reasonably needed to
-            respond, manage the business relationship, and meet applicable
-            obligations. We use reasonable safeguards, but no website or
-            transmission method can guarantee absolute security.
-          </p>
-          <h2>Your choices and questions</h2>
-          <p>
-            You may request access to, correction of, or deletion of the
-            information you provided, or opt out of further contact. Reply to
-            any message from Aurex Business Labs concerning your review request
-            {site.email ? (
-              <>
-                {" "}
-                or email <a href={`mailto:${site.email}`}>{site.email}</a>
-              </>
-            ) : null}
-            .
-          </p>
-          <h2>External websites and changes</h2>
-          <p>
-            Portfolio and scheduling links may take you to third-party websites
-            with their own privacy practices. We may update this policy when our
-            processes change and will revise the date above.
-          </p>
-        </article>
-      </main>
-      <SiteFooter />
-    </>
+      </article>
+    </Shell>
   );
 }

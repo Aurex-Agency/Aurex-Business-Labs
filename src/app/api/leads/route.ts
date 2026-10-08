@@ -5,6 +5,7 @@ export const runtime = "nodejs";
 const MAX_BODY_BYTES = 96 * 1024;
 const fail = (message: string, status: number) =>
   NextResponse.json({ success: false, message }, { status });
+const requests = new Map<string, { count: number; reset: number }>();
 export async function POST(request: NextRequest) {
   const origin = request.headers.get("origin");
   // NextURL normalizes loopback addresses; Host preserves the browser's origin.
@@ -18,6 +19,25 @@ export async function POST(request: NextRequest) {
     origin !== process.env.NEXT_PUBLIC_SITE_URL
   )
     return fail("Please submit the form from our website.", 403);
+  // Per-instance protection. Deploy a shared edge/WAF limiter for distributed hosts.
+  const now = Date.now();
+  for (const [key, value] of requests)
+    if (value.reset <= now) requests.delete(key);
+  const key =
+    request.headers.get("x-real-ip") ||
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "unknown";
+  const limit = requests.get(key) || { count: 0, reset: now + 60000 };
+  if (limit.count >= 10 || (!requests.has(key) && requests.size >= 10000))
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Too many requests. Please wait a minute and try again.",
+      },
+      { status: 429, headers: { "Retry-After": "60" } },
+    );
+  limit.count++;
+  requests.set(key, limit);
   if (!request.headers.get("content-type")?.includes("application/json"))
     return fail("Please submit a valid form.", 415);
   if (Number(request.headers.get("content-length") || 0) > MAX_BODY_BYTES)
@@ -41,9 +61,25 @@ export async function POST(request: NextRequest) {
       "phone",
       "website",
       "challenge",
+      "role",
+      "trade",
+      "annualRevenue",
+      "monthlyLeads",
+      "marketingSpend",
+      "primaryService",
+      "jobValue",
+      "bottleneck",
+      "hasStaff",
+      "capacity",
+      "tracksSales",
+      "investmentReady",
+      "caseStudyInterest",
     ]);
+    const issues = result.error.issues.flatMap((issue) =>
+      issue.code === "invalid_union" ? issue.errors.flat() : [issue],
+    );
     const fieldErrors = Object.fromEntries(
-      result.error.issues
+      issues
         .filter((issue) => visibleFields.has(String(issue.path[0])))
         .map((issue) => [String(issue.path[0]), issue.message]),
     );

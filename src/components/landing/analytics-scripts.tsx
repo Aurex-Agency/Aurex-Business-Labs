@@ -1,5 +1,5 @@
 import Script from "next/script";
-import { adsId, ga4Id, gtmId } from "@/lib/analytics";
+import { adsId, ga4Id, gtmId, metaPixelId } from "@/lib/analytics";
 export function AnalyticsScripts() {
   const googleTagId = ga4Id || adsId;
   const configuration = [ga4Id, adsId]
@@ -8,6 +8,12 @@ export function AnalyticsScripts() {
     .join("");
   return (
     <>
+      {metaPixelId && (
+        <Script
+          id="meta-pixel"
+          strategy="afterInteractive"
+        >{`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init',${JSON.stringify(metaPixelId)});fbq('track','PageView');`}</Script>
+      )}
       {gtmId && (
         <Script
           id="gtm"
