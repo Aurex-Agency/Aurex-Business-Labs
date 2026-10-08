@@ -1,36 +1,18 @@
 import type { Page } from "@playwright/test";
-export async function fillAudit(page: Page) {
+export async function fillContact(page: Page) {
   for (const [id, value] of Object.entries({
     firstName: "Alex",
     lastName: "Example",
     businessName: "Example Services",
-    website: "example.com",
     email: "alex@example.com",
+    website: "example.com",
     phone: "6625550100",
-    role: "Owner",
-    primaryService: "Roof replacement",
-    bottleneck: "Open estimates need consistent follow-up.",
+    challenge: "We would like a more distinctive and useful website.",
   }))
     await page.locator(`#${id}`).fill(value);
-  for (const id of [
-    "trade",
-    "annualRevenue",
-    "monthlyLeads",
-    "marketingSpend",
-    "jobValue",
-    "hasStaff",
-    "capacity",
-    "tracksSales",
-    "investmentReady",
-    "caseStudyInterest",
-  ])
-    await page.locator(`#${id}`).selectOption({ index: 1 });
 }
-export async function submitAudit(page: Page) {
+export async function submitContact(page: Page) {
   await page
-    .getByRole("button", {
-      name: "Request My Revenue Leakage Audit",
-      exact: true,
-    })
+    .getByRole("button", { name: "Send your message", exact: true })
     .click();
 }

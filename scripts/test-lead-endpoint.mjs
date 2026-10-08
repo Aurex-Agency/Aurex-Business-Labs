@@ -62,7 +62,7 @@ const payload = {
     landingPage: "https://aurexbusinesslab.com/revenue-website",
   },
 };
-let requestId=0;
+let requestId = 0;
 const request = (body = payload) =>
   new NextRequest("https://aurexbusinesslab.com/api/leads", {
     method: "POST",
@@ -253,13 +253,50 @@ try {
   assert.deepEqual((await invalidEmail.json()).fieldErrors, {
     email: "Enter a valid email address.",
   });
-  const audit = {...minimal, sourcePage:"/apply",role:"Owner",trade:"Roofing",annualRevenue:"$1 million to $3 million",monthlyLeads:"20 to 50",marketingSpend:"$3,000 to $10,000",primaryService:"Replacement",jobValue:"$5,001 to $15,000",bottleneck:"Open estimates",hasStaff:"Yes",capacity:"Yes",tracksSales:"Partially",investmentReady:"Yes",caseStudyInterest:"Maybe",smsConsent:false};
-  assert.equal((await POST(request(audit))).status,200);
-  assert.equal(JSON.parse(forwarded.body).smsConsent,false);
-  assert.equal(JSON.parse(forwarded.body).role,"Owner");
-  assert.equal((await POST(request({...audit,investmentReady:undefined}))).status,400);
-  assert.equal((await POST(request({...audit,hasStaff:"invented"}))).status,400);
-  assert.equal((await POST(request({...audit,smsConsent:"yes"}))).status,400);
+  const contact = {
+    ...minimal,
+    sourcePage: "/contact",
+    challenge: "We are planning a new digital experience.",
+  };
+  assert.equal((await POST(request(contact))).status, 200);
+  assert.equal(JSON.parse(forwarded.body).sourcePage, "/contact");
+  assert.equal(
+    (await POST(request({ ...contact, challenge: "" }))).status,
+    400,
+  );
+  const audit = {
+    ...minimal,
+    sourcePage: "/apply",
+    role: "Owner",
+    trade: "Roofing",
+    annualRevenue: "$1 million to $3 million",
+    monthlyLeads: "20 to 50",
+    marketingSpend: "$3,000 to $10,000",
+    primaryService: "Replacement",
+    jobValue: "$5,001 to $15,000",
+    bottleneck: "Open estimates",
+    hasStaff: "Yes",
+    capacity: "Yes",
+    tracksSales: "Partially",
+    investmentReady: "Yes",
+    caseStudyInterest: "Maybe",
+    smsConsent: false,
+  };
+  assert.equal((await POST(request(audit))).status, 200);
+  assert.equal(JSON.parse(forwarded.body).smsConsent, false);
+  assert.equal(JSON.parse(forwarded.body).role, "Owner");
+  assert.equal(
+    (await POST(request({ ...audit, investmentReady: undefined }))).status,
+    400,
+  );
+  assert.equal(
+    (await POST(request({ ...audit, hasStaff: "invented" }))).status,
+    400,
+  );
+  assert.equal(
+    (await POST(request({ ...audit, smsConsent: "yes" }))).status,
+    400,
+  );
   const trapped = await POST(
     request({ ...minimal, companyWebsite: "autofilled-company.example" }),
   );
@@ -287,11 +324,22 @@ try {
   delete process.env.GHL_WEBHOOK_URL;
   process.env.LEAD_DEV_MODE = "true";
   assert.equal((await POST(request())).status, 503);
-  for(let i=0;i<11;i++) {
-    const limitedRequest = new NextRequest("https://aurexbusinesslab.com/api/leads",{method:"POST",headers:{"Content-Type":"application/json","x-real-ip":"rate-limit-fixture"},body:JSON.stringify(payload)});
-    const limitedResponse=await POST(limitedRequest);
-    assert.equal(limitedResponse.status,i<10?503:429);
-    if(i===10)assert.equal(limitedResponse.headers.get("Retry-After"),"60");
+  for (let i = 0; i < 11; i++) {
+    const limitedRequest = new NextRequest(
+      "https://aurexbusinesslab.com/api/leads",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-real-ip": "rate-limit-fixture",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+    const limitedResponse = await POST(limitedRequest);
+    assert.equal(limitedResponse.status, i < 10 ? 503 : 429);
+    if (i === 10)
+      assert.equal(limitedResponse.headers.get("Retry-After"), "60");
   }
   console.log(
     "Lead endpoint: successful forwarding, normalization, attribution, upstream errors, timeout recovery, and production fail-closed behavior passed.",

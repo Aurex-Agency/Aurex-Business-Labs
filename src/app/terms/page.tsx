@@ -2,7 +2,7 @@ import { pageMeta } from "@/lib/seo";
 import { Shell, PageHero } from "@/components/authority/shared";
 export const metadata = pageMeta(
   "Website Terms",
-  "Terms template for using this website and requesting an audit.",
+  "A few things to know about using this website.",
   "/terms",
 );
 export default function Page() {
@@ -12,7 +12,7 @@ export default function Page() {
         eyebrow="Legal"
         path="/terms"
         title="Website Terms"
-        description="Terms template for using this website and requesting an audit."
+        description="A few things to know about using this website."
       />
       <article className="a-section a-light">
         <div className="a-wrap">
@@ -20,87 +20,58 @@ export default function Page() {
             <section>
               <h2>Review status</h2>
               <p>
-                These website terms are a template requiring professional review
-                before launch. The signed client agreement governs paid
-                services, deliverables, payment, renewal, intellectual property,
-                termination and disputes.
+                These terms are a template requiring professional review before
+                launch. Any paid services are governed by a separately agreed
+                written contract.
               </p>
             </section>
             <section>
-              <h2>Website information</h2>
+              <h2>Using the website</h2>
               <p>
-                Aurex Business Labs provides educational information about
-                customer acquisition and revenue systems for established
-                residential contractors. Examples labeled hypothetical
-                illustrate calculations or workflows. They are not client
-                results or forecasts.
+                Aurex Business Labs shares information about its approach,
+                capabilities and selected work. Educational examples explain
+                methods and are not forecasts or promises of business outcomes.
+                Portfolio images show a captured design; live websites may
+                change.
               </p>
             </section>
             <section>
-              <h2>Audit requests</h2>
+              <h2>Getting in touch</h2>
               <p>
-                A Revenue Leakage Audit is a complimentary diagnostic with no
-                obligation to hire Aurex. Submitting an application does not
-                create a paid engagement or confirm an appointment. Do not send
-                passwords, sensitive personal information or data you lack
-                permission to share.
+                Sending a message does not create a paid engagement or confirm
+                an appointment. Do not send passwords, sensitive customer
+                records or information you do not have permission to share.
               </p>
             </section>
             <section>
-              <h2>Paid engagement</h2>
+              <h2>Content and acceptable use</h2>
               <p>
-                The initial Revenue Capture System engagement is $17,000 over
-                120 days: $8,000 for implementation, followed by $3,000 on days
-                31, 61 and 91. Advertising and specified third-party costs are
-                separate. Continued Growth Operations begin at $3,000 monthly
-                under the applicable renewal agreement. The signed agreement
-                controls the final scope and payment obligations.
+                Use the website lawfully. Do not interfere with its operation or
+                attempt unauthorized access. Brand assets, designs, writing and
+                project imagery are protected by applicable rights. Obtain
+                permission for reuse beyond legally permitted uses.
               </p>
             </section>
             <section>
-              <h2>Delivery assurance</h2>
+              <h2>Third-party websites</h2>
               <p>
-                The 45-Day Core Launch and Tracking Assurance concerns the
-                agreed system after the Ready Date and its prerequisites. Client
-                delays, platform reviews, restrictions, third-party outages and
-                material scope changes may adjust the timeline. Review the full
-                assurance on the Revenue Capture System page and the signed
-                agreement. No leads, appointments, sales, revenue, profit or ROI
-                are guaranteed.
+                External websites and registration providers operate under their
+                own terms. Aurex Business Labs does not control changes made to
+                third-party websites.
               </p>
             </section>
             <section>
-              <h2>Acceptable use and ownership</h2>
+              <h2>Legal review</h2>
               <p>
-                Use the website lawfully. Do not interfere with its operation,
-                attempt unauthorized access or submit abusive or false
-                information. Website content and brand assets are protected by
-                applicable rights. Obtain permission before reusing protected
-                material beyond legally permitted uses.
-              </p>
-            </section>
-            <section>
-              <h2>Third parties and legal review</h2>
-              <p>
-                Third-party registration and scheduling services have their own
-                terms. Counsel must review the legal entity, contact method,
-                governing law, dispute process, limitations and
-                jurisdiction-specific requirements before these terms are
-                adopted. No missing term should be interpreted as a factual
-                claim about the business.
+                The business must confirm its legal identity, contact method,
+                governing law, dispute process and jurisdiction-specific
+                requirements with appropriate professional advice before
+                adopting these terms.
               </p>
             </section>
             <p>
-              <a className="a-inline" href="/about">
-                Company information
-              </a>{" "}
-              ·{" "}
-              <a className="a-inline" href="/revenue-capture-system">
-                Offer and assurance
-              </a>{" "}
-              ·{" "}
-              <a className="a-inline" href="/results/methodology">
-                Results methodology
+              <a className="a-inline" href="/contact">
+                Contact Aurex Business Labs
               </a>
             </p>
           </div>

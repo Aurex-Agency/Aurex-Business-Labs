@@ -16,8 +16,7 @@ This block is written and re-added by `next dev` . verify at `node_modules/next/
 - Be clear, direct, practical, locally grounded, and business-focused.
 - Do not use em dash characters in copy, code comments, metadata, or documentation.
 - Never fabricate testimonials, ratings, customer counts, performance metrics, awards, or scarcity.
-- The flagship is the Aurex Revenue Capture System: $17,000 over 120 days, with $8,000 implementation and $3,000 on days 31, 61 and 91. Advertising and specified third-party costs are separate. Continued Growth Operations begin at $3,000 monthly.
-- The 45-Day Core Launch and Tracking Assurance starts after the written Ready Date and prerequisites. An Aurex-controlled miss credits the first $3,000 management payment and pauses management billing until the agreed core system is live. Never guarantee revenue or ROI.
+- No packaged offer, pricing, launch assurance or sales application belongs on the public website. The current experience is work, approach and a simple contact conversation.
 - Financial proof and client media require both verified status and publication permission in src/lib/proof.ts.
 - Approved portfolio examples: Norton Equipment Co, Triple R Trailers, Wood Eye Clinic, and NetTech.
 
@@ -26,17 +25,17 @@ This block is written and re-added by `next dev` . verify at `node_modules/next/
 - Shared palette and responsive styles are in src/app/globals.css. Midnight #070C13, cool white #F0F6FA, Aurex cyan-blue #19BCE5, and pale blue #8BDFF6 are the primary tokens.
 - Geist is the body font. Instrument Serif is for selected editorial emphasis.
 - Preserve the official blue symbol with the Business Labs wordmark. The original Agency lockup is a source asset, not the public wordmark.
-- The authority site uses restrained editorial layouts and a visible customer journey. If adding motion, use motion/react with the shared LazyMotion provider. Retain complete static content.
+- The studio site uses oversized typography, real project imagery, offset layouts, scroll-linked parallax and a sticky story. Use motion/react with the shared LazyMotion provider. Retain complete static content.
 - Respect reduced motion and keep the full message available without animation. Mobile uses stacked system content.
 - Maintain WCAG 2.2 AA expectations, keyboard navigation, focus visibility, error associations, and at least 44px practical touch targets.
 
 ## Source organization
 
-- src/content/offer.ts, faq.ts and articles.ts contain reusable authority-site content. src/lib/site-config.ts owns company configuration. src/lib/proof.ts owns evidence and permission gates.
+- src/content/work.ts and articles.ts contain reusable project and editorial content. src/lib/site-config.ts owns company configuration. src/lib/proof.ts owns evidence and permission gates.
 - Legacy website-offer source is archived in docs/archive; its supporting copy and assets are retained.
-- src/components/authority contains shared authority chrome, sections and application interactions. src/components/landing retains shared attribution, analytics and motion utilities.
+- src/components/studio contains the hero, portfolio motion, sticky narrative and contact form. src/components/authority contains shared chrome and editorial sections. src/components/landing retains shared attribution, analytics and motion utilities.
 - src/lib/lead-schema.ts owns client/server validation. src/app/api/leads/route.ts owns delivery.
-- The root route is the authority homepage. /revenue-website redirects with HTTP 301 to /revenue-capture-system; its old thank-you URL redirects with HTTP 301 to /apply. New applications confirm inline only after delivery.
+- The root route is the studio homepage. Retired offer routes redirect to /approach, application routes to /contact and results routes to /work. Contact submissions confirm inline only after delivery.
 - Read relevant Next.js documentation from node_modules/next/dist/docs before changing framework behavior.
 
 ## Configuration and verification

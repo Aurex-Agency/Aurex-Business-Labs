@@ -14,7 +14,7 @@ export function webUrl(value: string | undefined) {
 const brandName = "Aurex Business Labs";
 const canonicalUrl = "https://aurexbusinesslab.com";
 const companyDescription =
-  "Aurex Business Labs is a customer acquisition and revenue systems company for established residential contractors. Through the Aurex Revenue Capture System, we help contractors generate qualified opportunities, improve lead response and booking, recover missed revenue, and build repeat and referral systems.";
+  "Aurex Business Labs brings strategy, distinctive websites, and connected business systems together for established businesses. We help make the customer experience clearer, from a first impression to the next conversation.";
 export const site = {
   brandName,
   name: brandName,
@@ -38,20 +38,11 @@ export const site = {
     webUrl(process.env.SITE_YOUTUBE_URL),
     webUrl(process.env.SITE_FACEBOOK_URL),
   ].filter((v): v is string => !!v),
-  flagshipService: "Aurex Revenue Capture System",
   companyDescription,
   description: companyDescription,
   shortDescription:
-    "Customer acquisition and revenue systems for established residential contractors.",
-  title: "Aurex Business Labs | Revenue Systems for Residential Contractors",
-  pricing: {
-    total: 17000,
-    implementation: 8000,
-    monthly: 3000,
-    paymentDays: [31, 61, 91],
-    durationDays: 120,
-  },
-  capacityLimit: 2,
+    "Strategy, distinctive websites, and connected systems for established businesses.",
+  title: "Aurex Business Labs | Strategy, Websites & Connected Systems",
   proofRecords: [roofingProof] as ProofRecord[],
   booking:
     webUrl(process.env.NEXT_PUBLIC_GHL_CALENDAR_EMBED_URL) ||
@@ -73,16 +64,19 @@ export const site = {
 };
 export const publicRoutes = [
   "/",
-  "/revenue-capture-system",
-  "/results",
-  "/results/roofing-revenue-system",
-  "/results/methodology",
+  "/work",
+  "/work/norton-equipment",
+  "/work/triple-r-trailers",
+  "/work/wood-eye-clinic",
+  "/work/nettech",
+  "/approach",
+  "/about",
+  "/contact",
   "/insights",
   "/insights/how-contractors-track-marketing-from-lead-to-sold-job",
   "/insights/cost-per-lead-vs-cost-per-sold-job",
   "/insights/how-to-follow-up-on-unclosed-contractor-estimates",
-  "/about",
-  "/apply",
+  "/results/methodology",
   "/contractor-revenue-scorecard",
   "/privacy",
   "/terms",

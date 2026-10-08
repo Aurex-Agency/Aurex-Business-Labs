@@ -28,13 +28,13 @@ npm run test:api
 
 Without PLAYWRIGHT_BASE_URL, Playwright builds and starts its own isolated production server on port 3002 with explicit empty webhook and provider settings; it never reuses an existing server. The production regression above remains the deployment check.
 
-The browser suite intercepts external requests and mocks successful application delivery. The API suite replaces fetch in memory and uses synthetic data. No test lead reaches GHL. Rebuild using intended production configuration before deploying; do not deploy the test build.
+The browser suite intercepts external requests and mocks successful contact delivery. The API suite replaces fetch in memory and uses synthetic data. No test lead reaches GHL. Rebuild using intended production configuration before deploying; do not deploy the test build.
 
 ## GHL and Zoom
 
-Map every application field in `auditSchema`, `sourcePage`, `submittedAt`, `receipt`, SMS consent and first/latest attribution. Do not infer SMS consent from the presence of a phone number. Configure suppression across workflows. Success opens the configured calendar on demand or supplies a normal booking link. No booking or sale event is inferred from opening a calendar.
+Map `firstName`, `lastName`, `email`, `businessName`, optional `phone` and `website`, required `challenge`, `sourcePage`, `submittedAt`, `receipt` and first/latest attribution. The current form sends `sourcePage: /contact`. Do not require legacy qualification or investment fields in the receiving workflow. The form does not enroll contacts in marketing or SMS. A successful submission confirms inline and fires `contact_submit`; it does not represent a booking or sale.
 
-Optional `NEXT_PUBLIC_GHL_FORM_EMBED_URL` replaces the native form. Configure the embedded form with equivalent questions, consent, attribution and confirmation behavior. Third-party cross-origin submission cannot be verified by this site, so it does not fire `application_submit` for embed clicks.
+Legacy calendar and form environment settings no longer replace the public contact form. See `docs/ghl-field-mapping.md` for attribution mapping.
 
 Use `NEXT_PUBLIC_ZOOM_REGISTRATION_URL` first and `NEXT_PUBLIC_GHL_WEBINAR_FORM_URL` as fallback. Without either, registration is visibly unavailable. Supply both real `WEBINAR_START_ISO` and `WEBINAR_END_ISO` with explicit offset for a specific session; otherwise only the recurring Thursday 11 a.m. Central schedule appears. Keep occurrences current and rebuild. Daylight saving is handled by America/Chicago display formatting.
 
@@ -42,7 +42,7 @@ Use `NEXT_PUBLIC_ZOOM_REGISTRATION_URL` first and `NEXT_PUBLIC_GHL_WEBINAR_FORM_
 
 The CSP allows self-hosted assets, configured Google/Meta integrations and common GHL/Zoom frame hosts. Only development adds unsafe-eval for the React debug runtime; production does not. Add the precise origin to `frame-src` when using a custom branded embed domain. Do not loosen policy with unrestricted frame origins. Verify CSP in production when enabling each integration. TLS, proxy trust and edge protection are host responsibilities.
 
-The basic limiter permits ten attempts per minute per proxy-derived client key, bounds memory and expires records. It is per process, so use a trusted edge/WAF or shared-store limiter for distributed/serverless deployments. Ensure the proxy overwrites client-supplied IP headers. The route does not store applications or log personal information. Configure retention with the CRM provider.
+The basic limiter permits ten attempts per minute per proxy-derived client key, bounds memory and expires records. It is per process, so use a trusted edge/WAF or shared-store limiter for distributed/serverless deployments. Ensure the proxy overwrites client-supplied IP headers. The route does not store contact messages or log personal information. Configure retention with the CRM provider.
 
 Analytics IDs are empty by default. Enable only intended providers and avoid double firing when GTM also deploys GA4. The site provides configuration switches but no regional consent-management platform. Complete the privacy/consent review before enabling nonessential tags. Browser custom events exclude form answers and do not assign revenue to submissions. `calendar_booked` is reserved for a future verifiable booking callback.
 
@@ -50,7 +50,7 @@ Analytics IDs are empty by default. Enable only intended providers and avoid dou
 
 1. Verify the canonical domain in Google Search Console using DNS, or use the URL-prefix property and set `GOOGLE_SITE_VERIFICATION` for the HTML meta method. Rebuild and verify the tag.
 2. Verify the site in Bing Webmaster Tools using DNS or set `BING_SITE_VERIFICATION` for its HTML meta method. Rebuild and complete verification.
-3. Submit `https://aurexbusinesslab.com/sitemap.xml` in both properties. Inspect `/`, the offer and a cornerstone article using the tools' URL inspection features. Check the selected canonical and rendered content.
+3. Submit `https://aurexbusinesslab.com/sitemap.xml` in both properties. Inspect `/`, a work page and a cornerstone article using the tools' URL inspection features. Check the selected canonical and rendered content.
 4. Set an IndexNow key with 8-128 letters, digits or hyphens. The route `/indexnow-key.txt` returns the configured public verification key. Confirm it is reachable at the canonical host, then run `node --env-file=.env.local scripts/indexnow.mjs / /about` for changed paths. This is a deliberate post-deployment action, never an automatic build side effect.
 5. Review indexing reports and server errors after launch. Sitemap or IndexNow submission does not guarantee indexing. The supplementary `/llms.txt` does not guarantee AI inclusion or citations.
 6. Standard crawlers and OAI-SearchBot are allowed. GPTBot is blocked unless `ALLOW_GPTBOT=true`. Rebuild to change the policy.

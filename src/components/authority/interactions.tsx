@@ -5,19 +5,22 @@ import { usePathname } from "next/navigation";
 import { track, type AnalyticsEvent } from "@/lib/analytics";
 import { nav } from "@/content/navigation";
 export function Navigation() {
-  const [open, setOpen] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
   const button = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
   const path = usePathname();
+  function close() {
+    dialog.current?.close();
+    setOpen(false);
+    button.current?.focus();
+  }
   useEffect(() => {
     if (!open) return;
-    const close = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        button.current?.focus();
-      }
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
     };
-    window.addEventListener("keydown", close);
-    return () => window.removeEventListener("keydown", close);
   }, [open]);
   return (
     <>
@@ -31,29 +34,47 @@ export function Navigation() {
             {label}
           </Link>
         ))}
-        <Action href="/apply">Request an Audit</Action>
+        <Action href="/contact" event="contact_cta_click">
+          Let’s talk
+        </Action>
       </nav>
       <button
         className="a-menu"
         ref={button}
         aria-expanded={open}
-        aria-controls="authority-menu"
-        onClick={() => setOpen(!open)}
+        aria-controls="studio-menu"
+        onClick={() => {
+          dialog.current?.showModal();
+          setOpen(true);
+        }}
       >
-        {open ? "Close menu" : "Menu"}
+        Menu <span aria-hidden="true">+</span>
       </button>
-      <nav
-        id="authority-menu"
-        className="a-mobile"
-        aria-label="Mobile navigation"
-        hidden={!open}
+      <dialog
+        ref={dialog}
+        id="studio-menu"
+        className="s-menu-dialog"
+        aria-label="Site menu"
+        onCancel={close}
+        onClose={() => setOpen(false)}
       >
-        {[...nav, ["Request an Audit", "/apply"]].map(([label, href]) => (
-          <Link key={href} href={href} onClick={() => setOpen(false)}>
-            {label}
-          </Link>
-        ))}
-      </nav>
+        <div className="s-menu-top">
+          <span>AUREX BUSINESS LABS</span>
+          <button onClick={close} aria-label="Close menu">
+            Close ×
+          </button>
+        </div>
+        <nav aria-label="Mobile navigation">
+          {[...nav, ["Contact", "/contact"]].map(([label, href], index) => (
+            <Link key={href} href={href} onClick={close}>
+              <span>0{index + 1}</span>
+              {label}
+              <span aria-hidden="true">↗</span>
+            </Link>
+          ))}
+        </nav>
+        <p>Good business. Great presence.</p>
+      </dialog>
     </>
   );
 }
@@ -61,7 +82,7 @@ export function Action({
   href,
   children,
   secondary = false,
-  event = "audit_cta_click",
+  event = "contact_cta_click",
 }: {
   href: string;
   children: React.ReactNode;

@@ -6,13 +6,25 @@ const config: NextConfig = {
     // Config redirects preserve campaign parameters before the landing page loads.
     return [
       {
+        source: "/revenue-capture-system",
+        destination: "/approach",
+        statusCode: 301,
+      },
+      { source: "/apply", destination: "/contact", statusCode: 301 },
+      { source: "/results", destination: "/work", statusCode: 301 },
+      {
+        source: "/results/roofing-revenue-system",
+        destination: "/work",
+        statusCode: 301,
+      },
+      {
         source: "/revenue-website",
-        destination: "/revenue-capture-system",
+        destination: "/approach",
         statusCode: 301,
       },
       {
         source: "/revenue-website/thank-you",
-        destination: "/apply",
+        destination: "/contact",
         statusCode: 301,
       },
     ];

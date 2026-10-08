@@ -1,10 +1,12 @@
 # URL migration
 
-| Old URL | New URL | Status | Reason |
-| --- | --- | --- | --- |
-| `/` temporary redirect | `/` authority homepage | 200, redirect removed | Root now establishes contractor revenue-system positioning. |
-| `/revenue-website` | `/revenue-capture-system` | 301 | Retire the standalone website-build offer from the public site. |
-| `/revenue-website/thank-you` | `/apply` | 301 | Old confirmation URLs cannot imply a new successful audit submission. |
-| `/privacy` | `/privacy` | 200 | Updated privacy template covers the new application and attribution workflow. |
+| Retired URL                       | Destination | Status |
+| --------------------------------- | ----------- | ------ |
+| `/revenue-website`                | `/approach` | 301    |
+| `/revenue-capture-system`         | `/approach` | 301    |
+| `/apply`                          | `/contact`  | 301    |
+| `/revenue-website/thank-you`      | `/contact`  | 301    |
+| `/results`                        | `/work`     | 301    |
+| `/results/roofing-revenue-system` | `/work`     | 301    |
 
-Next.js config uses explicit `statusCode: 301`. Query parameters are preserved. No destination redirects back to a source. Old page source is saved in `docs/archive/revenue-website-page.tsx.txt`; supporting components, reusable copy and assets remain in source control. Old campaign links should be updated to the new offer or application URL. Old hash anchors cannot be preserved server-side and should be updated in campaign destinations.
+The root serves the new studio homepage. Query parameters survive redirects. Destinations do not redirect again. An old thank-you link cannot imply a successful new contact submission. Update campaign links and old hash anchors to the current journey.
