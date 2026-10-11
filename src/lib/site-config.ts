@@ -65,6 +65,11 @@ export const site = {
 };
 export const publicRoutes = [
   "/",
+  "/start-here",
+  "/resources",
+  "/resources/contractor-revenue-scorecard",
+  "/resources/estimate-follow-up-playbook",
+  "/resources/lead-response-checklist",
   "/work",
   "/work/norton-equipment",
   "/work/triple-r-trailers",

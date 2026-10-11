@@ -55,7 +55,7 @@ test("audit CTA and project view use consistent event names", async ({
 }) => {
   await page.goto("/");
   await page
-    .getByRole("link", { name: "Request an audit", exact: true })
+    .getByRole("link", { name: "Work with Aurex", exact: false })
     .first()
     .click();
   await expect

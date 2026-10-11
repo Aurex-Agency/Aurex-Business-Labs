@@ -13,7 +13,9 @@
     "test:a11y": "playwright test --grep @a11y",
     "format": "prettier --write .",
     "test:api": "node scripts/test-lead-endpoint.mjs && node scripts/test-proof.mjs",
-    "test:visual": "node scripts/visual-review.mjs"
+    "test:visual": "node scripts/visual-review.mjs",
+    "resources:build": "node scripts/build-resources.mjs",
+    "prebuild": "npm run resources:build"
   },
   "dependencies": {
     "lucide-react": "^1.47.0",

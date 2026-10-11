@@ -29,9 +29,9 @@ export default function Image() {
           lineHeight: 1.05,
         }}
       >
-        <span>More booked jobs.</span>
+        <span>Good work deserves</span>
         <span>
-          <span style={{ color: "#19bce5" }}>More from each lead.</span>
+          <span style={{ color: "#8bdff6" }}>a better system.</span>
         </span>
       </div>
       <div
@@ -43,7 +43,7 @@ export default function Image() {
           justifyContent: "space-between",
         }}
       >
-        <span>Capture. Convert. Recover. Compound.</span>
+        <span>Free resources for residential contractors.</span>
         <span>aurexbusinesslab.com</span>
       </div>
     </div>,

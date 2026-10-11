@@ -1,3 +1,5 @@
+import { ResourceArt } from "@/components/learn/graphics";
+import { resources } from "@/content/resources";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { articles } from "@/content/articles";
@@ -33,6 +35,7 @@ export default async function Page({
   const { slug } = await params;
   const a = articles.find((a) => a.slug === slug);
   if (!a) notFound();
+  const resource = resources.find((r) => r.article === a.slug) || resources[0];
   return (
     <Shell>
       <Schema
@@ -56,6 +59,10 @@ export default async function Page({
       >
         <AuthorBlock publishedAt={a.publishedAt} updatedAt={a.updatedAt} />
       </PageHero>
+      <div className="l-wrap l-article-illustration">
+        <ResourceArt kind={resource.visual} />
+        <p className="l-small">Field notes / {a.category}</p>
+      </div>
       <article className="a-section a-light">
         <div className="a-wrap a-article-layout">
           <aside>
@@ -89,6 +96,14 @@ export default async function Page({
               </Link>
               .
             </p>
+            <div className="l-related-resource">
+              <p className="l-eyebrow">Put it into practice</p>
+              <h2>{resource.title}</h2>
+              <p>{resource.description}</p>
+              <Link className="l-button" href={`/resources/${resource.slug}`}>
+                Open the free resource ↗
+              </Link>
+            </div>
             <h2>Related guides</h2>
             <ul>
               {articles

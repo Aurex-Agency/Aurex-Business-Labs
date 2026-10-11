@@ -14,7 +14,7 @@ const sans = Geist({
 const serif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
-  style: "italic",
+  style: ["normal", "italic"],
   variable: "--font-serif",
   display: "swap",
 });

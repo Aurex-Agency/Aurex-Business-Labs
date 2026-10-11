@@ -7,9 +7,10 @@ export function GET() {
 
 ## Explore
 ${[
+  ["Start here", "/start-here"],
+  ["Free resources", "/resources"],
   ["Revenue Capture System", "/revenue-capture-system"],
   ["Results", "/results"],
-  ["Roofing case study", "/results/roofing-revenue-system"],
   ["Revenue Leakage Audit", "/apply"],
   ["About", "/about"],
   ["Insights", "/insights"],

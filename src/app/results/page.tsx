@@ -1,3 +1,5 @@
+import { publishableProof, roofingProof } from "@/lib/proof";
+import Link from "next/link";
 import { site } from "@/lib/site-config";
 import { pageMeta } from "@/lib/seo";
 import {
@@ -33,15 +35,24 @@ export default function Page() {
         title="Results Built on Business Outcomes"
         description="Evidence matters most when you can see what was measured, how it was attributed, and what remains unknown."
       />
-      <Section title="The Roofing Revenue System" light>
-        <ProofCard />
-        <ProofMedia />
-        <p className="a-closing">
-          The roofing case-study page is available with publication limitations.
-          Numerical results and client media appear only after verification and
-          permission.
-        </p>
-      </Section>
+      {publishableProof(roofingProof) ? (
+        <Section title="The Roofing Revenue System" light>
+          <ProofCard />
+          <ProofMedia />
+        </Section>
+      ) : (
+        <Section title="Start with the measurement standard." light>
+          <p className="a-lead">
+            A result should come with a clear definition, a time period, and
+            evidence that supports the claim. Our methodology explains what we
+            measure and how we separate verified outcomes from influenced
+            results.
+          </p>
+          <Link className="l-text-link" href="/results/methodology">
+            Read the methodology ↗
+          </Link>
+        </Section>
+      )}
       <Section title="What We Measure">
         <div className="a-columns">
           <List

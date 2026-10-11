@@ -19,14 +19,6 @@ const choices: Record<string, string[]> = {
     "Kitchen and bathroom remodeling",
     "Other residential services",
   ],
-  annualRevenue: [
-    "Under $500,000",
-    "$500,000 to $1 million",
-    "$1 million to $3 million",
-    "$3 million to $10 million",
-    "Over $10 million",
-    "Prefer to discuss",
-  ],
   monthlyLeads: [
     "Fewer than 20",
     "20 to 50",
@@ -34,21 +26,6 @@ const choices: Record<string, string[]> = {
     "101 to 250",
     "More than 250",
     "Not sure",
-  ],
-  marketingSpend: [
-    "Under $3,000",
-    "$3,000 to $10,000",
-    "$10,001 to $25,000",
-    "Over $25,000",
-    "Not sure",
-  ],
-  jobValue: [
-    "Under $1,000",
-    "$1,000 to $5,000",
-    "$5,001 to $15,000",
-    "$15,001 to $50,000",
-    "Over $50,000",
-    "Varies",
   ],
   hasStaff: ["Yes", "No"],
   capacity: ["Yes", "Limited", "No"],
@@ -72,16 +49,13 @@ const groups = [
   {
     legend: "02 / Your opportunities",
     fields: [
-      ["annualRevenue", "Annual revenue range"],
       ["monthlyLeads", "Approximate monthly lead volume"],
-      ["marketingSpend", "Current monthly marketing spend"],
       ["primaryService", "Priority service or project"],
-      ["jobValue", "Average job value"],
       ["bottleneck", "Biggest sales or marketing bottleneck"],
     ],
   },
   {
-    legend: "03 / Readiness and fit",
+    legend: "03 / Your team",
     fields: [
       [
         "hasStaff",

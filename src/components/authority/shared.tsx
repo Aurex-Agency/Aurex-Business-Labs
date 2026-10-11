@@ -5,13 +5,9 @@ import type { Article } from "@/content/articles";
 import { site } from "@/lib/site-config";
 import { breadcrumbs } from "@/lib/seo";
 import { nav } from "@/content/navigation";
-import {
-  Action,
-  ContactLink,
-  Navigation,
-  VideoTestimonial,
-} from "./interactions";
-import { ScrollProgress } from "@/components/studio/motion";
+import { ContactLink, Navigation, VideoTestimonial } from "./interactions";
+import { LearningCTA } from "@/components/learn/shared";
+import { ReadingProgress } from "@/components/learn/reading-progress";
 export function Schema({ data }: { data: unknown }) {
   return (
     <script
@@ -42,65 +38,71 @@ export function Header() {
         <Brand />
         <Navigation />
       </div>
-      <ScrollProgress />
+      <ReadingProgress />
     </header>
   );
 }
 export function Footer() {
   return (
-    <footer className="s-footer">
-      <div className="s-footer-top">
-        <Brand />
-        <p>
-          Customer acquisition.
-          <br />
-          Lead-to-sale systems.
-          <br />
-          Recovered and repeat revenue.
-        </p>
-        <nav aria-label="Footer navigation">
-          {[...nav, ["Contact", "/contact"]].map(([label, href]) => (
-            <Link key={href} href={href}>
-              {label}
-            </Link>
-          ))}
-        </nav>
-        <div className="s-footer-contact">
-          {site.email && (
-            <ContactLink href={`mailto:${site.email}`} event="email_click">
-              {site.email}
-            </ContactLink>
-          )}
-          {site.phone && (
-            <ContactLink href={`tel:${site.phone}`} event="phone_click">
-              {site.phone}
-            </ContactLink>
-          )}
-          {site.socialProfiles.map((url) => (
-            <a href={url} key={url}>
-              {new URL(url).hostname.replace("www.", "")}
-            </a>
-          ))}
+    <footer className="l-footer">
+      <div className="l-wrap">
+        <div className="l-footer-main">
+          <div>
+            <Brand />
+            <p>
+              Useful thinking for the business
+              <br />
+              behind the good work.
+            </p>
+          </div>
+          <nav aria-label="Footer resources">
+            <span className="l-eyebrow">Keep learning</span>
+            {nav.slice(0, 3).map(([label, href]) => (
+              <Link key={href} href={href}>
+                {label}
+              </Link>
+            ))}
+            <Link href="/revenue-capture-system">The framework</Link>
+          </nav>
+          <nav aria-label="Footer company">
+            <span className="l-eyebrow">Aurex Business Labs</span>
+            <Link href="/about">Our point of view</Link>
+            <Link href="/results/methodology">How we measure</Link>
+            <Link href="/results">Results</Link>
+            <Link href="/work">Selected work</Link>
+            <Link href="/contact">Contact</Link>
+          </nav>
+          <div className="l-footer-contact">
+            <span className="l-eyebrow">Connect</span>
+            <Link href="/apply">Work with Aurex ↗</Link>
+            {site.email && (
+              <ContactLink href={`mailto:${site.email}`} event="email_click">
+                {site.email}
+              </ContactLink>
+            )}
+            {site.socialProfiles.map((url) => (
+              <a key={url} href={url}>
+                {new URL(url).hostname.replace("www.", "")}
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="s-footer-word" aria-hidden="true">
-        AUREX<span>↗</span>
-      </div>
-      <div className="s-footer-bottom">
-        <p>© {new Date().getFullYear()} Aurex Business Labs</p>
-        <nav aria-label="Legal">
-          <Link href="/privacy">Privacy</Link>
-          <Link href="/terms">Terms</Link>
-          <Link href="/results-disclaimer">Results disclaimer</Link>
-        </nav>
-        <a href="#main">Back to top ↑</a>
+        <div className="l-footer-bottom">
+          <p>© {new Date().getFullYear()} Aurex Business Labs</p>
+          <nav aria-label="Legal">
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+            <Link href="/results-disclaimer">Results disclaimer</Link>
+          </nav>
+          <a href="#main">Back to top ↑</a>
+        </div>
       </div>
     </footer>
   );
 }
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="authority studio">
+    <div className="authority lab">
       <Header />
       <main id="main">{children}</main>
       <Footer />
@@ -232,21 +234,7 @@ export function FAQ({
   );
 }
 export function FinalCTA() {
-  return (
-    <section className="s-contact-band">
-      <div>
-        <p className="s-kicker">Where are opportunities going cold?</p>
-        <p className="s-contact-note">
-          Find the gaps from first lead to sold job.
-          <br />
-          Request a Revenue Leakage Audit.
-        </p>
-      </div>
-      <Action href="/apply" event="audit_cta_click">
-        Find the gaps.
-      </Action>
-    </section>
-  );
+  return <LearningCTA />;
 }
 export function AuthorBlock({
   publishedAt,
@@ -307,7 +295,7 @@ export function ProofCard() {
         <p>
           {approved
             ? roofingProof.results[0].label
-            : "See how Aurex built a lead-to-revenue system for a North Mississippi roofing company."}
+            : "Our case study is awaiting verification and publication permission. Read our methodology to understand the evidence we require."}
         </p>
         {approved && (
           <>
@@ -319,8 +307,18 @@ export function ProofCard() {
             </p>
           </>
         )}
-        <Link className="a-inline" href="/results/roofing-revenue-system">
-          Explore the roofing case study <span aria-hidden="true">↗</span>
+        <Link
+          className="a-inline"
+          href={
+            approved
+              ? "/results/roofing-revenue-system"
+              : "/results/methodology"
+          }
+        >
+          {approved
+            ? "Explore the roofing case study"
+            : "Read the evidence standard"}{" "}
+          <span aria-hidden="true">↗</span>
         </Link>
       </div>
       <div className="a-proof-note">

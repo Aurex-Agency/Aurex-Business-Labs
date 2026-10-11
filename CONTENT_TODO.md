@@ -6,10 +6,11 @@ Preserve the contractor Revenue Capture System positioning. Keep pricing, paymen
 - Review the four approved portfolio descriptions and provide additional project imagery when available.
 - Configure the server-only GHL webhook and map the contact message (`challenge`), identity and first/latest attribution fields. The contact form does not subscribe visitors to SMS or marketing.
 - Validate one authorized live contact after deployment. Automated regression uses synthetic upstream delivery and an isolated server.
-- If retaining the educational webinar, confirm its schedule and real registration URL.
+- The scorecard is now an evergreen free tool. Add live sessions only after confirming actual dates and a working registration destination.
 - Approve article publication dates and legal templates. Review analytics consent and retention before enabling optional measurement.
 - Complete `docs/LAUNCH_CHECKLIST.md`.
 
 The original business positioning remains authoritative. The later user instruction supersedes public pricing and commercial-term requirements. Financial proof remains gated by verification and written publication permission.
 
-- Map the restored audit fields and optional SMS consent in GHL. Never infer consent from a phone number. Investment readiness is no longer required.
+- Map the current audit fields and optional SMS consent in GHL. Annual revenue, marketing spend, job value, and investment readiness are not requested on the public form. Legacy payloads may still include optional historical fields. Never infer consent from a phone number.
+- Review the three initial resources with the team. Update src/content/resources.ts and regenerate downloads with npm run resources:build when revising templates.

@@ -34,9 +34,13 @@ export function Navigation() {
             {label}
           </Link>
         ))}
-        <Action href="/apply" event="audit_cta_click">
-          Request an audit
-        </Action>
+        <Link
+          className="l-work-link"
+          href="/apply"
+          onClick={() => track("audit_cta_click", { location: "navigation" })}
+        >
+          Work with Aurex <span aria-hidden="true">↗</span>
+        </Link>
       </nav>
       <button
         className="a-menu"
@@ -65,7 +69,7 @@ export function Navigation() {
           </button>
         </div>
         <nav aria-label="Mobile navigation">
-          {[...nav, ["Request an audit", "/apply"]].map(
+          {[...nav, ["Work with Aurex", "/apply"]].map(
             ([label, href], index) => (
               <Link key={href} href={href} onClick={close}>
                 <span>0{index + 1}</span>

@@ -1,6 +1,6 @@
 # Aurex Business Labs
 
-Aurex Business Labs is a customer acquisition and revenue systems company for established residential contractors. The redesigned site uses expressive typography, a moving customer-journey diagram and a sticky four-stage narrative. The Revenue Capture System and Revenue Leakage Audit remain central. Pricing, payment terms and monetary assurances are not public.
+Aurex Business Labs is a customer acquisition and revenue systems company for established residential contractors. The public site is an educational field guide with original customer-journey graphics, practical tools, and downloadable resources. The Revenue Capture System provides the learning framework; the Revenue Leakage Audit remains a secondary path. Pricing, packages, payment terms, financial qualification questions, and monetary assurances are not public.
 
 ## Development
 
@@ -9,23 +9,27 @@ Use Node.js 22 or newer. Run `npm ci`, configure `.env.local` from `.env.example
 ## Source
 
 - `src/content/work.ts`: four approved portfolio projects.
-- `src/components/studio`: hero, portfolio interactions, sticky story and contact form.
+- `src/components/learn`: original motion graphics, resource cards, scorecard, checklist, and reading paths.
+- `src/content/resources.ts`: shared resource and lesson content. `npm run resources:build` generates the CSV and text downloads, also run before production builds.
+- `src/components/studio`: retained portfolio interactions and contact form.
 - `src/components/authority`: shared navigation, footer and editorial sections.
 - `src/content/articles.ts`: educational articles.
 - `src/lib/site-config.ts`: verified company facts and integrations.
 - `src/lib/lead-schema.ts` and `src/app/api/leads/route.ts`: validation and delivery. Legacy payload support remains for already-open forms.
 - `src/lib/attribution.ts`: first/latest campaign attribution with expiry.
-- `src/app/globals.css`: brand, responsive layouts and reduced-motion styles.
+- `src/app/globals.css`: active brand, responsive layouts and reduced-motion styles. Unused website-offer styles are retained in docs/archive/legacy-landing.css and are not shipped.
 
 ## Routes
 
-The primary journey is `/`, `/revenue-capture-system`, `/results`, `/results/roofing-revenue-system`, `/apply`, `/about` and `/insights`. Secondary portfolio pages and `/contact` remain available. Educational articles, the scorecard webinar, methodology and legal pages remain available. Search endpoints include sitemap, robots, RSS, llms.txt and social metadata. See `URL_MIGRATION_MAP.md` for retired URLs.
+The primary journey is `/`, `/start-here`, `/resources`, `/resources/[slug]`, `/insights`, and `/about`. The framework, results, audit, portfolio, contact, methodology, and legal routes remain available. `/contractor-revenue-scorecard` now points visitors to the evergreen free tool without promoting unconfirmed live sessions. Search endpoints include sitemap, robots, RSS, llms.txt and social metadata. See `URL_MIGRATION_MAP.md` for retired URLs.
 
 ## Verification
 
 Run `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:api`, `npm run test:e2e`, `npm run test:a11y` and `npm run test:visual`. The supported `npm run build -- --webpack` is used when local Turbopack worker binding is unavailable.
 
-Playwright starts an isolated production server with webhook and external provider settings cleared. Never run submission tests against a live webhook. Set `PLAYWRIGHT_BASE_URL` only for a similarly isolated test server. Tests intercept remote analytics. Screenshots stay in ignored `artifacts/`.
+Playwright starts an isolated production server with webhook and external provider settings cleared. Never run submission tests against a live webhook. Set `PLAYWRIGHT_BASE_URL` only for a similarly isolated test server. Tests intercept remote analytics. Screenshots stay in ignored `artifacts/`. TypeScript excludes local duplicate filenames ending in ` 2.ts` or ` 2.tsx`; these pre-existing copies are not application sources and are not included in the PR.
+
+Resource usage events record only the resource identifier. Scorecard values and checklist progress stay in page state and are never included in analytics or submitted to the lead endpoint. Downloads are ungated, and the resource pages include print styles.
 
 ## Deployment
 

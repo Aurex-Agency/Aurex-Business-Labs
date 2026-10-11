@@ -61,9 +61,9 @@ test("desktop navigation, project journey and mobile dialog keyboard control", a
   await page.goto("/");
   await page
     .getByRole("navigation", { name: "Main navigation", exact: true })
-    .getByRole("link", { name: "The System", exact: true })
+    .getByRole("link", { name: "Start here", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/revenue-capture-system$/);
+  await expect(page).toHaveURL(/\/start-here$/);
   await page.goto("/work");
   await expect(page).toHaveURL(/\/work$/);
   await page.getByRole("link", { name: /Norton Equipment Co/ }).click();
@@ -166,47 +166,48 @@ for (const width of [375, 768, 1440])
       ).toBe(true);
     }
   });
-test("scroll motion responds and reduced-motion keeps the complete experience", async ({
+test("journey controls explain every stage and respect reduced motion", async ({
   page,
 }) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
-  const art = page.locator(".s-hero-art");
-  await page.waitForTimeout(1500);
-  const initial = await art.evaluate((el) => getComputedStyle(el).transform);
-  await page.evaluate(() => window.scrollTo(0, 450));
-  await expect
-    .poll(() => art.evaluate((el) => getComputedStyle(el).transform))
-    .not.toBe(initial);
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  const still = await art.evaluate((el) => getComputedStyle(el).transform);
-  await page.evaluate(() => window.scrollTo(0, 450));
-  await page.waitForTimeout(250);
-  expect(await art.evaluate((el) => getComputedStyle(el).transform)).toBe(
-    still,
-  );
+  for (const [name, text] of [
+    ["Capture", "Attract the right inquiries."],
+    ["Convert", "Give every lead a next step."],
+    ["Recover", "Keep good conversations going."],
+    ["Compound", "Build on a job well done."],
+  ]) {
+    await page.getByRole("button", { name: new RegExp(name) }).click();
+    await expect(page.locator(".l-journey-caption")).toContainText(text);
+  }
   await expect(
-    page.getByRole("heading", {
-      name: "More booked jobs. More from each lead.",
-    }),
-  ).toBeVisible();
-  await expect(page.locator(".s-chapter")).toHaveCount(4);
+    page.getByRole("button", { name: "Replay customer journey animation" }),
+  ).toBeDisabled();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(
+    page.getByRole("button", { name: "Replay customer journey animation" }),
+  ).toBeEnabled();
+  await page
+    .getByRole("button", { name: "Replay customer journey animation" })
+    .click();
+  await expect(page.locator(".l-journey-caption")).toContainText(
+    "Build on a job well done.",
+  );
 });
 
-test("homepage preserves the contractor offer and audit path without pricing", async ({
+test("homepage teaches the contractor framework and keeps a secondary audit path without pricing", async ({
   page,
 }) => {
   await page.goto("/");
   await expect(
-    page.getByText("Aurex Revenue Capture System", { exact: true }).first(),
+    page.getByText(/The Aurex Revenue Capture System gives/),
   ).toBeVisible();
-  for (const name of ["Capture.", "Convert.", "Recover.", "Compound."])
+  for (const name of ["Capture", "Convert", "Recover", "Compound"])
     await expect(
       page.getByRole("heading", { name, exact: true }),
     ).toBeVisible();
   await page
-    .getByRole("link", { name: "Request an audit", exact: true })
+    .getByRole("navigation", { name: "Main navigation", exact: true })
+    .getByRole("link", { name: "Work with Aurex", exact: false })
     .click();
   await expect(page).toHaveURL(/\/apply$/);
   await expect(page.locator('[name="investmentReady"]')).toHaveCount(0);
@@ -227,10 +228,7 @@ test("homepage preserves the contractor offer and audit path without pricing", a
     await page.locator(`#${id}`).fill(value);
   for (const [id, value] of Object.entries({
     trade: "Roofing",
-    annualRevenue: "Prefer to discuss",
     monthlyLeads: "20 to 50",
-    marketingSpend: "Not sure",
-    jobValue: "Varies",
     hasStaff: "Yes",
     capacity: "Yes",
     tracksSales: "Partially",

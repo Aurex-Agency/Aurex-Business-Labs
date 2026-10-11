@@ -1,0 +1,27 @@
+AUREX BUSINESS LABS
+Open Estimate Follow-up Playbook
+
+A practical sequence and adaptable messages for estimates that have gone quiet. Clear next steps without pressure.
+
+1. Agree on the next conversation
+When you deliver the estimate, walk through the scope and ask when it would be helpful to reconnect. Record the agreed date, channel, and team member responsible.
+Example message: Thanks for talking through the project. When would be a useful time to check back after you’ve reviewed the estimate?
+
+2. Check understanding
+At the agreed time, ask whether the estimate answered their questions. Reference the actual project and make it easy to reply.
+Example message: Hi [name], it’s [your name] from [business]. Did the estimate for [project] cover what you needed? Happy to talk through any questions about the scope.
+
+3. Offer a useful next step
+If the homeowner wants to continue, find out what still needs clarification. Route technical or scheduling questions to the right person. Never invent availability.
+Example message: Would a short scope review help? We can go through [specific question] together and confirm what happens next.
+
+4. Respect a pause
+If the timing has changed, ask whether they want to set a later date or close the conversation. Honor opt-outs and avoid having multiple team members contact the same person.
+Example message: Has the timing changed for your project? Let us know if you’d like to reconnect later or close this out for now.
+
+5. Record the outcome
+Mark the estimate accepted, still open, paused, or closed. Record the next agreed action. Keep an unknown reason separate from a confirmed one and retain the original acquisition source.
+
+Adapt this resource to your business and the homeowner's agreed contact preferences. Honor requests to stop contact.
+
+https://aurexbusinesslab.com/resources/estimate-follow-up-playbook
