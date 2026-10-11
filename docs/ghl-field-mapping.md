@@ -31,7 +31,7 @@ That historical sample covers the original flat fields only. It does not include
 
 ## Simplified form
 
-First name, last name, business name, and email remain required. Website, phone, and `challenge` (the optional message) are optional. City, service, customer value, source, timeline, and budget are no longer asked on the website; they remain optional in the API for compatibility with already-open older forms. Do not require these fields in the receiving workflow, and only update existing CRM details when a value is supplied. The contact field names and attribution mappings are unchanged.
+The current `/contact` form requires first name, last name, business name, email and `challenge` (10-3000 characters). Website and phone are optional. It sends `sourcePage: /contact` and does not enroll contacts in SMS or marketing. City, service, customer value, source, timeline, and budget are no longer asked on the website; they remain optional in the API for compatibility with already-open older forms. Do not require these fields in the receiving workflow, and only update existing CRM details when a value is supplied. The contact field names and attribution mappings are unchanged.
 
 ## Attribution fields
 
@@ -117,3 +117,7 @@ The source answer describes the business's current customer acquisition, while a
 The form's companyWebsite honeypot and startedAt timing check are removed before forwarding. Do not map them. A successful website response contains the same receipt included in the webhook payload.
 
 Automated tests use a separate server with GHL_WEBHOOK_URL explicitly empty and mock upstream fetches. They must not generate additional live mapping samples.
+
+## Revenue Leakage Audit
+
+The restored `/apply` form sends the audit-schema business-fit fields and optional, unchecked `smsConsent`. It never requires or sends an investment-readiness answer. Preserve first/latest attribution and only enroll SMS reminders when explicitly consented. A confirmed submission is not a confirmed appointment or sale.

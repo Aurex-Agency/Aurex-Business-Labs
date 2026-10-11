@@ -63,7 +63,7 @@ export const articles: Article[] = [
         paragraphs: [
           "Check duplicate submissions, test leads, cancellations, refunds, inconsistent time zones and imported records with no source. Keep original timestamps when moving data. Do not replace an unknown source with the campaign you hope produced the job.",
           "Audit a small sample from ad click to payment record each month. If the CRM shows a sale but the accounting record does not, resolve the difference before publishing revenue. Use the results methodology to distinguish tracked, collected and influenced results.",
-          "A Revenue Leakage Audit helps map this process and identify which three improvements deserve attention first.",
+          "A clear process map helps identify which improvements deserve attention first.",
         ],
       },
     ],
@@ -108,7 +108,7 @@ export const articles: Article[] = [
       {
         heading: "Work back from gross-profit payback",
         paragraphs: [
-          "Estimated gross profit per additional job = collected job revenue × documented gross margin. Break-even additional jobs = total incremental investment ÷ estimated gross profit per additional job, rounded up. Include advertising and specified third-party costs alongside the Aurex investment.",
+          "Estimated gross profit per additional job = collected job revenue × documented gross margin. Break-even additional jobs = total incremental investment ÷ estimated gross profit per additional job, rounded up. Include advertising and specified third-party costs alongside any professional-services investment.",
           "For a hypothetical collected job value of $10,000 and 30% gross margin, estimated gross profit is $3,000 per job. A hypothetical total investment of $24,000 would need eight additional jobs at that margin to cover that investment before other overhead and taxes. This is an arithmetic illustration, not a forecast.",
           "Use incremental jobs where possible. Counting jobs the business would have won anyway overstates payback. Also consider deposits, payment delays, warranty work and capacity. Profitability on paper does not guarantee available cash.",
         ],
@@ -186,7 +186,7 @@ export const articles: Article[] = [
         paragraphs: [
           "Track eligible open estimates, contacted homeowners, resumed conversations, appointments, accepted estimates and collected revenue. Recovery rate = recovered sold opportunities ÷ eligible opportunities in the defined cohort. State the date window and what qualifies as recovered.",
           "Keep the original acquisition source and add the recovery touch. If a follow-up workflow touched the job, describe the result as influenced unless the evidence supports a stronger interpretation. Do not count the same job as both new and recovered revenue in a combined total.",
-          "Review opt-outs, complaints and unanswered messages alongside sales outcomes. The goal is a useful process homeowners can control. The Revenue Capture System includes one primary opportunity-recovery workflow matched to the business’s highest-value gap.",
+          "Review opt-outs, complaints and unanswered messages alongside sales outcomes. The goal is a useful process homeowners can control. Choose a recovery workflow that addresses the most important gap in your own process.",
         ],
       },
     ],

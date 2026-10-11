@@ -1,66 +1,36 @@
 # Aurex Business Labs
 
-Authority website for established residential contractors, built on Next.js 16 App Router, React, strict TypeScript, Tailwind and the existing Geist / Instrument Serif brand system. The current offer is the Aurex Revenue Capture System: $17,000 over 120 days.
+Aurex Business Labs is a customer acquisition and revenue systems company for established residential contractors. The public site is an educational field guide with original customer-journey graphics, practical tools, and downloadable resources. The Revenue Capture System provides the learning framework; the Revenue Leakage Audit remains a secondary path. Pricing, packages, payment terms, financial qualification questions, and monetary assurances are not public.
 
-## Run locally
+## Development
 
-Use Node.js 22 or newer and the committed npm lockfile.
+Use Node.js 22 or newer. Run `npm ci`, configure `.env.local` from `.env.example` without overwriting existing credentials, then `npm run dev`. Production delivery requires the server-only `GHL_WEBHOOK_URL`; missing or failed delivery returns an error. `LEAD_DEV_MODE=true` permits redacted local simulation only outside production.
 
-```sh
-npm ci
-cp .env.example .env.local
-npm run dev
-```
+## Source
 
-Keep local credentials private. Existing `.env.local` files should be edited selectively, never overwritten. Set `LEAD_DEV_MODE=true` only for redacted development simulation with no webhook configured. Production never simulates success.
-
-## Verify
-
-```sh
-npm run lint
-npm run typecheck
-npm run build
-npm run test:api
-```
-
-For browser regression, build with the approved GA4 test configuration, optional GTM/Ads/Meta IDs empty, and form/calendar/webinar embeds empty. Start an isolated production server with no webhook. See `docs/DEPLOYMENT.md` for exact commands. Never run submission tests against the live webhook. Browser tests intercept external requests. `npm run test:e2e`, `npm run test:a11y` and `npm run test:visual` accept `PLAYWRIGHT_BASE_URL`. Screenshots stay in ignored `artifacts/`.
-
-## Content and configuration
-
-- `src/lib/site-config.ts`: typed company configuration, canonical identity, integrations, payment schedule and capacity. Only populate verified business facts.
-- `src/lib/proof.ts`: typed proof records. Both `verificationStatus: "verified"` and `permissionToPublish: true` are required to publish financial results and media. Defaults withhold the roofing number.
-- `src/content/offer.ts`, `faq.ts`, `articles.ts`: reusable scope, FAQs and three complete cornerstone articles.
-- `src/components/authority/`: shared server-rendered sections, navigation, forms and small interactive islands.
-- `src/lib/lead-schema.ts` and `src/app/api/leads/route.ts`: validation and server-only CRM delivery. Legacy lead payloads remain supported for already open forms.
-- `src/lib/attribution.ts`: first/latest campaign attribution, 90-day expiry and URL minimization.
-- `src/app/globals.css`: shared palette and responsive authority-site styles.
-
-Public URLs always canonicalize to `https://aurexbusinesslab.com`. `NEXT_PUBLIC_SITE_URL` supports origin validation for an explicitly configured deployment. Rebuild after changing public environment values. See `.env.example` for every configurable value.
+- `src/content/work.ts`: four approved portfolio projects.
+- `src/components/learn`: original motion graphics, resource cards, scorecard, checklist, and reading paths.
+- `src/content/resources.ts`: shared resource and lesson content. `npm run resources:build` generates the CSV and text downloads, also run before production builds.
+- `src/components/studio`: retained portfolio interactions and contact form.
+- `src/components/authority`: shared navigation, footer and editorial sections.
+- `src/content/articles.ts`: educational articles.
+- `src/lib/site-config.ts`: verified company facts and integrations.
+- `src/lib/lead-schema.ts` and `src/app/api/leads/route.ts`: validation and delivery. Legacy payload support remains for already-open forms.
+- `src/lib/attribution.ts`: first/latest campaign attribution with expiry.
+- `src/app/globals.css`: active brand, responsive layouts and reduced-motion styles. Unused website-offer styles are retained in docs/archive/legacy-landing.css and are not shipped.
 
 ## Routes
 
-- `/`
-- `/revenue-capture-system`
-- `/results`
-- `/results/roofing-revenue-system`
-- `/results/methodology`
-- `/insights`
-- `/insights/how-contractors-track-marketing-from-lead-to-sold-job`
-- `/insights/cost-per-lead-vs-cost-per-sold-job`
-- `/insights/how-to-follow-up-on-unclosed-contractor-estimates`
-- `/about`
-- `/apply`
-- `/contractor-revenue-scorecard`
-- `/privacy`
-- `/terms`
-- `/results-disclaimer`
-- `/robots.txt`, `/sitemap.xml`, `/rss.xml`, `/llms.txt`, `/manifest.webmanifest`
-- `/indexnow-key.txt` (404 until configured), `/opengraph-image`, `/icon.svg`
-- `POST /api/leads`
-- Custom 404 for unknown pages
+The primary journey is `/`, `/start-here`, `/resources`, `/resources/[slug]`, `/insights`, and `/about`. The framework, results, audit, portfolio, contact, methodology, and legal routes remain available. `/contractor-revenue-scorecard` now points visitors to the evergreen free tool without promoting unconfirmed live sessions. Search endpoints include sitemap, robots, RSS, llms.txt and social metadata. See `URL_MIGRATION_MAP.md` for retired URLs.
 
-`/revenue-website` redirects with HTTP 301 to `/revenue-capture-system`; `/revenue-website/thank-you` redirects with HTTP 301 to `/apply`. Campaign queries survive. The old page source is preserved in `docs/archive/` and existing supporting source/assets are retained. No live standalone-build flag was present.
+## Verification
 
-## Deployment and launch
+Run `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:api`, `npm run test:e2e`, `npm run test:a11y` and `npm run test:visual`. The supported `npm run build -- --webpack` is used when local Turbopack worker binding is unavailable.
 
-Deploy to a Node-compatible Next.js host using `npm ci`, `npm run build`, `npm start`, or the host's Next.js integration. Do not use static export: webhook delivery requires a server. See `docs/DEPLOYMENT.md`, `docs/LAUNCH_CHECKLIST.md`, `CONTENT_TODO.md` and `URL_MIGRATION_MAP.md`. This implementation is ready for content completion; proof, legal review and live integration validation remain launch prerequisites.
+Playwright starts an isolated production server with webhook and external provider settings cleared. Never run submission tests against a live webhook. Set `PLAYWRIGHT_BASE_URL` only for a similarly isolated test server. Tests intercept remote analytics. Screenshots stay in ignored `artifacts/`. TypeScript excludes local duplicate filenames ending in ` 2.ts` or ` 2.tsx`; these pre-existing copies are not application sources and are not included in the PR.
+
+Resource usage events record only the resource identifier. Scorecard values and checklist progress stay in page state and are never included in analytics or submitted to the lead endpoint. Downloads are ungated, and the resource pages include print styles.
+
+## Deployment
+
+Use a Node-compatible Next.js host; the API requires a server. Rebuild with intended production environment values after isolated regression testing. Analytics remain disabled without IDs and conversion events require confirmed delivery. See `docs/DEPLOYMENT.md`, `docs/LAUNCH_CHECKLIST.md` and `CONTENT_TODO.md`.

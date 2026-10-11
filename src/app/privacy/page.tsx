@@ -2,7 +2,7 @@ import { pageMeta } from "@/lib/seo";
 import { Shell, PageHero } from "@/components/authority/shared";
 export const metadata = pageMeta(
   "Privacy Policy",
-  "How application information and measurement data are handled.",
+  "How we handle the information you choose to share.",
   "/privacy",
 );
 export default function Page() {
@@ -12,7 +12,7 @@ export default function Page() {
         eyebrow="Legal"
         path="/privacy"
         title="Privacy Policy"
-        description="How application information and measurement data are handled."
+        description="How we handle the information you choose to share."
       />
       <article className="a-section a-light">
         <div className="a-wrap">
@@ -21,95 +21,84 @@ export default function Page() {
               <h2>Review status</h2>
               <p>
                 This privacy policy is a template requiring professional review
-                before launch. It describes the intended website workflow and
-                must be checked against the legal entity, vendors, retention
-                rules and jurisdictions actually used.
+                before launch. It must be checked against the legal entity,
+                vendors, retention rules and jurisdictions actually used.
               </p>
             </section>
             <section>
-              <h2>Information you provide</h2>
+              <h2>Your message</h2>
               <p>
-                The audit application collects your name, work contact details,
-                company information, role, business ranges, operational answers
-                and optional SMS consent. Do not submit account passwords,
-                payment information or homeowner personal information.
+                The contact form collects your name, email, business name,
+                message and optional website and phone number. We use these
+                details to respond to your inquiry. Do not submit passwords,
+                payment information or sensitive customer records.
               </p>
             </section>
             <section>
-              <h2>How we use information</h2>
+              <h2>Audit applications</h2>
               <p>
-                Aurex Business Labs uses your application to assess fit, respond
-                to your request, prepare the audit and coordinate an
-                appointment. The application is sent to the configured CRM
-                provider through a server-side integration. A successful
-                submission is recorded only after that delivery succeeds.
+                The audit form also collects your role, trade, business revenue
+                range, lead volume, marketing spend, priority service, job
+                value, bottleneck, staffing, capacity, sales tracking and
+                case-study interest. We use these answers to prepare the
+                diagnostic and assess fit. Optional SMS reminder consent is
+                separate and unchecked. Message frequency varies; message and
+                data rates may apply. Reply STOP to opt out or HELP for help.
+                Consent is not required to apply or purchase.
+              </p>
+            </section>
+            <section>
+              <h2>Processing and retention</h2>
+              <p>
+                Messages are sent through a server-side connection to our
+                configured CRM provider. The website does not keep a separate
+                local database of messages. The business must confirm the CRM
+                retention period and process for access, correction and deletion
+                requests before launch. Use a published contact channel or the
+                contact form for privacy questions.
               </p>
             </section>
             <section>
               <h2>Attribution and analytics</h2>
               <p>
-                This site stores first and latest campaign information in
-                browser storage for up to 90 days. This may include UTM values,
-                click identifiers, the landing-page path and referring-page
-                path. Arbitrary URL queries are not copied into page-address
-                fields. Configured analytics providers may receive page and
-                interaction events. Application answers are not included in our
-                analytics events. If an analytics ID is absent, that service
-                does not load.
+                The website stores first and latest campaign information in
+                browser storage for up to 90 days, including campaign
+                parameters, click identifiers, and landing and referring page
+                paths. Form answers are not included in our analytics events.
+                Configured analytics services may receive page and interaction
+                data. Services without configured IDs do not load.
               </p>
             </section>
             <section>
-              <h2>Third-party services</h2>
+              <h2>External services</h2>
               <p>
-                Configured GHL forms and calendars load when you open them.
-                Webinar registration may take you to Zoom or GHL. These
-                providers process information under their own terms. Review
-                their notices before submitting. Contact, scheduling, analytics
-                and advertising providers must be confirmed during legal review.
+                Links to live project websites and webinar registration lead to
+                third-party services with their own privacy policies. Review
+                those notices before sharing information. Analytics and
+                advertising providers, consent requirements and retention
+                practices must be confirmed during legal review.
               </p>
             </section>
             <section>
-              <h2>SMS reminders</h2>
+              <h2>Contact preferences</h2>
               <p>
-                SMS consent is optional, unchecked by default, and separate from
-                requesting an audit. Consent is not required to purchase.
-                Message frequency varies and message or data rates may apply.
-                Reply STOP to opt out or HELP for help. Consent handling and
-                suppression must be configured in the CRM before reminders are
-                enabled.
-              </p>
-            </section>
-            <section>
-              <h2>Retention and requests</h2>
-              <p>
-                Application data is not stored in a local website database. The
-                receiving CRM may retain it. Aurex must document an appropriate
-                retention period and process for access, correction, deletion
-                and marketing opt-out requests before launch. Use a verified
-                contact channel published on the About page. If no channel is
-                published, request assistance through the audit application.
+                Sending a message asks Aurex Business Labs to respond to that
+                inquiry. It does not enroll you in promotional text messages.
+                Tell us if you no longer want to hear from us.
               </p>
             </section>
             <section>
               <h2>Security and changes</h2>
               <p>
-                The site uses input validation, spam checks and basic rate
-                limiting. No system can promise absolute security. This policy
-                should be updated when the actual processing practices change;
-                it does not assert compliance with any particular law.
+                We use input validation, spam checks and basic rate limiting. No
+                system can promise absolute security. This policy should be
+                updated when the actual processing practices change and does not
+                assert compliance with any particular law.
               </p>
             </section>
             <p>
-              <a className="a-inline" href="/about">
-                Company information
-              </a>{" "}
-              ·{" "}
-              <a className="a-inline" href="/revenue-capture-system">
-                Offer and assurance
-              </a>{" "}
-              ·{" "}
-              <a className="a-inline" href="/results/methodology">
-                Results methodology
+              <a className="a-inline" href="/contact">
+                Contact Aurex Business Labs
               </a>
             </p>
           </div>

@@ -128,20 +128,31 @@ const submissionFields = {
 export const auditSchema = leadSchema.extend({
   role: clean(1, 100, "Enter your role."),
   trade: clean(1, 100, "Choose your trade."),
-  annualRevenue: clean(1, 100, "Choose an annual revenue range."),
+  annualRevenue: optionalText(100),
   monthlyLeads: clean(1, 100, "Choose a lead volume range."),
-  marketingSpend: clean(1, 100, "Choose a marketing spend range."),
+  marketingSpend: optionalText(100),
   primaryService: clean(1, 200, "Enter your priority service."),
-  jobValue: clean(1, 100, "Choose a job value range."),
+  jobValue: optionalText(100),
   bottleneck: clean(1, 3000, "Describe your biggest bottleneck."),
   hasStaff: z.enum(["Yes", "No"]),
   capacity: z.enum(["Yes", "Limited", "No"]),
   tracksSales: z.enum(["Yes", "Partially", "No"]),
-  investmentReady: z.enum(["Yes", "Need to evaluate", "No"]),
+  investmentReady: z.enum(["Yes", "Need to evaluate", "No"]).optional(),
   caseStudyInterest: z.enum(["Yes", "Maybe", "No"]),
   smsConsent: z.boolean().default(false),
 });
+export const contactSchema = leadSchema.extend({
+  challenge: clean(
+    10,
+    3000,
+    "Tell us a little about your project (at least 10 characters).",
+  ),
+});
 export const submissionSchema = z.union([
+  contactSchema.extend({
+    ...submissionFields,
+    sourcePage: z.literal("/contact"),
+  }),
   auditSchema.extend({ ...submissionFields, sourcePage: z.literal("/apply") }),
   leadSchema.extend({
     ...submissionFields,

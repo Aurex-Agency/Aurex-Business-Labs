@@ -1,24 +1,17 @@
-import { pageMeta, organization } from "@/lib/seo";
-import { roofingProof, publishableProof } from "@/lib/proof";
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowDown, ArrowUpRight, ArrowRight } from "lucide-react";
 import { site } from "@/lib/site-config";
-
-import { Action } from "@/components/authority/interactions";
-import {
-  Shell,
-  Section,
-  Process,
-  Phases,
-  ProofCard,
-  ProofMedia,
-  Fit,
-  Timeline,
-  Pricing,
-  FAQ,
-  FinalCTA,
-  Schema,
-} from "@/components/authority/shared";
-export const metadata = pageMeta(site.title, site.shortDescription, "/");
+import { organization, pageMeta } from "@/lib/seo";
+import { Shell, Schema } from "@/components/authority/shared";
+import { JourneyGraphic, ResourceArt } from "@/components/learn/graphics";
+import { ResourceGrid, GuideList } from "@/components/learn/shared";
+import { stages } from "@/content/resources";
+export const metadata = pageMeta(
+  "Aurex Business Labs | A Field Guide to Contractor Growth",
+  "Free guides, practical tools, and customer acquisition systems for residential contractors. Understand the journey from first inquiry to the next booked job.",
+  "/",
+);
 export default function Home() {
   return (
     <Shell>
@@ -34,175 +27,208 @@ export default function Home() {
           },
         ]}
       />
-      <section className="a-home-hero">
-        <div className="a-wrap">
-          <div className="a-hero-top">
-            <p className="a-label">For established residential contractors</p>
-            <span className="a-edition">THE AUREX REVENUE CAPTURE SYSTEM</span>
-          </div>
-          <h1>
-            Turn More Marketing Spend Into <em>Booked Jobs,</em> Recovered
-            Revenue, and Repeat Business
-          </h1>
-          <div className="a-hero-bottom">
-            <p className="a-deck">
-              Aurex Business Labs builds the system between the first click and
-              the sold job, then helps turn completed jobs into repeat work and
-              referrals.
-            </p>
-            <div className="a-actions">
-              <Action href="/apply">Request a Revenue Leakage Audit</Action>
-              <Action
-                secondary
-                href="/results/roofing-revenue-system"
-                event="secondary_cta_click"
-              >
-                See the Roofing Case Study
-              </Action>
-            </div>
-          </div>
-          <Process />
-          <p className="a-qualification">
-            Built for established roofing, HVAC, plumbing, electrical,
-            remodeling, window, restoration, and other higher-value residential
-            service companies.
-          </p>
-          {publishableProof(roofingProof) && (
-            <p>
-              ${roofingProof.results[0].amount.toLocaleString("en-US")} in
-              tracked revenue over four months for a North Mississippi roofing
-              company.
-            </p>
-          )}
+      <section className="l-home-hero l-wrap">
+        <p className="l-eyebrow">
+          <span className="l-dot" /> A field guide for residential contractors
+        </p>
+        <h1>
+          Good work deserves
+          <br />
+          <span>a better system.</span>
+        </h1>
+        <p className="l-hero-deck">
+          Understand what happens between the first inquiry and the next booked
+          job. Practical tools and ideas for a stronger business.
+        </p>
+        <div className="l-actions">
+          <Link className="l-button" href="/resources">
+            Explore free resources <ArrowUpRight size={17} />
+          </Link>
+          <Link className="l-text-link" href="/start-here">
+            Start here <ArrowRight size={17} />
+          </Link>
+        </div>
+        <JourneyGraphic />
+        <div className="l-hero-foot">
+          <span>Built around the way contractors work.</span>
+          <a href="#explore" aria-label="Explore contractor resources">
+            <ArrowDown size={16} />
+          </a>
+          <span>Learn it. Use it. Make it yours.</span>
         </div>
       </section>
-      <Section
-        eyebrow="The gap after the click"
-        title="More Leads Will Not Fix Revenue That Leaks After the Click"
-        light
-      >
-        <div className="a-three">
-          {[
-            [
-              "Leads Go Cold",
-              "Calls get missed. Web inquiries sit unanswered. Nobody owns the next step.",
-            ],
-            [
-              "Estimates Go Quiet",
-              "Homeowners receive a quote, delay the decision, and disappear without consistent follow-up.",
-            ],
-            [
-              "Customers Buy Once",
-              "The job gets completed, but no review, referral, repeat-service, or reactivation system follows.",
-            ],
-          ].map(([h, p], i) => (
-            <article className="a-card" key={h}>
-              <span className="a-number">0{i + 1}</span>
-              <h3>{h}</h3>
-              <p>{p}</p>
-            </article>
+      <section id="explore" className="l-section l-wrap">
+        <div className="l-section-head">
+          <div>
+            <p className="l-eyebrow">01 / Find your starting point</p>
+            <h2>
+              What needs a<br />
+              <span>closer look?</span>
+            </h2>
+          </div>
+          <p>
+            You don’t have to fix everything at once.
+            <br />
+            Start with the part of the customer journey
+            <br className="l-desktop-break" /> that needs your attention.
+          </p>
+        </div>
+        <div className="l-pathways">
+          {stages.map((s, i) => (
+            <Link href={`/start-here#${s.name.toLowerCase()}`} key={s.name}>
+              <span className="l-path-number">0{i + 1}</span>
+              <h3>
+                {
+                  [
+                    "The right inquiries",
+                    "The first response",
+                    "The open estimates",
+                    "The next opportunity",
+                  ][i]
+                }
+              </h3>
+              <span>
+                {s.name} <ArrowUpRight size={16} />
+              </span>
+            </Link>
           ))}
         </div>
-        <p className="a-closing">
-          You already paid to create many of these opportunities. Aurex helps
-          you capture more of their value.
-        </p>
-      </Section>
-      <Section
-        eyebrow="Capture → Convert → Recover → Compound"
-        title="One Revenue System. Four Jobs."
-      >
-        <Phases />
-        <p className="a-closing">
-          Tracking supports every phase so the owner can see what is producing
-          appointments, sales, recovered opportunities, and customer value.
-        </p>
-        <a className="a-inline" href="/revenue-capture-system">
-          Explore the full system ↗
-        </a>
-      </Section>
-      <Section
-        eyebrow="Evidence, with context"
-        title="Proof Before Promises"
-        light
-      >
-        <ProofCard />
-        <ProofMedia />
-      </Section>
-      <Section
-        eyebrow="Economics before engagement"
-        title="Built for Contractors With the Economics and Capacity to Grow"
-      >
-        <Fit />
-      </Section>
-      <Section
-        eyebrow="Build. Operate. Improve."
-        title="What Happens During the First 120 Days"
-        light
-      >
-        <Timeline />
-      </Section>
-      <Section
-        eyebrow="Clear scope. Clear investment."
-        title="The Initial Engagement"
-      >
-        <Pricing />
-      </Section>
-      <Section
-        eyebrow="About Aurex Business Labs"
-        title="Built Around Business Outcomes, Not Agency Reports"
-        light
-      >
-        <div className="a-two">
-          <p className="a-lead">
-            Aurex Business Labs was built to solve the gap between marketing
-            activity and business revenue.
-          </p>
-          <div>
-            <p>
-              We help established residential contractors connect acquisition,
-              lead handling, opportunity recovery, referrals, and repeat
-              business into one measurable system.
-            </p>
-            <a className="a-inline" href="/about">
-              About Aurex Business Labs ↗
-            </a>
-          </div>
-        </div>
-      </Section>
-      <Section
-        eyebrow="Every Thursday / 11:00 a.m. Central"
-        title="Contractor Revenue Scorecard Live"
-      >
-        <div className="a-two">
-          <p className="a-lead">
-            Know what happens between the lead and the sold job.
-          </p>
-          <div>
-            <p>
-              Every Thursday at 11:00 a.m. Central, Aurex teaches contractor
-              owners how to track marketing from the first lead to the sold job,
-              identify the real constraint, and ask better questions of their
-              marketing providers.
-            </p>
-            <div className="a-actions">
-              <Action
-                href="/contractor-revenue-scorecard"
-                event="webinar_register_click"
-              >
-                Register for Thursday
-              </Action>
-              <Link className="a-inline" href="/insights">
-                Browse Contractor Insights ↗
+      </section>
+      <section className="l-section l-resource-section">
+        <div className="l-wrap">
+          <div className="l-section-head">
+            <div>
+              <p className="l-eyebrow">02 / The working library</p>
+              <h2>
+                Useful on
+                <br />
+                <span>Monday morning.</span>
+              </h2>
+            </div>
+            <div>
+              <p>
+                Open a resource. Put it to work.
+                <br />
+                Everything here is free to use.
+              </p>
+              <Link className="l-text-link" href="/resources">
+                Browse the library <ArrowRight size={17} />
               </Link>
             </div>
           </div>
+          <ResourceGrid />
         </div>
-      </Section>
-      <Section eyebrow="Before we work together" title="Straight Answers" light>
-        <FAQ />
-      </Section>
-      <FinalCTA />
+      </section>
+      <section className="l-section l-wrap l-feature">
+        <div className="l-feature-copy">
+          <p className="l-eyebrow">A closer look / Recover</p>
+          <h2>
+            An estimate isn’t
+            <br />
+            the end of the
+            <br />
+            <span>conversation.</span>
+          </h2>
+          <p>
+            Sometimes the next step is a question that hasn’t been answered.
+            Learn to follow up with context, clarify the scope, and respect the
+            homeowner’s timing.
+          </p>
+          <Link
+            className="l-text-link"
+            href="/insights/how-to-follow-up-on-unclosed-contractor-estimates"
+          >
+            Read the follow-up guide <ArrowUpRight size={17} />
+          </Link>
+        </div>
+        <div className="l-feature-art">
+          <ResourceArt kind="recover" animate />
+          <span className="l-art-caption">
+            An illustrative follow-up. A human conversation.
+          </span>
+        </div>
+      </section>
+      <section className="l-section l-method-section">
+        <div className="l-wrap">
+          <div className="l-section-head">
+            <div>
+              <p className="l-eyebrow">03 / The bigger picture</p>
+              <h2>
+                One connected system.
+                <br />
+                <span>Four places to improve.</span>
+              </h2>
+            </div>
+            <div>
+              <p>
+                The Aurex Revenue Capture System gives every part of the
+                customer journey a purpose.
+              </p>
+              <Link className="l-text-link" href="/revenue-capture-system">
+                Explore the framework <ArrowUpRight size={17} />
+              </Link>
+            </div>
+          </div>
+          <div className="l-method-grid">
+            {stages.map((s, i) => (
+              <article key={s.name}>
+                <span className="l-method-index">0{i + 1}</span>
+                <h3>{s.name}</h3>
+                <p>{s.description}</p>
+                <Link className="l-text-link" href={`/resources/${s.resource}`}>
+                  Put it into practice <ArrowUpRight size={16} />
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="l-section l-wrap l-perspective">
+        <div className="l-perspective-mark">
+          <Image src="/brand/aurex-mark.png" alt="" width={75} height={75} />
+          <span>
+            AUREX
+            <br />
+            BUSINESS LABS
+          </span>
+        </div>
+        <div>
+          <p className="l-eyebrow">Our point of view</p>
+          <h2>
+            Better questions.
+            <br />
+            <span>Better decisions.</span>
+          </h2>
+          <p>
+            Which inquiries turned into conversations? Which estimates need
+            attention? What happened after the work was done?
+          </p>
+          <p>
+            We built this library around the questions that connect marketing to
+            the day-to-day work of running a contracting business. Clear
+            definitions. Useful processes. Evidence you can follow.
+          </p>
+          <Link className="l-text-link" href="/about">
+            Get to know Aurex <ArrowUpRight size={17} />
+          </Link>
+        </div>
+      </section>
+      <section className="l-section l-wrap">
+        <div className="l-section-head">
+          <div>
+            <p className="l-eyebrow">04 / From the notebook</p>
+            <h2>
+              A little more
+              <br />
+              <span>understanding.</span>
+            </h2>
+          </div>
+          <Link className="l-text-link" href="/insights">
+            All insights <ArrowRight size={17} />
+          </Link>
+        </div>
+        <GuideList />
+      </section>
     </Shell>
   );
 }

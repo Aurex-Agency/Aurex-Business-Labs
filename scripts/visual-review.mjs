@@ -12,8 +12,12 @@ for (const width of [375, 768, 1440]) {
   );
   for (const [name, path] of [
     ["home", "/"],
+    ["resources", "/resources"],
+    ["start", "/start-here"],
+    ["scorecard", "/resources/contractor-revenue-scorecard"],
+    ["playbook", "/resources/estimate-follow-up-playbook"],
     ["system", "/revenue-capture-system"],
-    ["apply", "/apply"],
+    ["audit", "/apply"],
     ["article", "/insights/cost-per-lead-vs-cost-per-sold-job"],
   ]) {
     await page.goto(
@@ -36,5 +40,5 @@ for (const width of [375, 768, 1440]) {
 }
 await browser.close();
 console.log(
-  "Captured home, offer, application and article at 375, 768 and 1440 pixels.",
+  "Captured home, resources, learning path, tools, system, audit and article at 375, 768 and 1440 pixels.",
 );

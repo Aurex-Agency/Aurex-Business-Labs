@@ -1,4 +1,10 @@
 export type AnalyticsEvent =
+  | "resource_download"
+  | "resource_tool_complete"
+  | "contact_cta_click"
+  | "contact_start"
+  | "contact_submit"
+  | "project_view"
   | "audit_cta_click"
   | "case_study_view"
   | "webinar_register_click"
