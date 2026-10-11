@@ -16,7 +16,7 @@ export default function ResourcesPage() {
         title="Good ideas. Ready to use."
         description="Practical tools for the work between the inquiry and the sold job. Open, adapt, and use them with your team."
       />
-      <section className="l-wrap l-library">
+      <section className="l-wrap l-library f-library-page">
         <div className="l-library-meta">
           <span>3 resources / Built for residential contractors</span>
           <span>No sign-up required</span>

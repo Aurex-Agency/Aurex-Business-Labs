@@ -63,7 +63,7 @@ export default async function Page({
         <ResourceArt kind={resource.visual} />
         <p className="l-small">Field notes / {a.category}</p>
       </div>
-      <article className="a-section a-light">
+      <article className="a-section a-light f-reading-paper">
         <div className="a-wrap a-article-layout">
           <aside>
             <p className="a-label">In this guide</p>

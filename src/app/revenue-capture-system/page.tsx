@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Shell, PageHero, Schema } from "@/components/authority/shared";
-import { JourneyGraphic } from "@/components/learn/graphics";
+import { JourneyExplorer } from "@/components/learn/field-guide";
 import { LearningCTA } from "@/components/learn/shared";
 import { stages } from "@/content/resources";
 import { pageMeta, organization } from "@/lib/seo";
@@ -29,7 +29,7 @@ export default function System() {
         description="A practical framework for customer acquisition, lead handling, opportunity recovery, and repeat business. Four stages, with measurement supporting each one."
       />
       <div className="l-wrap">
-        <JourneyGraphic />
+        <JourneyExplorer />
         <section className="l-section">
           <div className="l-section-head">
             <div>

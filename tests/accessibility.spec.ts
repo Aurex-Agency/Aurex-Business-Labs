@@ -49,3 +49,17 @@ test("@a11y audit errors and form associations", async ({ page }) => {
     (await new AxeBuilder({ page }).withTags(tags).analyze()).violations,
   ).toEqual([]);
 });
+
+for (const path of ["/", "/resources"]) {
+  test(`@a11y mobile field guide ${path}`, async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(path);
+    if (path === "/")
+      await page
+        .getByRole("button", { name: /Why have estimates gone quiet/ })
+        .click();
+    expect(
+      (await new AxeBuilder({ page }).withTags(tags).analyze()).violations,
+    ).toEqual([]);
+  });
+}

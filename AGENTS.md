@@ -25,7 +25,7 @@ This block is written and re-added by `next dev` . verify at `node_modules/next/
 - Shared palette and responsive styles are in src/app/globals.css. Midnight #070C13, cool white #F0F6FA, Aurex cyan-blue #19BCE5, and pale blue #8BDFF6 are the primary tokens.
 - Geist is the body font. Instrument Serif is for selected editorial emphasis.
 - Preserve the official blue symbol with the Business Labs wordmark. The original Agency lockup is a source asset, not the public wordmark.
-- The public site is an educational contractor field guide with upright editorial typography, restrained dark panels, and original customer-journey motion graphics. Resources and lessons are the primary journey; the audit is secondary. Use motion/react with the shared LazyMotion provider. Retain complete static content.
+- The public site is an educational contractor field guide with varied editorial compositions, midnight and pale-blue surfaces, and original contractor-journey motion graphics. Resources and lessons are the primary journey; the audit is secondary. Use motion/react with the shared LazyMotion provider. Retain complete static content.
 - Respect reduced motion and keep the full message available without animation. Mobile uses stacked system content.
 - Maintain WCAG 2.2 AA expectations, keyboard navigation, focus visibility, error associations, and at least 44px practical touch targets.
 
