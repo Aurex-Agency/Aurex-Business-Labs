@@ -134,3 +134,22 @@ test("educational content and downloads remain available without JavaScript", as
   ).toBeVisible();
   await context.close();
 });
+
+test("framework controls change the illustrated stage and resource destination", async ({
+  page,
+}) => {
+  await page.goto("/revenue-capture-system");
+  const controls = page.locator(".f-explorer-controls");
+  await controls.getByRole("button", { name: /Recover/ }).focus();
+  await page.keyboard.press("Enter");
+  await expect(
+    page.locator(".f-explorer-scene .l-message-scene"),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Explore the recover resource" }),
+  ).toHaveAttribute("href", "/resources/estimate-follow-up-playbook");
+  await controls.getByRole("button", { name: /Compound/ }).click();
+  await expect(
+    page.locator(".f-explorer-scene .l-compound-scene"),
+  ).toBeVisible();
+});

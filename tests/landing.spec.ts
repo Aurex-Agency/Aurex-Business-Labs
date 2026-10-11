@@ -166,32 +166,58 @@ for (const width of [375, 768, 1440])
       ).toBe(true);
     }
   });
-test("journey controls explain every stage and respect reduced motion", async ({
+test("journey chapters change scenes, support direct navigation and respect reduced motion", async ({
   page,
 }) => {
   await page.goto("/");
-  for (const [name, text] of [
-    ["Capture", "Attract the right inquiries."],
-    ["Convert", "Give every lead a next step."],
-    ["Recover", "Keep good conversations going."],
-    ["Compound", "Build on a job well done."],
-  ]) {
-    await page.getByRole("button", { name: new RegExp(name) }).click();
-    await expect(page.locator(".l-journey-caption")).toContainText(text);
-  }
-  await expect(
-    page.getByRole("button", { name: "Replay customer journey animation" }),
-  ).toBeDisabled();
+  const replay = page.getByRole("button", {
+    name: "Replay customer journey animation",
+  });
+  await expect(replay).toBeDisabled();
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await expect(
-    page.getByRole("button", { name: "Replay customer journey animation" }),
-  ).toBeEnabled();
-  await page
-    .getByRole("button", { name: "Replay customer journey animation" })
-    .click();
-  await expect(page.locator(".l-journey-caption")).toContainText(
-    "Build on a job well done.",
+  await expect(replay).toBeEnabled();
+  await replay.click();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const navigation = page.getByRole("navigation", {
+    name: "Explore the customer journey",
+  });
+  for (const [name, scene] of [
+    ["Capture", ".f-capture-record"],
+    ["Convert", ".f-calendar"],
+    ["Recover", ".l-message-scene"],
+    ["Compound", ".l-compound-scene"],
+  ]) {
+    await navigation.getByRole("link", { name: new RegExp(name) }).click();
+    await expect(
+      navigation.getByRole("link", { name: new RegExp(name) }),
+    ).toHaveAttribute("aria-current", "step");
+    await expect(page.locator(`.f-scene-content ${scene}`)).toBeVisible();
+  }
+  await page.locator("#story-convert").scrollIntoViewIfNeeded();
+  await expect(page.locator(".f-scene-content .f-calendar")).toBeVisible();
+  await page.setViewportSize({ width: 375, height: 812 });
+  await expect(page.locator(".f-story-visual")).toBeHidden();
+  for (const chapter of await page.locator(".f-chapter").all()) {
+    await chapter.scrollIntoViewIfNeeded();
+    await expect(chapter.locator(".f-mobile-scene")).toBeVisible();
+  }
+});
+
+test("starting point recommends a relevant ungated resource", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const question = page.getByRole("button", {
+    name: /Why have estimates gone quiet/,
+  });
+  await question.focus();
+  await page.keyboard.press("Enter");
+  await expect(question).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".f-start-answer")).toContainText(
+    "Start with Recover",
   );
+  await page.locator(".f-start-answer").getByRole("link").click();
+  await expect(page).toHaveURL(/resources\/estimate-follow-up-playbook$/);
 });
 
 test("homepage teaches the contractor framework and keeps a secondary audit path without pricing", async ({
@@ -199,11 +225,11 @@ test("homepage teaches the contractor framework and keeps a secondary audit path
 }) => {
   await page.goto("/");
   await expect(
-    page.getByText(/The Aurex Revenue Capture System gives/),
+    page.getByText("02 / The Aurex Revenue Capture System", { exact: true }),
   ).toBeVisible();
   for (const name of ["Capture", "Convert", "Recover", "Compound"])
     await expect(
-      page.getByRole("heading", { name, exact: true }),
+      page.locator(".f-chapter .l-eyebrow").filter({ hasText: name }),
     ).toBeVisible();
   await page
     .getByRole("navigation", { name: "Main navigation", exact: true })

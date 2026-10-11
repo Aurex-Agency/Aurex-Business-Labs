@@ -20,7 +20,7 @@ export function ResourceCard({ resource }: { resource: Resource }) {
 }
 export function ResourceGrid() {
   return (
-    <div className="l-resource-grid">
+    <div className="l-resource-grid f-resource-spread">
       {resources.map((r) => (
         <ResourceCard key={r.slug} resource={r} />
       ))}
@@ -36,17 +36,33 @@ export function LearningCTA() {
         <p>Start with a worksheet, a checklist, or a better question.</p>
       </div>
       <Link className="l-button" href="/resources">
-        Explore free resources <ArrowRight size={17} />
+        Find your next useful tool <ArrowRight size={17} />
       </Link>
     </section>
   );
 }
 export function GuideList() {
   return (
-    <div className="l-guide-list">
+    <div className="l-guide-list f-guide-spread">
       {articles.map((a, i) => (
         <Link href={`/insights/${a.slug}`} key={a.slug}>
           <span className="l-guide-number">0{i + 1}</span>
+          {i === 0 && (
+            <div className="f-guide-art" aria-hidden="true">
+              <span>FOLLOW THE HANDOFFS</span>
+              <div>
+                {["Inquiry", "Conversation", "Estimate", "Sold job"].map(
+                  (label, index) => (
+                    <div key={label}>
+                      <i style={{ width: `${100 - index * 18}%` }} />
+                      <span>{label}</span>
+                    </div>
+                  ),
+                )}
+              </div>
+              <small>A framework for asking better questions ↗</small>
+            </div>
+          )}
           <div>
             <span className="l-eyebrow">{a.category}</span>
             <h3>{a.title}</h3>
