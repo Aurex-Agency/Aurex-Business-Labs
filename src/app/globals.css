@@ -6557,3 +6557,131 @@ small {
     display: none;
   }
 }
+
+/* Legal pages (components/authority/legal.tsx) */
+.l-legal-updated {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  padding: 8px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+}
+.l-legal-updated::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  box-shadow: 0 0 10px var(--accent);
+}
+.l-legal-summary {
+  padding-bottom: clamp(48px, 6vw, 88px);
+}
+.l-legal-summary > .l-wrap > h2 {
+  margin-bottom: 22px;
+}
+.l-legal-note {
+  margin-top: 18px;
+}
+.l-legal > section {
+  scroll-margin-top: calc(var(--header-h) + 32px);
+}
+.l-legal h2 {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+}
+.l-legal-number {
+  flex-shrink: 0;
+  min-width: 1.6em;
+  font-size: 0.7em;
+  font-weight: 600;
+  color: var(--paper-accent);
+  font-variant-numeric: tabular-nums;
+}
+.l-legal h3 {
+  font-size: var(--fs-lg);
+}
+.l-legal strong {
+  color: var(--paper-ink);
+}
+.l-legal-caps {
+  padding: 18px 20px;
+  border-left: 3px solid var(--paper-accent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: rgba(10, 104, 144, 0.06);
+  color: var(--paper-ink);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.l-legal-contact {
+  margin-top: clamp(48px, 6vw, 72px);
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(255, 255, 255, 0.8),
+      transparent 60%
+    ),
+    var(--paper-3);
+}
+.l-prose .l-legal-contact h3 {
+  margin: 10px 0 14px;
+  font-size: var(--fs-h4);
+}
+.l-legal-contact ul {
+  display: grid;
+  gap: 6px;
+}
+.l-legal-contact li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  color: var(--paper-ink);
+}
+.l-legal-contact li svg {
+  color: var(--paper-accent);
+}
+.l-legal-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+.l-legal-related a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--r-pill);
+  color: var(--paper-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  transition:
+    background-color var(--dur-2),
+    border-color var(--dur-2);
+}
+.l-legal-related a:hover {
+  border-color: var(--paper-accent);
+  background: rgba(10, 104, 144, 0.06);
+}
+.l-legal-related a svg {
+  color: var(--paper-accent);
+}
+@media print {
+  .l-legal-summary,
+  .l-legal-related {
+    display: none;
+  }
+}

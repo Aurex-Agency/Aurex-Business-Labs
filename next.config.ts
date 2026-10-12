@@ -16,6 +16,16 @@ const config: NextConfig = {
         statusCode: 301,
       },
       {
+        source: "/privacy-policy",
+        destination: "/privacy",
+        statusCode: 301,
+      },
+      {
+        source: "/terms-of-service",
+        destination: "/terms",
+        statusCode: 301,
+      },
+      {
         source: "/revenue-website/thank-you",
         destination: "/apply",
         statusCode: 301,
