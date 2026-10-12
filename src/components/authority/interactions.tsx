@@ -1,18 +1,84 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ArrowRight, ArrowUpRight, X } from "lucide-react";
 import { track, type AnalyticsEvent } from "@/lib/analytics";
 import { nav } from "@/content/navigation";
+import { resources } from "@/content/resources";
+
+// The header condenses once the page moves and steps aside while reading down.
+export function HeaderFrame({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const header = ref.current;
+    if (!header) return;
+    let last = window.scrollY;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      header.toggleAttribute("data-scrolled", y > 8);
+      if (Math.abs(y - last) < 8) return;
+      const hide =
+        y > last &&
+        y > window.innerHeight * 0.7 &&
+        !header.contains(document.activeElement);
+      header.toggleAttribute("data-hidden", hide);
+      last = y;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+  return (
+    <header
+      ref={ref}
+      className="l-header"
+      onFocusCapture={() => ref.current?.removeAttribute("data-hidden")}
+    >
+      {children}
+    </header>
+  );
+}
+
 export function Navigation() {
   const dialog = useRef<HTMLDialogElement>(null);
   const button = useRef<HTMLButtonElement>(null);
+  const indicator = useRef<HTMLSpanElement>(null);
   const [open, setOpen] = useState(false);
   const path = usePathname();
+  const current = (href: string) =>
+    path === href ? "page" : path.startsWith(`${href}/`) ? "true" : undefined;
   function close() {
     dialog.current?.close();
     setOpen(false);
     button.current?.focus();
+  }
+  function point(link: HTMLElement | null) {
+    const marker = indicator.current;
+    if (!marker) return;
+    if (!link) {
+      marker.style.opacity = "0";
+      return;
+    }
+    if (marker.style.opacity !== "1") {
+      marker.style.transition = "none";
+      marker.style.width = `${link.offsetWidth}px`;
+      marker.style.transform = `translateX(${link.offsetLeft}px)`;
+      void marker.offsetWidth;
+      marker.style.transition = "";
+    }
+    marker.style.width = `${link.offsetWidth}px`;
+    marker.style.transform = `translateX(${link.offsetLeft}px)`;
+    marker.style.opacity = "1";
   }
   useEffect(() => {
     if (!open) return;
@@ -24,66 +90,174 @@ export function Navigation() {
   }, [open]);
   return (
     <>
-      <nav className="a-desktop" aria-label="Main navigation">
-        {nav.map(([label, href]) => (
-          <Link
-            key={href}
-            href={href}
-            aria-current={path === href ? "page" : undefined}
-          >
-            {label}
-          </Link>
-        ))}
+      <nav className="l-nav" aria-label="Main navigation">
+        <div className="l-nav-links" onMouseLeave={() => point(null)}>
+          <span
+            className="l-nav-indicator"
+            ref={indicator}
+            aria-hidden="true"
+          />
+          {nav.map(([label, href]) => (
+            <Link
+              key={href}
+              href={href}
+              aria-current={current(href)}
+              onMouseEnter={(e) => point(e.currentTarget)}
+              onFocus={(e) => point(e.currentTarget)}
+              onBlur={() => point(null)}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
         <Link
-          className="l-work-link"
+          className="l-nav-cta"
           href="/apply"
           onClick={() => track("audit_cta_click", { location: "navigation" })}
         >
-          Work with Aurex <span aria-hidden="true">↗</span>
+          Work with Aurex <ArrowUpRight size={14} aria-hidden="true" />
         </Link>
       </nav>
       <button
-        className="a-menu"
+        className="l-menu-button"
         ref={button}
         aria-expanded={open}
-        aria-controls="studio-menu"
+        aria-controls="site-menu"
         onClick={() => {
           dialog.current?.showModal();
           setOpen(true);
         }}
       >
-        Menu <span aria-hidden="true">+</span>
+        Menu
+        <span className="l-menu-icon" aria-hidden="true">
+          <i />
+          <i />
+        </span>
       </button>
       <dialog
         ref={dialog}
-        id="studio-menu"
-        className="s-menu-dialog"
+        id="site-menu"
+        className="l-menu"
         aria-label="Site menu"
-        onCancel={close}
+        onCancel={(e) => {
+          e.preventDefault();
+          close();
+        }}
         onClose={() => setOpen(false)}
       >
-        <div className="s-menu-top">
-          <span>AUREX BUSINESS LABS</span>
-          <button onClick={close} aria-label="Close menu">
-            Close ×
-          </button>
-        </div>
-        <nav aria-label="Mobile navigation">
-          {[...nav, ["Work with Aurex", "/apply"]].map(
-            ([label, href], index) => (
-              <Link key={href} href={href} onClick={close}>
+        <div className="l-menu-inner">
+          <div className="l-menu-top">
+            <Link
+              className="l-brand"
+              href="/"
+              onClick={close}
+              aria-label="Aurex Business Labs home"
+            >
+              <Image
+                src="/brand/aurex-mark.png"
+                alt=""
+                width={44}
+                height={44}
+              />
+              <span className="l-brand-word">
+                AUREX <small>BUSINESS LABS</small>
+              </span>
+            </Link>
+            <button className="l-menu-close" onClick={close}>
+              Close<span className="sr-only"> menu</span>
+              <X aria-hidden="true" />
+            </button>
+          </div>
+          <nav className="l-menu-nav" aria-label="Mobile navigation">
+            {nav.map(([label, href], index) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={close}
+                aria-current={current(href)}
+              >
                 <span>0{index + 1}</span>
                 {label}
-                <span aria-hidden="true">↗</span>
+                <ArrowUpRight size={22} aria-hidden="true" />
               </Link>
-            ),
-          )}
-        </nav>
-        <p>Capture. Convert. Recover. Compound.</p>
+            ))}
+          </nav>
+          <div className="l-menu-resources">
+            <p className="l-eyebrow is-muted">Free resources</p>
+            {resources.map((r) => (
+              <Link key={r.slug} href={`/resources/${r.slug}`} onClick={close}>
+                {r.title}
+                <ArrowRight size={17} aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
+          <div className="l-menu-foot">
+            <Link
+              className="l-button is-block"
+              href="/apply"
+              onClick={() => {
+                track("audit_cta_click", { location: "mobile_menu" });
+                close();
+              }}
+            >
+              Work with Aurex <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
+            <p>Capture. Convert. Recover. Compound.</p>
+          </div>
+        </div>
       </dialog>
     </>
   );
 }
+
+// A compact thumb-reach bar on phones. It stays out of the way on form pages
+// and near the footer, and is removed from the tab order while hidden.
+export function QuickBar() {
+  const path = usePathname();
+  const [show, setShow] = useState(false);
+  const skip = path === "/apply" || path === "/contact";
+  useEffect(() => {
+    if (skip) return;
+    let footerInView = false;
+    const update = () =>
+      setShow(window.scrollY > window.innerHeight * 0.75 && !footerInView);
+    const footer = document.querySelector(".l-footer");
+    const observer = new IntersectionObserver(([entry]) => {
+      footerInView = entry.isIntersecting;
+      update();
+    });
+    if (footer) observer.observe(footer);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", update);
+    };
+  }, [skip]);
+  if (skip) return null;
+  const learning = path.startsWith("/resources");
+  return (
+    <nav
+      className="l-quickbar"
+      aria-label="Quick actions"
+      data-show={show ? "" : undefined}
+      inert={!show}
+    >
+      <Link className="l-button" href={learning ? "/start-here" : "/resources"}>
+        {learning ? "Start here" : "Free resources"}
+        <ArrowUpRight size={16} aria-hidden="true" />
+      </Link>
+      <Link
+        className="l-quickbar-link"
+        href="/apply"
+        onClick={() => track("audit_cta_click", { location: "quick_bar" })}
+      >
+        Work with Aurex
+      </Link>
+    </nav>
+  );
+}
+
 export function Action({
   href,
   children,
@@ -98,11 +272,11 @@ export function Action({
   return (
     <Link
       href={href}
-      className={secondary ? "a-button a-secondary" : "a-button"}
+      className={secondary ? "l-button is-ghost" : "l-button"}
       onClick={() => track(event, { location: window.location.pathname })}
     >
       {children}
-      <span aria-hidden="true">↗</span>
+      <ArrowUpRight size={16} aria-hidden="true" />
     </Link>
   );
 }
@@ -136,9 +310,9 @@ export function DeferredEmbed({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="a-embed">
+    <div className="l-embed">
       <button
-        className="a-button"
+        className="l-button"
         onClick={() => {
           setOpen(true);
           track(event);
@@ -149,7 +323,7 @@ export function DeferredEmbed({
       </button>
       <p>
         <a
-          className="a-inline"
+          className="l-inline"
           href={url}
           target="_blank"
           rel="noopener noreferrer"
@@ -184,7 +358,7 @@ export function VideoTestimonial({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <figure className="a-card">
+    <figure className="l-card">
       <h3>{title}</h3>
       <p>{summary}</p>
       {open ? (
@@ -199,7 +373,7 @@ export function VideoTestimonial({
           <source src={url} />
         </video>
       ) : (
-        <button className="a-button" onClick={() => setOpen(true)}>
+        <button className="l-button" onClick={() => setOpen(true)}>
           Load testimonial video
         </button>
       )}
@@ -209,7 +383,7 @@ export function VideoTestimonial({
           <p>{transcript}</p>
         </details>
       )}
-      <a className="a-inline" href={url}>
+      <a className="l-inline" href={url}>
         Open video
       </a>
     </figure>
