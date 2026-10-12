@@ -28,6 +28,7 @@ export default function Apply() {
       <PageHero
         eyebrow="Revenue Leakage Audit"
         path="/apply"
+        scene="leak"
         title={
           <>
             Where is the next job <em>getting lost?</em>

@@ -26,6 +26,7 @@ export default function System() {
       <PageHero
         eyebrow="Aurex Revenue Capture System"
         path="/revenue-capture-system"
+        scene="loop"
         title={
           <>
             See how the <em>pieces connect.</em>
@@ -56,6 +57,7 @@ export default function System() {
               <Link
                 key={s.name}
                 className="l-method"
+                data-tilt
                 href={`/start-here#${s.name.toLowerCase()}`}
               >
                 <span className="l-method-index">0{i + 1}</span>

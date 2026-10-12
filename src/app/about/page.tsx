@@ -93,7 +93,7 @@ export default function About() {
           </div>
           <div className="l-grid-3" data-stagger>
             {principles.map(([h, p], i) => (
-              <article className="l-card" key={h}>
+              <article className="l-card" key={h} data-tilt>
                 <span className="l-index">0{i + 1}</span>
                 <h3>{h}</h3>
                 <p>{p}</p>

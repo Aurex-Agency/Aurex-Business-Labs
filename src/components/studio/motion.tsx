@@ -27,6 +27,7 @@ export function ProjectCard({
       <Link href={`/work/${project.slug}`} className="l-project-link">
         <div
           className="l-project-media"
+          data-tilt
           style={{ "--accent-tone": project.accent } as React.CSSProperties}
         >
           <span className="l-project-id">0{index + 1} / Selected work</span>
@@ -37,6 +38,7 @@ export function ProjectCard({
               width={1440}
               height={1000}
               sizes="(max-width: 760px) 100vw, 50vw"
+              priority={index === 0}
             />
           </m.div>
           <span className="l-project-view" aria-hidden="true">

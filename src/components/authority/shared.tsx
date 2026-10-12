@@ -1,7 +1,6 @@
 import { roofingProof, publishableProof } from "@/lib/proof";
 import Image from "next/image";
 import Link from "next/link";
-import { ViewTransition } from "react";
 import { ArrowUpRight } from "lucide-react";
 import type { Article } from "@/content/articles";
 import { site } from "@/lib/site-config";
@@ -16,6 +15,9 @@ import {
 } from "./interactions";
 import { LearningCTA } from "@/components/learn/shared";
 import { ReadingProgress } from "@/components/learn/reading-progress";
+import { AmbientField } from "@/components/landing/ambient";
+import { RouteSweep } from "@/components/landing/route-sweep";
+import { HeroScene, type HeroSceneKind } from "./hero-scenes";
 export function Schema({ data }: { data: unknown }) {
   return (
     <script
@@ -99,6 +101,7 @@ export function Footer() {
             ))}
           </div>
         </div>
+        <div className="l-footer-word" aria-hidden="true" data-reveal />
         <div className="l-footer-bottom">
           <p>© {new Date().getFullYear()} Aurex Business Labs</p>
           <nav aria-label="Legal">
@@ -115,9 +118,10 @@ export function Footer() {
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="l-site">
+      <AmbientField />
       <Header />
       <main id="main">
-        <ViewTransition>{children}</ViewTransition>
+        <RouteSweep>{children}</RouteSweep>
       </main>
       <Footer />
       <QuickBar />
@@ -155,6 +159,7 @@ export function PageHero({
   path,
   crumbs,
   aside,
+  scene,
   children,
 }: {
   eyebrow: string;
@@ -163,6 +168,7 @@ export function PageHero({
   path: string;
   crumbs?: { name: string; path: string }[];
   aside?: React.ReactNode;
+  scene?: HeroSceneKind;
   children?: React.ReactNode;
 }) {
   const copy = (
@@ -177,7 +183,8 @@ export function PageHero({
     </div>
   );
   return (
-    <section className="l-page-hero">
+    <section className={`l-page-hero${scene ? " has-scene" : ""}`}>
+      {scene && <HeroScene kind={scene} />}
       <div className="l-wrap">
         <Breadcrumbs items={crumbs ?? [{ name: eyebrow, path }]} />
         {aside ? (

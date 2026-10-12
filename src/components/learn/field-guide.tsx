@@ -26,6 +26,8 @@ import { ResourceArt } from "./graphics";
 import { useMotionPreference } from "./use-motion-preference";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+const journey =
+  "M74 174v109q0 16 15 24l61 35q14 8 0 16l-52 30q-14 8 0 16l135 77q14 8 28 0l290-167q14-8 0-16l-38-22";
 
 // The hero journey plays in CSS from the first paint, so it never waits for
 // hydration. Replaying remounts the stage, which restarts the sequence.
@@ -38,6 +40,8 @@ export function FieldIllustration() {
   const sy = useSpring(py, { stiffness: 120, damping: 20 });
   const houseX = useTransform(sx, (v) => v * 0.4);
   const houseY = useTransform(sy, (v) => v * 0.4);
+  const tiltX = useTransform(sy, (v) => -v * 0.45);
+  const tiltY = useTransform(sx, (v) => v * 0.55);
   return (
     <div
       className="f-illustration"
@@ -52,7 +56,11 @@ export function FieldIllustration() {
         py.set(0);
       }}
     >
-      <div className="f-stage" key={replay}>
+      <m.div
+        className="f-stage"
+        key={replay}
+        style={{ rotateX: tiltX, rotateY: tiltY, transformPerspective: 1200 }}
+      >
         <m.svg
           className="f-house"
           viewBox="0 0 640 540"
@@ -136,7 +144,7 @@ export function FieldIllustration() {
           />
           <path
             className="f-journey-trace"
-            d="M74 174v109q0 16 15 24l61 35q14 8 0 16l-52 30q-14 8 0 16l135 77q14 8 28 0l290-167q14-8 0-16l-38-22"
+            d={journey}
             stroke="#19bce5"
             strokeOpacity=".18"
             strokeWidth="3"
@@ -145,12 +153,31 @@ export function FieldIllustration() {
           <path
             className="f-journey-path"
             data-motion-path
-            d="M74 174v109q0 16 15 24l61 35q14 8 0 16l-52 30q-14 8 0 16l135 77q14 8 28 0l290-167q14-8 0-16l-38-22"
+            d={journey}
             stroke="#19bce5"
             strokeWidth="3"
             strokeLinecap="round"
             pathLength={1}
           />
+          {!reduce &&
+            [0, 1.9].map((delay) => (
+              <circle key={delay} r="4.5" className="f-path-pulse" opacity="0">
+                <animateMotion
+                  dur="3.8s"
+                  begin={`${3.6 + delay}s`}
+                  repeatCount="indefinite"
+                  path={journey}
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0;1;1;0"
+                  keyTimes="0;0.08;0.85;1"
+                  dur="3.8s"
+                  begin={`${3.6 + delay}s`}
+                  repeatCount="indefinite"
+                />
+              </circle>
+            ))}
           {[
             [74, 174],
             [150, 342],
@@ -194,7 +221,7 @@ export function FieldIllustration() {
         <span className="f-chip f-chip-sold">
           <Star size={13} /> Job well done
         </span>
-      </div>
+      </m.div>
       <div className="f-art-foot">
         <span>An illustrated customer journey, not live activity.</span>
         <button
@@ -229,7 +256,12 @@ export function StartingPoint() {
     </>
   );
   return (
-    <section id="explore" className="f-start" aria-labelledby="starting-title">
+    <section
+      id="explore"
+      className="f-start"
+      data-journey=""
+      aria-labelledby="starting-title"
+    >
       <div className="l-wrap f-start-grid">
         <div data-reveal>
           <p className="l-eyebrow">Find your starting point</p>
@@ -382,6 +414,7 @@ export function SystemStory() {
     offset: ["start 65%", "end 65%"],
   });
   const rail = useSpring(scrollYProgress, { stiffness: 140, damping: 30 });
+  const numberY = useTransform(scrollYProgress, [0, 1], [48, -48]);
   useEffect(() => {
     const chapters =
       container.current?.querySelectorAll<HTMLElement>(".f-chapter");
@@ -428,9 +461,30 @@ export function SystemStory() {
               <span className="f-story-indicator" aria-hidden="true" />
             </nav>
             <div className="f-scene-frame">
-              <span className="f-scene-number" aria-hidden="true">
+              <m.span
+                className="f-scene-number"
+                aria-hidden="true"
+                style={{ y: reduce ? 0 : numberY }}
+              >
                 0{active + 1}
-              </span>
+              </m.span>
+              <svg
+                className="f-story-ring"
+                viewBox="0 0 52 52"
+                aria-hidden="true"
+              >
+                <circle cx="26" cy="26" r="22" className="f-story-ring-track" />
+                <m.circle
+                  cx="26"
+                  cy="26"
+                  r="22"
+                  className="f-story-ring-fill"
+                  style={{ pathLength: reduce ? 1 : rail }}
+                />
+                <text x="26" y="30" textAnchor="middle">
+                  {active + 1}/4
+                </text>
+              </svg>
               <Scene active={active} reduce={reduce} />
               <p className="f-scene-caption">{stages[active].question}</p>
               <span className="f-scene-disclaimer">Illustrative workflow</span>
@@ -444,6 +498,7 @@ export function SystemStory() {
               <article
                 id={`story-${s.name.toLowerCase()}`}
                 className="f-chapter"
+                data-journey={`0${i + 1}`}
                 data-stage={i}
                 data-active={active === i ? "" : undefined}
                 key={s.name}
