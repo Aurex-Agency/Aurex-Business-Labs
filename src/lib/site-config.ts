@@ -19,6 +19,8 @@ export const site = {
   brandName,
   name: brandName,
   legalName: process.env.SITE_LEGAL_NAME || "",
+  // State whose law governs the website terms, for example "Mississippi".
+  legalState: process.env.SITE_LEGAL_STATE || "",
   domain: "aurexbusinesslab.com",
   canonicalUrl,
   canonical: canonicalUrl,

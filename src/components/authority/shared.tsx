@@ -105,8 +105,8 @@ export function Footer() {
         <div className="l-footer-bottom">
           <p>© {new Date().getFullYear()} Aurex Business Labs</p>
           <nav aria-label="Legal">
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
+            <Link href="/privacy">Privacy policy</Link>
+            <Link href="/terms">Terms of service</Link>
             <Link href="/results-disclaimer">Results disclaimer</Link>
           </nav>
           <a href="#main">Back to top ↑</a>
