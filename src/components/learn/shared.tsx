@@ -5,7 +5,11 @@ import { resources, type Resource } from "@/content/resources";
 import { articles } from "@/content/articles";
 export function ResourceCard({ resource }: { resource: Resource }) {
   return (
-    <Link className="l-resource-card" href={`/resources/${resource.slug}`}>
+    <Link
+      className="l-resource-card"
+      href={`/resources/${resource.slug}`}
+      data-tilt
+    >
       <div className="l-resource-media">
         <ResourceArt kind={resource.visual} animate />
       </div>
@@ -43,6 +47,7 @@ export function LearningCTA() {
     <section className="l-cta-section">
       <div className="l-wrap">
         <div className="l-cta" data-reveal="scale">
+          <span className="l-cta-glow" aria-hidden="true" />
           <svg
             className="l-cta-mark"
             viewBox="0 0 120 120"

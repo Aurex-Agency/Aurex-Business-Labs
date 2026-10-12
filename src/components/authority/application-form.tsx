@@ -5,21 +5,9 @@ import { captureAttribution } from "@/lib/attribution";
 import { confirmedConversion, track } from "@/lib/analytics";
 import { ArrowUpRight } from "lucide-react";
 import { DeferredEmbed } from "./interactions";
+import { trades } from "@/content/trades";
 const choices: Record<string, string[]> = {
-  trade: [
-    "Roofing",
-    "HVAC",
-    "Plumbing",
-    "Electrical",
-    "Windows and doors",
-    "Siding and gutters",
-    "Foundation repair",
-    "Waterproofing",
-    "Restoration",
-    "Exterior remodeling",
-    "Kitchen and bathroom remodeling",
-    "Other residential services",
-  ],
+  trade: [...trades],
   monthlyLeads: [
     "Fewer than 20",
     "20 to 50",
