@@ -27,6 +27,8 @@ This block is written and re-added by `next dev` . verify at `node_modules/next/
 - Preserve the official blue symbol with the Business Labs wordmark. The original Agency lockup is a source asset, not the public wordmark.
 - The public site is an educational contractor field guide with varied editorial compositions, midnight and pale-blue surfaces, and original contractor-journey motion graphics. Resources and lessons are the primary journey; the audit is secondary. Use motion/react with the shared LazyMotion provider. Retain complete static content.
 - Respect reduced motion and keep the full message available without animation. Entrance motion is gated by data-motion on the root and the reveal observer, so content is never hidden without scripts. Keep the largest heading visible from the first frame. Mobile uses stacked system content with the journey timeline.
+- The atmosphere layer (src/components/landing/ambient.tsx), hero light field (light-field.tsx), homepage journey line (src/components/learn/journey-line.tsx) and inner page hero scenes (src/components/authority/hero-scenes.tsx) are decorative and aria-hidden. Keep them behind content, paused off screen, and still under reduced motion. Do not use React ViewTransition for route changes: it caused intermittent hydration errors under load. Route entrances use src/components/landing/route-sweep.tsx and play only after the first page load.
+- Trades shown in the homepage band and the audit form come from src/content/trades.ts.
 - Maintain WCAG 2.2 AA expectations, keyboard navigation, focus visibility, error associations, and at least 44px practical touch targets.
 
 ## Source organization
