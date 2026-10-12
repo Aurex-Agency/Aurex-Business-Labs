@@ -181,12 +181,13 @@ export default function Page() {
           title: "Text messages",
           body: (
             <p>
-              If you opt in to SMS reminders on the audit application, you agree
-              to receive text messages about your audit at the number you
-              provide. Consent is optional and is not a condition of applying or
-              buying anything. Message frequency varies. Message and data rates
-              may apply. Reply STOP to opt out at any time and HELP for help.
-              Carriers are not liable for delayed or undelivered messages.
+              If you opt in to SMS reminders on one of our applications, you
+              agree to receive text messages about your audit or call at the
+              number you provide. Consent is optional and is not a condition of
+              applying or buying anything. Message frequency varies. Message and
+              data rates may apply. Reply STOP to opt out at any time and HELP
+              for help. Carriers are not liable for delayed or undelivered
+              messages.
             </p>
           ),
         },

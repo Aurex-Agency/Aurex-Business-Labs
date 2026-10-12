@@ -1,4 +1,5 @@
 import { roofingProof, type ProofRecord } from "./proof";
+import { videoEmbedUrl } from "./funnel";
 export function webUrl(value: string | undefined) {
   try {
     const url = new URL(value || "");
@@ -60,6 +61,17 @@ export const site = {
   webinarFallback: webUrl(process.env.NEXT_PUBLIC_GHL_WEBINAR_FORM_URL),
   webinarStart: process.env.WEBINAR_START_ISO,
   webinarEnd: process.env.WEBINAR_END_ISO,
+  // The paid traffic funnel at /call. Videos must be Vimeo or Wistia links.
+  funnel: {
+    video: videoEmbedUrl(process.env.FUNNEL_VSL_URL),
+    poster: /^\/(?!\/)/.test(process.env.FUNNEL_VSL_POSTER || "")
+      ? process.env.FUNNEL_VSL_POSTER
+      : undefined,
+    calendar:
+      webUrl(process.env.FUNNEL_CALENDAR_URL) ||
+      webUrl(process.env.NEXT_PUBLIC_GHL_CALENDAR_EMBED_URL),
+    confirmVideo: videoEmbedUrl(process.env.FUNNEL_CONFIRM_VIDEO_URL),
+  },
   // Retained source assets for the archived website offer.
   vsl: "/videos/aurex-revenue-system.mp4",
   vslCaptions: "/videos/aurex-revenue-system.en.vtt",

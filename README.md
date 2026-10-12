@@ -16,13 +16,14 @@ Use Node.js 22 or newer. Run `npm ci`, configure `.env.local` from `.env.example
 - `src/content/articles.ts`: educational articles.
 - `src/lib/site-config.ts`: verified company facts and integrations.
 - `src/lib/lead-schema.ts` and `src/app/api/leads/route.ts`: validation and delivery. Legacy payload support remains for already-open forms.
+- `src/components/funnel` and `src/lib/funnel.ts`: the `/call` ads funnel (video, multi-step application, routing and booked page). Setup is in `docs/ADS_FUNNEL.md`.
 - `src/lib/attribution.ts`: first/latest campaign attribution with expiry.
 - `src/app/globals.css`: the single design system, organized as tokens, base, motion, primitives, chrome, shared components, homepage, learning pages, forms, inner pages and print. The earlier layered stylesheet is archived in docs/archive/legacy-globals.css and unused website-offer styles in docs/archive/legacy-landing.css. Neither is shipped.
 - Motion: an inline script sets `data-motion="on"` on the root before first paint only when the visitor allows motion. `src/components/landing/reveal-observer.tsx` marks `[data-reveal]`, `[data-stagger]` and `[data-play]` elements as they enter the viewport, and CSS plays the entrance. Interactive and scroll-linked motion uses motion/react with the shared LazyMotion provider. A fixed atmosphere layer (`ambient.tsx`) adds drifting glows, a blueprint grid, signal pulses, grain and the desktop cursor spotlight, and drives card tilt (`data-tilt`) and magnetic buttons. The homepage adds a WebGL light field that starts after the page is idle and a scroll-drawn journey line; inner pages can pass `scene` to `PageHero` for an animated illustration. Without scripts or with reduced motion, every page renders complete and still.
 
 ## Routes
 
-The primary journey is `/`, `/start-here`, `/resources`, `/resources/[slug]`, `/insights`, and `/about`. The framework, results, audit, portfolio, contact, methodology, and legal routes remain available. `/contractor-revenue-scorecard` now points visitors to the evergreen free tool without promoting unconfirmed live sessions. Search endpoints include sitemap, robots, RSS, llms.txt and social metadata. See `URL_MIGRATION_MAP.md` for retired URLs.
+The primary journey is `/`, `/start-here`, `/resources`, `/resources/[slug]`, `/insights`, and `/about`. The framework, results, audit, portfolio, contact, methodology, and legal routes remain available. `/contractor-revenue-scorecard` now points visitors to the evergreen free tool without promoting unconfirmed live sessions. Search endpoints include sitemap, robots, RSS, llms.txt and social metadata. `/call` and `/call/booked` are the paid ads funnel: no navigation, `noindex` and left out of the sitemap. See `URL_MIGRATION_MAP.md` for retired URLs.
 
 ## Verification
 
