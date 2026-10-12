@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { submissionSchema, type GhlLeadPayload } from "@/lib/lead-schema";
+import {
+  bottleneckPhase,
+  routeApplication,
+  routeTags,
+  type FunnelBottleneck,
+} from "@/lib/funnel";
 export const runtime = "nodejs";
 // Room for two bounded attribution snapshots plus backward-compatible aliases.
 const MAX_BODY_BYTES = 96 * 1024;
@@ -74,6 +80,9 @@ export async function POST(request: NextRequest) {
       "tracksSales",
       "investmentReady",
       "caseStudyInterest",
+      "tradeOther",
+      "leadSource",
+      "staff",
     ]);
     const issues = result.error.issues.flatMap((issue) =>
       issue.code === "invalid_union" ? issue.errors.flat() : [issue],
@@ -107,6 +116,8 @@ export async function POST(request: NextRequest) {
       400,
     );
   const receipt = crypto.randomUUID();
+  const funnel: Partial<ReturnType<typeof funnelDetails>> =
+    lead.sourcePage === "/call" ? funnelDetails(lead, receipt) : {};
   const webhook = process.env.GHL_WEBHOOK_URL;
   if (!webhook) {
     if (
@@ -118,7 +129,12 @@ export async function POST(request: NextRequest) {
         fieldCount: Object.keys(lead).length,
         personalInformation: "REDACTED",
       });
-      return NextResponse.json({ success: true, receipt, development: true });
+      return NextResponse.json({
+        success: true,
+        receipt,
+        development: true,
+        ...(funnel.funnel && { route: funnel.funnel.route }),
+      });
     }
     return fail(
       "We could not send your request right now. Your answers are still here. Please try again shortly.",
@@ -135,17 +151,52 @@ export async function POST(request: NextRequest) {
         ...lead,
         submittedAt: new Date().toISOString(),
         receipt,
+        ...funnel,
       } satisfies GhlLeadPayload),
       signal: AbortSignal.timeout(10000),
       redirect: "error",
       cache: "no-store",
     });
     if (!response.ok) throw new Error("Delivery unsuccessful");
-    return NextResponse.json({ success: true, receipt });
+    return NextResponse.json({
+      success: true,
+      receipt,
+      ...(funnel.funnel && { route: funnel.funnel.route }),
+    });
   } catch {
     return fail(
       "Your request could not be delivered. Your answers are saved on this page. Please try again.",
       502,
     );
   }
+}
+
+type FunnelLead = Omit<
+  Extract<ReturnType<typeof submissionSchema.parse>, { sourcePage: "/call" }>,
+  "companyWebsite" | "startedAt"
+>;
+// The route is decided here from the answers, never trusted from the browser.
+// Campaign fields use the latest touch so GHL reports the ad that converted.
+function funnelDetails(lead: FunnelLead, receipt: string) {
+  const route =
+    lead.stage === "partial"
+      ? "partial"
+      : (routeApplication(lead) ?? "partial");
+  return {
+    funnel: {
+      route,
+      tags: ["call-funnel", routeTags[route]],
+      pipelineStage: "New Lead",
+      callOpensOn: lead.bottleneck
+        ? bottleneckPhase[lead.bottleneck as FunnelBottleneck]
+        : undefined,
+      trade: lead.trade === "Other" ? lead.tradeOther : lead.trade,
+      leadSource: lead.attribution.utm_source,
+      campaignName: lead.attribution.utm_campaign,
+      adName: lead.attribution.utm_content,
+      // Matches the browser Lead event ID so Meta can deduplicate CAPI events.
+      metaEventId:
+        route === "qualified" || route === "borderline" ? receipt : undefined,
+    },
+  };
 }

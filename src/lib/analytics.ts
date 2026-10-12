@@ -52,13 +52,20 @@ export const metaPixelId = /^\d+$/.test(
 )
   ? process.env.NEXT_PUBLIC_META_PIXEL_ID
   : undefined;
-export function track(event: AnalyticsEvent, details?: Record<string, string>) {
+export function track(
+  event: AnalyticsEvent,
+  details?: Record<string, string>,
+  // The ads funnel keeps Meta out of events that can't tell a qualified
+  // applicant from an unqualified one.
+  options: { meta?: boolean } = {},
+) {
   if (
     typeof window === "undefined" ||
     (!gtmId && !adsId && !ga4Id && !metaPixelId)
   )
     return;
-  if (metaPixelId) window.fbq?.("trackCustom", event, details || {});
+  if (metaPixelId && options.meta !== false)
+    window.fbq?.("trackCustom", event, details || {});
   window.dataLayer = window.dataLayer || [];
   if (gtmId) window.dataLayer.push({ event, ...details });
   if (ga4Id || adsId) {
@@ -79,4 +86,27 @@ export function confirmedConversion(receipt: string) {
       send_to: `${adsId}/${adsLabel}`,
       transaction_id: receipt,
     });
+}
+
+// Sends a Meta standard event, such as Lead or Schedule. The pixel loads after
+// hydration, so wait briefly for it rather than drop an event fired on load.
+// The event ID lets Meta deduplicate the matching server (CAPI) event.
+export function metaStandard(
+  event: "Lead" | "Schedule",
+  eventID?: string,
+  params: Record<string, string> = {},
+) {
+  if (typeof window === "undefined") return;
+  const send = () =>
+    eventID
+      ? window.fbq?.("track", event, params, { eventID })
+      : window.fbq?.("track", event, params);
+  if (window.fbq || !metaPixelId) return send();
+  let tries = 0;
+  const timer = window.setInterval(() => {
+    if (window.fbq || ++tries > 50) {
+      window.clearInterval(timer);
+      send();
+    }
+  }, 200);
 }

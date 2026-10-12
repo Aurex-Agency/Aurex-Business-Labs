@@ -16,6 +16,17 @@ const clean = (min: number, max: number, message: string) =>
       z.string().min(min, message).max(max, "Please shorten this response."),
     );
 import { customerValues, timelines, budgets } from "./lead-options";
+import {
+  funnelTrades,
+  funnelRevenue,
+  funnelLeadVolume,
+  funnelLeadSources,
+  funnelBottlenecks,
+  funnelStaff,
+  funnelJobValue,
+  funnelCaseStudy,
+  routeApplication,
+} from "./funnel";
 const optionalText = (max: number) =>
   clean(0, max, "")
     .transform((value) => value || undefined)
@@ -141,6 +152,55 @@ export const auditSchema = leadSchema.extend({
   caseStudyInterest: z.enum(["Yes", "Maybe", "No"]),
   smsConsent: z.boolean().default(false),
 });
+// The /call application. Contact details arrive first as a partial so an
+// abandoned application still reaches the CRM; the complete stage carries the
+// answers. Questions after an early exit are left out, never invented.
+const metaId = z
+  .string()
+  .max(500)
+  .regex(/^fb\.\d\.\d+\.[\w.-]+$/)
+  .optional()
+  .catch(undefined);
+export const funnelContactSchema = leadSchema
+  .pick({ firstName: true, lastName: true, email: true, businessName: true })
+  .extend({
+    phone: leadSchema.shape.phone.refine(
+      (v) => !!v,
+      "Enter your phone number.",
+    ),
+    smsConsent: z.boolean().default(false),
+  });
+export const funnelSchema = funnelContactSchema
+  .extend({
+    stage: z.enum(["partial", "complete"]),
+    trade: optionalChoice(funnelTrades),
+    tradeOther: optionalText(100),
+    annualRevenue: optionalChoice(funnelRevenue),
+    monthlyLeads: optionalChoice(funnelLeadVolume),
+    leadSource: optionalChoice(funnelLeadSources),
+    bottleneck: optionalChoice(funnelBottlenecks),
+    staff: optionalChoice(funnelStaff),
+    jobValue: optionalChoice(funnelJobValue),
+    caseStudyInterest: optionalChoice(funnelCaseStudy),
+    meta: z.object({ fbp: metaId, fbc: metaId }).optional().catch(undefined),
+  })
+  .superRefine((v, ctx) => {
+    if (v.stage === "partial") return;
+    const need = (key: keyof typeof v, message: string) => {
+      if (!v[key]) ctx.addIssue({ code: "custom", path: [key], message });
+    };
+    need("trade", "Choose your trade.");
+    if (v.trade === "Other") need("tradeOther", "Tell us your trade.");
+    need("annualRevenue", "Choose your annual revenue.");
+    if (v.annualRevenue === funnelRevenue[0]) return;
+    need("monthlyLeads", "Choose your monthly lead volume.");
+    need("leadSource", "Choose where most leads come from.");
+    need("bottleneck", "Choose your biggest bottleneck.");
+    need("staff", "Choose an answer.");
+    need("jobValue", "Choose your average job value.");
+    if (routeApplication(v) !== "unqualified")
+      need("caseStudyInterest", "Choose an answer.");
+  });
 export const contactSchema = leadSchema.extend({
   challenge: clean(
     10,
@@ -158,6 +218,9 @@ export const submissionSchema = z.union([
     ...submissionFields,
     sourcePage: z.literal("/revenue-website"),
   }),
+  funnelSchema.and(
+    z.object({ ...submissionFields, sourcePage: z.literal("/call") }),
+  ),
 ]);
 export type LeadSubmission = z.input<typeof submissionSchema>;
 export type GhlLeadPayload = Omit<
@@ -166,4 +229,16 @@ export type GhlLeadPayload = Omit<
 > & {
   submittedAt: string;
   receipt: string;
+  // Present on /call applications so GHL can tag, route and report them.
+  funnel?: {
+    route: string;
+    tags: string[];
+    pipelineStage: string;
+    callOpensOn?: string;
+    trade?: string;
+    leadSource?: string;
+    campaignName?: string;
+    adName?: string;
+    metaEventId?: string;
+  };
 };

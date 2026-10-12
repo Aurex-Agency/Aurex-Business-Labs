@@ -19,14 +19,19 @@ const options = moduleUrl(
 const attributionModule = moduleUrl(
   compile(await fs.readFile("src/lib/attribution.ts", "utf8")),
 );
+const funnelModule = moduleUrl(
+  compile(await fs.readFile("src/lib/funnel.ts", "utf8")),
+);
 const schema = compile(
   await fs.readFile("src/lib/lead-schema.ts", "utf8"),
 ).replace('from "zod"', `from "${pathToFileURL(require.resolve("zod")).href}"`);
 const schemaWithOptions = schema
   .replace('from "./attribution"', `from "${attributionModule}"`)
-  .replace('from "./lead-options"', `from "${options}"`);
+  .replace('from "./lead-options"', `from "${options}"`)
+  .replace('from "./funnel"', `from "${funnelModule}"`);
 const route = compile(await fs.readFile("src/app/api/leads/route.ts", "utf8"))
   .replace('from "@/lib/lead-schema"', `from "${moduleUrl(schemaWithOptions)}"`)
+  .replace('from "@/lib/funnel"', `from "${funnelModule}"`)
   .replace(
     'from "next/server"',
     `from "${pathToFileURL(require.resolve("next/server.js")).href}"`,
@@ -321,6 +326,109 @@ try {
     throw new DOMException("Timed out", "TimeoutError");
   };
   assert.equal((await POST(request())).status, 502);
+  // The /call funnel: the server decides the route and tags from the answers.
+  const funnelBase = {
+    firstName: "Sam",
+    lastName: "Builder",
+    email: "Sam@example.com",
+    phone: "(662) 555-0111",
+    businessName: "Builder Roofing",
+    smsConsent: false,
+    companyWebsite: "",
+    startedAt: Date.now() - 60000,
+    sourcePage: "/call",
+    attribution: {
+      utm_source: "facebook",
+      utm_campaign: "Contractor VSL",
+      utm_content: "Ad 3",
+    },
+    meta: { fbp: "fb.1.1700000000000.123456", fbc: "<script>" },
+  };
+  const answers = {
+    trade: "Roofing",
+    annualRevenue: "$1M to $3M",
+    monthlyLeads: "25 to 50",
+    leadSource: "Google search",
+    bottleneck: "Estimates go out but too few close",
+    staff: "Yes, full-time staff",
+    jobValue: "$15,000 to $30,000",
+    caseStudyInterest: "Maybe, I’d want details",
+  };
+  let funnelForwarded;
+  globalThis.fetch = async (_url, options) => {
+    funnelForwarded = JSON.parse(options.body);
+    return new Response("{}", { status: 200 });
+  };
+  const funnelCase = async (body, status = 200) => {
+    funnelForwarded = undefined;
+    const response = await POST(request({ ...funnelBase, ...body }));
+    assert.equal(response.status, status);
+    return response.json();
+  };
+  let reply = await funnelCase({ stage: "partial" });
+  assert.equal(reply.route, "partial");
+  assert.deepEqual(funnelForwarded.funnel.tags, [
+    "call-funnel",
+    "partial-application",
+  ]);
+  assert.equal(funnelForwarded.phone, "6625550111");
+  assert.equal(funnelForwarded.meta.fbp, "fb.1.1700000000000.123456");
+  assert.equal(funnelForwarded.meta.fbc, undefined);
+  await funnelCase({ stage: "partial", phone: "" }, 400);
+  reply = await funnelCase({ stage: "complete", ...answers });
+  assert.equal(reply.route, "qualified");
+  assert.equal(funnelForwarded.funnel.metaEventId, reply.receipt);
+  assert.equal(funnelForwarded.funnel.callOpensOn, "Recover");
+  assert.equal(funnelForwarded.funnel.pipelineStage, "New Lead");
+  assert.equal(funnelForwarded.funnel.campaignName, "Contractor VSL");
+  assert.equal(funnelForwarded.funnel.adName, "Ad 3");
+  assert.equal(funnelForwarded.funnel.leadSource, "facebook");
+  reply = await funnelCase({
+    stage: "complete",
+    ...answers,
+    staff: "No, it’s just me and the crew",
+  });
+  assert.equal(reply.route, "borderline");
+  assert.deepEqual(funnelForwarded.funnel.tags, [
+    "call-funnel",
+    "borderline-lead",
+  ]);
+  reply = await funnelCase({
+    stage: "complete",
+    ...answers,
+    annualRevenue: "$500K to $1M",
+  });
+  assert.equal(reply.route, "borderline");
+  reply = await funnelCase({
+    stage: "complete",
+    trade: "HVAC",
+    annualRevenue: "Under $500K",
+  });
+  assert.equal(reply.route, "unqualified");
+  assert.equal(funnelForwarded.funnel.metaEventId, undefined);
+  assert.equal(funnelForwarded.monthlyLeads, undefined);
+  reply = await funnelCase({
+    stage: "complete",
+    ...answers,
+    caseStudyInterest: undefined,
+    staff: "No, it’s just me and the crew",
+    jobValue: "$1,000 to $5,000",
+  });
+  assert.equal(reply.route, "unqualified");
+  reply = await funnelCase(
+    { stage: "complete", ...answers, jobValue: undefined },
+    400,
+  );
+  assert.ok(reply.fieldErrors.jobValue);
+  reply = await funnelCase(
+    { stage: "complete", ...answers, trade: "Other" },
+    400,
+  );
+  assert.ok(reply.fieldErrors.tradeOther);
+  await funnelCase(
+    { stage: "complete", ...answers, annualRevenue: "Lots" },
+    400,
+  );
   delete process.env.GHL_WEBHOOK_URL;
   process.env.LEAD_DEV_MODE = "true";
   assert.equal((await POST(request())).status, 503);
@@ -342,7 +450,7 @@ try {
       assert.equal(limitedResponse.headers.get("Retry-After"), "60");
   }
   console.log(
-    "Lead endpoint: successful forwarding, normalization, attribution, upstream errors, timeout recovery, and production fail-closed behavior passed.",
+    "Lead endpoint: successful forwarding, normalization, attribution, funnel routing and tags, upstream errors, timeout recovery, and production fail-closed behavior passed.",
   );
 } finally {
   globalThis.fetch = originalFetch;

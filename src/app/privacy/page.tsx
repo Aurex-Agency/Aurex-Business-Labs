@@ -96,6 +96,23 @@ export default function Page() {
                   "Whether you agree to optional SMS reminders",
                 ]}
               />
+              <h3>Strategy call application</h3>
+              <List
+                items={[
+                  "First and last name, phone number, email and company name",
+                  "Your trade and approximate annual revenue range",
+                  "Monthly lead volume and where most of your leads come from",
+                  "Your biggest bottleneck",
+                  "Whether you have office, dispatch or admin staff, and your average job value range",
+                  "Whether you are open to being featured as a case study",
+                  "Whether you agree to optional SMS reminders",
+                ]}
+              />
+              <p>
+                This application has several steps. Your contact details are
+                sent to us when you finish the first step, so we can follow up
+                even if you do not finish the rest.
+              </p>
               <p>
                 Please do not send passwords, payment card details, homeowner
                 records or other sensitive information through our forms. We do
@@ -121,6 +138,12 @@ export default function Page() {
                 string. We keep your first and most recent visit, and each
                 record expires after 90 days. These details are sent to us only
                 if you submit a form.
+              </p>
+              <p>
+                When Meta measurement is enabled, the strategy call application
+                also sends the Meta browser identifiers stored in the _fbp and
+                _fbc cookies, if present, so an application can be matched to
+                the ad that led to it.
               </p>
               <p>
                 Each submission also records which form you used, when it was
@@ -203,7 +226,8 @@ export default function Page() {
                 include our website hosting provider, our customer relationship
                 management (CRM) and messaging platform, which receives form
                 submissions and sends any text messages, scheduling and video
-                meeting tools if you book a call, and the analytics and
+                meeting tools if you book a call, video hosting providers when
+                you press play on an embedded video, and the analytics and
                 advertising services described above when they are enabled.
               </p>
               <h3>Advertising measurement</h3>
@@ -234,8 +258,8 @@ export default function Page() {
               <p>
                 Agreeing to text messages is optional and is never required to
                 apply, contact us or buy anything. If you check the SMS box on
-                the audit application, we may text the number you provided about
-                your audit, such as scheduling and reminders.
+                one of our applications, we may text the number you provided
+                about your audit or call, such as scheduling and reminders.
               </p>
               <List
                 items={[
