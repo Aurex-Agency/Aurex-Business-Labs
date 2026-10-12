@@ -11,12 +11,12 @@ export default function Page() {
       <PageHero
         eyebrow="Legal"
         path="/privacy"
-        title="Privacy Policy"
+        title="Privacy policy"
         description="How we handle the information you choose to share."
       />
-      <article className="a-section a-light">
-        <div className="a-wrap">
-          <div className="a-reading">
+      <article className="l-section is-paper l-sheet">
+        <div className="l-wrap">
+          <div className="l-prose">
             <section>
               <h2>Review status</h2>
               <p>
@@ -97,7 +97,7 @@ export default function Page() {
               </p>
             </section>
             <p>
-              <a className="a-inline" href="/contact">
+              <a className="l-inline" href="/contact">
                 Contact Aurex Business Labs
               </a>
             </p>

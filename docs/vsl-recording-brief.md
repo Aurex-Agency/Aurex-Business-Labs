@@ -24,7 +24,7 @@ Film a direct-to-camera introduction and close. Use actual site and workflow rec
 
 ## Website integration
 
-The supplied recording is now integrated through src/components/landing/hero-media.tsx. The source was downloaded from the user-provided Drive file and matched the reviewed local MOV byte for byte. The bundled public/videos assets include a 720p H.264/AAC MP4, WebP poster, and timed English WebVTT captions. The original MOV stays in ignored artifacts.
+The supplied recording was integrated through the retired landing hero, now archived at docs/archive/landing/hero-media.tsx.txt. The source was downloaded from the user-provided Drive file and matched the reviewed local MOV byte for byte. The bundled public/videos assets include a 720p H.264/AAC MP4, WebP poster, and timed English WebVTT captions. The original MOV stays in ignored artifacts.
 
 The player uses native controls, plays inline, and does not autoplay or preload the video. Its dimensions are reserved to prevent layout shift. Captions are already burned into the supplied recording, so the additional selectable caption track is not forced on by default. Public VSL environment variables can override the bundled assets; rebuild after changing them.
 

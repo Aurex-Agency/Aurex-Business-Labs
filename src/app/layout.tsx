@@ -5,6 +5,10 @@ import { Geist, Instrument_Serif } from "next/font/google";
 import { site } from "@/lib/site-config";
 import { AnalyticsScripts } from "@/components/landing/analytics-scripts";
 import { MotionProvider } from "@/components/landing/motion-provider";
+import {
+  RevealObserver,
+  motionScript,
+} from "@/components/landing/reveal-observer";
 import "./globals.css";
 const sans = Geist({
   subsets: ["latin"],
@@ -58,12 +62,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
+    <html
+      lang="en"
+      className={`${sans.variable} ${serif.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: motionScript }} />
+      </head>
       <body>
         <a className="skip-link" href="#main">
           Skip to content
         </a>
         <MotionProvider>{children}</MotionProvider>
+        <RevealObserver />
         <Suspense fallback={null}>
           <AttributionCapture />
         </Suspense>

@@ -19,44 +19,44 @@ export default function Page() {
       <PageHero
         eyebrow="Results methodology"
         path="/results/methodology"
-        title="Every Result Needs a Definition"
+        title="Every result needs a definition."
         description="A useful result states its source, date window, business context, measurement method and limitations."
       />
-      <Section title="The Terms We Use" light>
-        <div className="a-two">
-          <article className="a-card">
+      <Section title="The terms we use" light>
+        <div className="l-grid-3">
+          <article className="l-card">
             <h3>Tracked revenue</h3>
             <p>
               Revenue tied to a lead, opportunity, or customer visible in the
               agreed tracking system.
             </p>
           </article>
-          <article className="a-card">
+          <article className="l-card">
             <h3>Collected revenue</h3>
             <p>Money the client confirms it received.</p>
           </article>
-          <article className="a-card">
+          <article className="l-card">
             <h3>Verified result</h3>
             <p>
               Source, opportunity stage, sale, and revenue can be reconciled
               using the agreed records.
             </p>
           </article>
-          <article className="a-card">
+          <article className="l-card">
             <h3>Influenced result</h3>
             <p>
               An Aurex campaign or workflow touched the opportunity, but
               causation cannot be fully isolated.
             </p>
           </article>
-          <article className="a-card">
+          <article className="l-card">
             <h3>Estimated gross profit</h3>
             <p>
               Collected revenue multiplied by a client-supplied or documented
               gross-margin estimate.
             </p>
           </article>
-          <article className="a-card">
+          <article className="l-card">
             <h3>Unverified result</h3>
             <p>
               A result reported without enough source, sale, or revenue
@@ -65,8 +65,8 @@ export default function Page() {
           </article>
         </div>
       </Section>
-      <Section title="How a Result Becomes Publishable">
-        <div className="a-reading">
+      <Section title="How a result becomes publishable">
+        <div className="l-prose">
           <p>
             We reconcile the source record, opportunity history, sale record and
             revenue amount. We identify the date window, baseline where

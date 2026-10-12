@@ -25,11 +25,17 @@ export default function Work() {
       <PageHero
         eyebrow="Selected work"
         path="/work"
-        title="Every business has its own character."
+        title={
+          <>
+            Every business has <em>its own character.</em>
+          </>
+        }
         description="The work should show it. A selection of digital experiences shaped around the people, products, and decisions behind each business."
       />
-      <section className="s-work-section" aria-label="Selected projects">
-        <WorkGrid />
+      <section className="l-work-section" aria-label="Selected projects">
+        <div className="l-wrap">
+          <WorkGrid />
+        </div>
       </section>
       <FinalCTA />
     </Shell>

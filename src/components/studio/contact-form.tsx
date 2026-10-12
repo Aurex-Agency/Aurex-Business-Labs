@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 import { contactSchema } from "@/lib/lead-schema";
 import { captureAttribution } from "@/lib/attribution";
 import { confirmedConversion, track } from "@/lib/analytics";
@@ -68,20 +69,23 @@ export function ContactForm() {
     }
   }
   return (
-    <div className="s-form">
+    <div className="l-form-card">
       <div
         role="status"
         aria-live="polite"
         tabIndex={-1}
         ref={status}
-        className="s-form-status"
+        className="l-form-status"
+        data-tone={sent ? "success" : busy ? "pending" : "error"}
       >
         {message}
       </div>
       {sent ? (
-        <Link className="s-text-link" href="/work">
-          Explore the work ↗
-        </Link>
+        <div className="l-form-success">
+          <Link className="l-text-link" href="/work">
+            Explore the work <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
       ) : (
         <form
           noValidate
@@ -93,7 +97,7 @@ export function ContactForm() {
             }
           }}
         >
-          <div className="s-form-grid">
+          <div className="l-form-grid">
             {[
               ["firstName", "First name", "given-name"],
               ["lastName", "Last name", "family-name"],
@@ -102,7 +106,7 @@ export function ContactForm() {
               ["website", "Website (optional)", "url"],
               ["phone", "Phone (optional)", "tel"],
             ].map(([name, label, autoComplete]) => (
-              <div className="s-field" key={name}>
+              <div className="l-field" key={name}>
                 <label htmlFor={name}>{label}</label>
                 <input
                   id={name}
@@ -121,13 +125,13 @@ export function ContactForm() {
                   aria-describedby={errors[name] ? `${name}-error` : undefined}
                 />
                 {errors[name] && (
-                  <p className="s-error" id={`${name}-error`}>
+                  <p className="l-field-error" id={`${name}-error`}>
                     {errors[name]}
                   </p>
                 )}
               </div>
             ))}
-            <div className="s-field s-field-wide">
+            <div className="l-field is-wide">
               <label htmlFor="challenge">What are you thinking about?</label>
               <textarea
                 name="challenge"
@@ -142,13 +146,13 @@ export function ContactForm() {
                 }
               />
               {errors.challenge && (
-                <p id="challenge-error" className="s-error">
+                <p id="challenge-error" className="l-field-error">
                   {errors.challenge}
                 </p>
               )}
             </div>
           </div>
-          <div className="s-honeypot" aria-hidden="true">
+          <div className="l-honeypot" aria-hidden="true">
             <label htmlFor="companyWebsite">Leave this empty</label>
             <input
               id="companyWebsite"
@@ -157,18 +161,20 @@ export function ContactForm() {
               autoComplete="off"
             />
           </div>
-          <p className="a-small">
+          <p className="l-small l-form-legal">
             We’ll use these details to respond to your message. Please don’t
             include passwords or sensitive customer information.{" "}
-            <a className="a-inline" href="/privacy">
+            <a className="l-inline" href="/privacy">
               Privacy policy
             </a>
             .
           </p>
-          <button type="submit" disabled={busy} className="a-button">
-            {busy ? "Sending…" : "Send your message"}
-            <span aria-hidden="true">↗</span>
-          </button>
+          <div className="l-form-submit">
+            <button type="submit" disabled={busy} className="l-button">
+              {busy ? "Sending…" : "Send your message"}
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </button>
+          </div>
         </form>
       )}
     </div>

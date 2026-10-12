@@ -33,56 +33,59 @@ export default function Home() {
           },
         ]}
       />
-      <section className="f-hero l-wrap">
-        <div className="f-hero-copy">
-          <p className="l-eyebrow">
-            <span className="l-dot" /> A field guide for residential contractors
-          </p>
-          <h1>
-            Good work deserves <em>a better system.</em>
-          </h1>
-          <p className="f-hero-deck">
-            You know your trade. Get to know the journey around it, from the
-            first inquiry to the next booked job.
-          </p>
-          <div className="l-actions">
-            <Link className="l-button" href="/resources">
-              Explore free resources <ArrowUpRight size={18} />
-            </Link>
-            <Link className="l-text-link" href="/start-here">
-              Start here <ArrowRight size={17} />
-            </Link>
+      <section className="f-hero">
+        <div className="l-wrap f-hero-grid">
+          <div className="f-hero-copy">
+            <p className="l-eyebrow">
+              <span className="l-dot" aria-hidden="true" /> A field guide for
+              residential contractors
+            </p>
+            <h1>
+              Good work deserves <em>a better system.</em>
+            </h1>
+            <p className="f-hero-deck">
+              You know your trade. Get to know the journey around it, from the
+              first inquiry to the next booked job.
+            </p>
+            <div className="l-actions">
+              <Link className="l-button" href="/resources">
+                Explore free resources <ArrowUpRight size={18} />
+              </Link>
+              <Link className="l-text-link" href="/start-here">
+                Start here <ArrowRight size={17} />
+              </Link>
+            </div>
+            <p className="f-hero-note">
+              Practical tools. Useful ideas. Yours to put to work.
+            </p>
           </div>
-          <p className="f-hero-note">
-            Practical tools. Useful ideas. Yours to put to work.
-          </p>
+          <FieldIllustration />
         </div>
-        <FieldIllustration />
-        <div className="f-hero-bottom">
-          <span>THE BUSINESS BEHIND THE GOOD WORK</span>
+        <div className="l-wrap f-hero-bottom">
+          <span>The business behind the good work</span>
           <a href="#explore">
-            Find your next step <ArrowDown size={16} />
+            Find your next step
+            <span className="f-scroll-cue" aria-hidden="true">
+              <ArrowDown size={15} />
+            </span>
           </a>
-          <span>AUREX FIELD GUIDE / 01</span>
+          <span>Aurex field guide / 01</span>
         </div>
       </section>
       <StartingPoint />
-      <section className="f-library">
+      <section className="f-library is-paper">
         <div className="l-wrap">
-          <div className="f-library-heading">
+          <div className="l-section-head" data-reveal>
             <div>
               <p className="l-eyebrow">01 / The working library</p>
               <h2>
-                Less guesswork.
-                <br />
-                <em>More getting somewhere.</em>
+                Less guesswork. <em>More getting somewhere.</em>
               </h2>
             </div>
             <div>
               <p>
-                Useful on Monday morning.
-                <br />
-                Free tools to open, adapt, and use with your team.
+                Useful on Monday morning. Free tools to open, adapt, and use
+                with your team.
               </p>
               <Link className="l-text-link" href="/resources">
                 Browse the library <ArrowRight size={18} />
@@ -91,57 +94,68 @@ export default function Home() {
           </div>
           <ResourceGrid />
           <div className="f-library-foot">
-            <span>BUILT TO BE USED, NOT JUST READ.</span>
-            <span>No sign-up. No gate. Get to work. ↗</span>
+            <span>Built to be used, not just read.</span>
+            <span>No sign-up. No gate. Get to work.</span>
           </div>
         </div>
       </section>
       <SystemStory />
-      <section className="f-perspective l-wrap">
-        <div className="f-perspective-top">
-          <p className="l-eyebrow">Our point of view</p>
-          <span>A NOTE FROM AUREX BUSINESS LABS</span>
-        </div>
-        <h2>
-          Look beyond
-          <br />
-          the <span className="f-crossout">lead count.</span>
-          <br />
-          <em>Follow the whole story.</em>
-        </h2>
-        <div className="f-perspective-bottom">
-          <div className="f-margin-note">
-            <span>↳</span> The handoff matters
-            <br />
-            as much as the hello.
+      <section className="f-perspective">
+        <div className="l-wrap">
+          <div className="f-perspective-top" data-reveal="fade">
+            <p className="l-eyebrow">Our point of view</p>
+            <span>A note from Aurex Business Labs</span>
           </div>
-          <div>
-            <p>
-              Which inquiries became conversations? Which estimates need
-              attention? What happened after the work was done?
-            </p>
-            <p>
-              We connect marketing to the day-to-day work of running a
-              contracting business. Clear definitions. Useful processes.
-              Evidence you can follow.
-            </p>
-            <Link className="l-text-link" href="/about">
-              Get to know Aurex <ArrowUpRight size={17} />
-            </Link>
+          <h2 data-reveal>
+            Look beyond
+            <br />
+            the <span className="f-crossout">lead count.</span>
+            <br />
+            <em>Follow the whole story.</em>
+          </h2>
+          <div className="f-perspective-bottom" data-stagger>
+            <div className="f-margin-note">
+              <span aria-hidden="true">↳</span>
+              <p>
+                The handoff matters
+                <br />
+                as much as the hello.
+              </p>
+            </div>
+            <div className="f-perspective-copy">
+              <p>
+                Which inquiries became conversations? Which estimates need
+                attention? What happened after the work was done?
+              </p>
+              <p>
+                We connect marketing to the day-to-day work of running a
+                contracting business. Clear definitions. Useful processes.
+                Evidence you can follow.
+              </p>
+              <Link className="l-text-link" href="/about">
+                Get to know Aurex <ArrowUpRight size={17} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
-      <section className="f-notebook l-wrap">
-        <div className="f-notebook-heading">
-          <div>
-            <p className="l-eyebrow">03 / From the notebook</p>
-            <h2>Worth a closer look.</h2>
+      <section className="f-notebook">
+        <div className="l-wrap">
+          <div className="l-section-head" data-reveal>
+            <div>
+              <p className="l-eyebrow">03 / From the notebook</p>
+              <h2>
+                Worth a <em>closer look.</em>
+              </h2>
+            </div>
+            <div>
+              <Link className="l-text-link" href="/insights">
+                All insights <ArrowRight size={17} />
+              </Link>
+            </div>
           </div>
-          <Link className="l-text-link" href="/insights">
-            All insights <ArrowRight size={17} />
-          </Link>
+          <GuideList />
         </div>
-        <GuideList />
       </section>
       <LearningCTA />
     </Shell>

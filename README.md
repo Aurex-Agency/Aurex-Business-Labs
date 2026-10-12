@@ -17,7 +17,8 @@ Use Node.js 22 or newer. Run `npm ci`, configure `.env.local` from `.env.example
 - `src/lib/site-config.ts`: verified company facts and integrations.
 - `src/lib/lead-schema.ts` and `src/app/api/leads/route.ts`: validation and delivery. Legacy payload support remains for already-open forms.
 - `src/lib/attribution.ts`: first/latest campaign attribution with expiry.
-- `src/app/globals.css`: active brand, responsive layouts and reduced-motion styles. Unused website-offer styles are retained in docs/archive/legacy-landing.css and are not shipped.
+- `src/app/globals.css`: the single design system, organized as tokens, base, motion, primitives, chrome, shared components, homepage, learning pages, forms, inner pages and print. The earlier layered stylesheet is archived in docs/archive/legacy-globals.css and unused website-offer styles in docs/archive/legacy-landing.css. Neither is shipped.
+- Motion: an inline script sets `data-motion="on"` on the root before first paint only when the visitor allows motion. `src/components/landing/reveal-observer.tsx` marks `[data-reveal]`, `[data-stagger]` and `[data-play]` elements as they enter the viewport, and CSS plays the entrance. Interactive and scroll-linked motion uses motion/react with the shared LazyMotion provider. Without scripts or with reduced motion, every page renders complete and still.
 
 ## Routes
 

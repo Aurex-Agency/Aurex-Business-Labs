@@ -1,6 +1,13 @@
 "use client";
-import { useState } from "react";
-import { Download, Printer, RotateCcw, Check } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  ArrowUpRight,
+  Download,
+  Printer,
+  RotateCcw,
+  Check,
+  Copy,
+} from "lucide-react";
 import { track } from "@/lib/analytics";
 const fields = [
   "Valid inquiries",
@@ -34,6 +41,33 @@ export function PrintResource() {
   return (
     <button className="l-text-link l-print" onClick={() => window.print()}>
       Print this resource <Printer size={17} />
+    </button>
+  );
+}
+// Copies an example message so it can be adapted in the team's own tools.
+export function CopyScript({ text }: { text: string }) {
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setState("copied");
+    } catch {
+      setState("failed");
+    }
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setState("idle"), 2400);
+  }
+  return (
+    <button type="button" className="l-copy" data-state={state} onClick={copy}>
+      {state === "copied" ? <Check size={15} /> : <Copy size={15} />}
+      <span aria-live="polite">
+        {state === "copied"
+          ? "Copied"
+          : state === "failed"
+            ? "Select the text to copy"
+            : "Copy message"}
+      </span>
     </button>
   );
 }
@@ -138,7 +172,8 @@ export function Scorecard() {
         </p>
         <div className="l-actions">
           <button className="l-button" type="submit">
-            Calculate handoff rates <span aria-hidden="true">↗</span>
+            Calculate handoff rates{" "}
+            <ArrowUpRight size={16} aria-hidden="true" />
           </button>
           <button
             className="l-text-link"

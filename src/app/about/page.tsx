@@ -13,6 +13,20 @@ export const metadata = pageMeta(
   "Customer acquisition and revenue systems for established residential contractors.",
   "/about",
 );
+const principles = [
+  [
+    "Own the next step.",
+    "Every inquiry, estimate and follow-up needs a clear owner and a clear next action.",
+  ],
+  [
+    "Fix the actual constraint.",
+    "Use the scorecard to find whether acquisition, response, booking, sales or capacity needs attention.",
+  ],
+  [
+    "Evidence over promises.",
+    "Show the work. Be clear about what is known. Publish results only when the evidence and permissions support them.",
+  ],
+];
 export default function About() {
   return (
     <Shell>
@@ -20,74 +34,74 @@ export default function About() {
       <PageHero
         eyebrow="About Aurex Business Labs"
         path="/about"
-        title="Built around the sold job."
+        title={
+          <>
+            Built around <em>the sold job.</em>
+          </>
+        }
         description="Aurex Business Labs connects acquisition, lead handling, opportunity recovery, referrals, and repeat business into one measurable system."
       />
-      <Section eyebrow="Our point of view" title="">
-        <h2 className="s-about-statement">
-          From marketing activity
-          <br />
-          to the outcomes
-          <br />
-          <em>your business runs on.</em>
-        </h2>
-        <div className="a-two" style={{ marginTop: 55 }}>
-          <p className="a-lead">
-            Aurex Business Labs is a customer acquisition and revenue systems
-            company for established residential contractors.
+      <section className="l-section l-about">
+        <div className="l-wrap">
+          <p className="l-eyebrow" data-reveal="fade">
+            Our point of view
           </p>
-          <div>
-            <p>
-              We help contractors acquire customers, convert more opportunities,
-              recover missed revenue, and make each customer worth more.
+          <h2 className="l-statement" data-reveal>
+            From marketing activity to the outcomes{" "}
+            <em>your business runs on.</em>
+          </h2>
+          <div className="l-split l-about-split" data-reveal>
+            <p className="l-lead">
+              Aurex Business Labs is a customer acquisition and revenue systems
+              company for established residential contractors.
             </p>
-            <p style={{ marginTop: 24 }}>
-              The Aurex Revenue Capture System connects Capture, Convert,
-              Recover and Compound. Tracking supports every stage, from the
-              original inquiry to the sold job and the next referral.
-            </p>
+            <div>
+              <p>
+                We help contractors acquire customers, convert more
+                opportunities, recover missed revenue, and make each customer
+                worth more.
+              </p>
+              <p>
+                The Aurex Revenue Capture System connects Capture, Convert,
+                Recover and Compound. Tracking supports every stage, from the
+                original inquiry to the sold job and the next referral.
+              </p>
+            </div>
           </div>
         </div>
-      </Section>
+      </section>
       {site.founderName && site.founderBio && (
         <Section title={site.founderName} light>
-          <div className="a-two">
+          <div className="l-split">
             {site.founderPhoto && (
               <Image
                 src={site.founderPhoto}
                 alt={site.founderName}
                 width={600}
                 height={750}
-                className="a-founder-photo"
+                className="l-founder-photo"
               />
             )}
-            <p className="a-lead">{site.founderBio}</p>
+            <p className="l-lead">{site.founderBio}</p>
           </div>
         </Section>
       )}
-      <Section title="What we hold ourselves to." light>
-        <div className="a-three">
-          {[
-            [
-              "Own the next step.",
-              "Every inquiry, estimate and follow-up needs a clear owner and a clear next action.",
-            ],
-            [
-              "Fix the actual constraint.",
-              "Use the scorecard to find whether acquisition, response, booking, sales or capacity needs attention.",
-            ],
-            [
-              "Evidence over promises.",
-              "Show the work. Be clear about what is known. Publish results only when the evidence and permissions support them.",
-            ],
-          ].map(([h, p]) => (
-            <article className="a-card" key={h}>
-              <h3>{h}</h3>
-              <p>{p}</p>
-            </article>
-          ))}
+      <section className="l-section is-paper l-sheet">
+        <div className="l-wrap">
+          <div className="l-section-head" data-reveal>
+            <h2>What we hold ourselves to.</h2>
+          </div>
+          <div className="l-grid-3" data-stagger>
+            {principles.map(([h, p], i) => (
+              <article className="l-card" key={h}>
+                <span className="l-index">0{i + 1}</span>
+                <h3>{h}</h3>
+                <p>{p}</p>
+              </article>
+            ))}
+          </div>
         </div>
-      </Section>
+      </section>
       <FinalCTA />
     </Shell>
   );

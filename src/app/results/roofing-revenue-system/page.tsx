@@ -14,8 +14,8 @@ import { EventView } from "@/components/authority/interactions";
 import { roofingProof as proof, publishableProof } from "@/lib/proof";
 const approved = publishableProof(proof);
 const title = approved
-  ? `How Aurex Helped a North Mississippi Roofing Company Track $${proof.results[0].amount.toLocaleString("en-US")} in Revenue Over Four Months`
-  : "A Lead-to-Revenue System for a North Mississippi Roofing Company";
+  ? `How Aurex helped a North Mississippi roofing company track $${proof.results[0].amount.toLocaleString("en-US")} in revenue over four months`
+  : "A lead-to-revenue system for a North Mississippi roofing company";
 export const metadata = pageMeta(
   approved
     ? "$320K Tracked Roofing Revenue Case Study"
@@ -60,8 +60,8 @@ export default function Page() {
         title={title}
         description="See how Aurex built a lead-to-revenue system for a North Mississippi roofing company."
       />
-      <Section title="Client Profile" light>
-        <dl className="a-facts">
+      <Section title="Client profile" light>
+        <dl className="l-facts">
           <div>
             <dt>Business type</dt>
             <dd>Residential roofing company</dd>
@@ -78,8 +78,8 @@ export default function Page() {
       </Section>
       {approved ? (
         <>
-          <Section title="The Situation and Work">
-            <div className="a-reading">
+          <Section title="The situation and work">
+            <div className="l-prose">
               {proof.problem && <p>{proof.problem}</p>}
               {proof.baseline && <p>{proof.baseline}</p>}
               <List items={proof.workPerformed} />
@@ -91,9 +91,9 @@ export default function Page() {
               )}
             </div>
           </Section>
-          <Section title="Tracked Results" light>
+          <Section title="Tracked results" light>
             {proof.results.map((r) => (
-              <p className="a-lead" key={r.label}>
+              <p className="l-lead" key={r.label}>
                 ${r.amount.toLocaleString("en-US")} in {proof.resultType},{" "}
                 {r.label}.
               </p>
@@ -104,8 +104,8 @@ export default function Page() {
           </Section>
         </>
       ) : (
-        <Section title="What Can Be Shared Today">
-          <div className="a-reading">
+        <Section title="What can be shared today">
+          <div className="l-prose">
             <p>
               The exact result dates, baseline, implementation scope, source
               records and publication permissions are still being prepared for
@@ -120,19 +120,19 @@ export default function Page() {
           </div>
         </Section>
       )}
-      <Section title="What a Tracked Result Does Not Prove" light>
-        <p className="a-lead">
+      <Section title="What a tracked result does not prove" light>
+        <p className="l-lead">
           Tracked revenue is revenue tied to a lead, opportunity or customer
           visible in the agreed tracking system. It does not establish that
           Aurex alone caused the sale.
         </p>
-        <p className="a-closing">
+        <p className="l-lead l-closing">
           A sale is not profit. A contract is not collected cash. Other
           marketing, the client’s sales team, market demand and fulfillment can
           all influence the outcome.
         </p>
-        <a className="a-inline" href="/results/methodology">
-          How we verify and classify results ↗
+        <a className="l-inline" href="/results/methodology">
+          How we verify and classify results
         </a>
         <ResultsDisclaimer />
       </Section>

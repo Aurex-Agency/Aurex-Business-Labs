@@ -14,42 +14,47 @@ export default function Contact() {
       <PageHero
         eyebrow="Start a conversation"
         path="/contact"
-        title="Let’s talk about your next stage of growth."
+        title={
+          <>
+            Let’s talk about your <em>next stage of growth.</em>
+          </>
+        }
         description="Tell us a little about your business and what you have in mind. You don’t need a perfect brief to start a good conversation."
       />
       <section
-        className="s-contact-layout"
+        className="l-form-section"
         aria-label="Contact Aurex Business Labs"
       >
-        <aside className="s-contact-aside">
-          <h2>
-            Better decisions start
-            <br />
-            <em>with a conversation.</em>
-          </h2>
-          <p>
-            Share what’s working, what isn’t, or what you want to do
-            differently. We’ll take it from there.
-          </p>
-          {(site.email || site.phone) && (
-            <div>
-              <p className="s-kicker">Prefer a direct line?</p>
-              {site.email && (
-                <ContactLink href={`mailto:${site.email}`} event="email_click">
-                  {site.email}
-                </ContactLink>
-              )}
-              {site.phone && (
-                <p>
+        <div className="l-wrap l-form-layout">
+          <aside className="l-form-aside">
+            <h2>
+              Better decisions start <em>with a conversation.</em>
+            </h2>
+            <p>
+              Share what’s working, what isn’t, or what you want to do
+              differently. We’ll take it from there.
+            </p>
+            {(site.email || site.phone) && (
+              <div className="l-direct">
+                <p className="l-eyebrow is-muted">Prefer a direct line?</p>
+                {site.email && (
+                  <ContactLink
+                    href={`mailto:${site.email}`}
+                    event="email_click"
+                  >
+                    {site.email}
+                  </ContactLink>
+                )}
+                {site.phone && (
                   <ContactLink href={`tel:${site.phone}`} event="phone_click">
                     {site.phone}
                   </ContactLink>
-                </p>
-              )}
-            </div>
-          )}
-        </aside>
-        <ContactForm />
+                )}
+              </div>
+            )}
+          </aside>
+          <ContactForm />
+        </div>
       </section>
     </Shell>
   );
