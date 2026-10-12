@@ -14,6 +14,7 @@ export default function ResourcesPage() {
       <PageHero
         eyebrow="The working library"
         path="/resources"
+        scene="docs"
         title={
           <>
             Good ideas. <em>Ready to use.</em>
@@ -27,6 +28,7 @@ export default function ResourcesPage() {
             <span>3 resources / Built for residential contractors</span>
             <span>No sign-up required</span>
           </div>
+          <h2 className="sr-only">All resources</h2>
           <ResourceGrid />
           <div className="l-library-note" data-reveal>
             <p>New to the framework?</p>

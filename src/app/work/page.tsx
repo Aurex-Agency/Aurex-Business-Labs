@@ -25,6 +25,7 @@ export default function Work() {
       <PageHero
         eyebrow="Selected work"
         path="/work"
+        scene="work"
         title={
           <>
             Every business has <em>its own character.</em>
@@ -34,6 +35,7 @@ export default function Work() {
       />
       <section className="l-work-section" aria-label="Selected projects">
         <div className="l-wrap">
+          <h2 className="sr-only">Selected projects</h2>
           <WorkGrid />
         </div>
       </section>

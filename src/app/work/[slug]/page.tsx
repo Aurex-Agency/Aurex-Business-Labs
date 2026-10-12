@@ -100,6 +100,7 @@ export default async function Project({
         <div className="l-wrap">
           <Link
             className="l-next-project"
+            data-tilt
             href={`/work/${next.slug}`}
             style={{ "--accent-tone": next.accent } as React.CSSProperties}
             data-reveal

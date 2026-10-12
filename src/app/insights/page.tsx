@@ -13,6 +13,7 @@ export default function Page() {
       <PageHero
         eyebrow="From the notebook"
         path="/insights"
+        scene="chart"
         title={
           <>
             A little more <em>understanding.</em>
