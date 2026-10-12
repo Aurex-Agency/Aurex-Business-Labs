@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { auditSchema } from "@/lib/lead-schema";
 import { captureAttribution } from "@/lib/attribution";
 import { confirmedConversion, track } from "@/lib/analytics";
+import { ArrowUpRight } from "lucide-react";
 import { DeferredEmbed } from "./interactions";
 const choices: Record<string, string[]> = {
   trade: [
@@ -78,6 +79,8 @@ export function ApplicationForm({
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [tone, setTone] = useState<"error" | "pending" | "success">("error");
+  const [step, setStep] = useState(0);
   const startedAt = useRef<number>(0);
   const started = useRef(false);
   const status = useRef<HTMLDivElement>(null);
@@ -103,6 +106,7 @@ export function ApplicationForm({
         parsed.error.issues.map((i) => [String(i.path[0]), i.message]),
       );
       setErrors(issues);
+      setTone("error");
       setMessage(
         "Please correct the highlighted fields. Your answers are still here.",
       );
@@ -112,6 +116,7 @@ export function ApplicationForm({
     }
     setErrors({});
     setBusy(true);
+    setTone("pending");
     setMessage("Sending your application…");
     try {
       const response = await fetch("/api/leads", {
@@ -128,12 +133,14 @@ export function ApplicationForm({
       const result = await response.json();
       if (!response.ok || !result.success) {
         setErrors(result.fieldErrors || {});
+        setTone("error");
         setMessage(
           result.message ||
             "We could not send your application. Please try again.",
         );
       } else {
         setSuccess(true);
+        setTone("success");
         setMessage(
           "Your application has been received. Thank you for sharing your business details.",
         );
@@ -141,6 +148,7 @@ export function ApplicationForm({
         confirmedConversion(result.receipt);
       }
     } catch {
+      setTone("error");
       setMessage(
         "We could not reach the server. Your answers are still here. Please try again.",
       );
@@ -150,27 +158,28 @@ export function ApplicationForm({
     }
   }
   return (
-    <div className="a-form-panel">
+    <div className="l-form-card">
       <div
         ref={status}
         tabIndex={-1}
         role="status"
         aria-live="polite"
-        className="a-form-status"
+        className="l-form-status"
+        data-tone={tone}
       >
         {message}
       </div>
       {success ? (
-        <div>
+        <div className="l-form-success">
           {calendarEmbed ? (
             <DeferredEmbed url={calendarEmbed} title="audit calendar" />
           ) : calendarUrl ? (
             <a
-              className="a-button"
+              className="l-button"
               href={calendarUrl}
               onClick={() => track("calendar_open")}
             >
-              Choose an audit time ↗
+              Choose an audit time <ArrowUpRight size={16} aria-hidden="true" />
             </a>
           ) : (
             <p>
@@ -181,18 +190,31 @@ export function ApplicationForm({
         </div>
       ) : (
         <form noValidate onSubmit={submit} onFocus={begin}>
-          <p className="a-small">
+          <ol className="l-form-steps" aria-hidden="true">
+            {groups.map((g, i) => (
+              <li key={g.legend} data-active={step === i ? "" : undefined}>
+                <span>{i + 1}</span>
+                {g.legend.split(" / ")[1]}
+              </li>
+            ))}
+          </ol>
+          <p className="l-small l-form-intro">
             All fields are required unless marked optional. You can select “Not
             sure” or “Prefer to discuss” where available.
           </p>
-          {groups.map((g) => (
-            <fieldset key={g.legend}>
-              <legend>{g.legend}</legend>
-              <div className="a-form-grid">
+          {groups.map((g, gi) => (
+            <fieldset key={g.legend} onFocus={() => setStep(gi)}>
+              <legend>
+                <span className="l-legend-index">
+                  {g.legend.split(" / ")[0]}
+                </span>
+                {g.legend.split(" / ")[1]}
+              </legend>
+              <div className="l-form-grid">
                 {g.fields.map(([name, label]) => (
                   <div
                     className={
-                      name === "bottleneck" ? "a-field a-wide" : "a-field"
+                      name === "bottleneck" ? "l-field is-wide" : "l-field"
                     }
                     key={name}
                   >
@@ -258,9 +280,9 @@ export function ApplicationForm({
                           errors[name] ? `${name}-error` : undefined
                         }
                       />
-                    )}{" "}
+                    )}
                     {errors[name] && (
-                      <p id={`${name}-error`} className="a-error">
+                      <p id={`${name}-error`} className="l-field-error">
                         {errors[name]}
                       </p>
                     )}
@@ -269,7 +291,7 @@ export function ApplicationForm({
               </div>
             </fieldset>
           ))}
-          <div className="a-honeypot" aria-hidden="true">
+          <div className="l-honeypot" aria-hidden="true">
             <label htmlFor="companyWebsite">Leave this field empty</label>
             <input
               id="companyWebsite"
@@ -278,7 +300,7 @@ export function ApplicationForm({
               autoComplete="off"
             />
           </div>
-          <label className="a-consent">
+          <label className="l-consent">
             <input name="smsConsent" type="checkbox" />
             <span>
               Optional: I agree to receive SMS reminders about my audit from
@@ -287,22 +309,24 @@ export function ApplicationForm({
               and data rates may apply. Reply STOP to opt out or HELP for help.
             </span>
           </label>
-          <p className="a-small">
+          <p className="l-small l-form-legal">
             By submitting, you ask Aurex Business Labs to respond to this
             application. Read our{" "}
-            <a className="a-inline" href="/privacy">
+            <a className="l-inline" href="/privacy">
               Privacy policy
             </a>{" "}
             and{" "}
-            <a className="a-inline" href="/terms">
+            <a className="l-inline" href="/terms">
               Terms
             </a>
             . Do not send passwords, payment details or homeowner records.
           </p>
-          <button className="a-button" type="submit" disabled={busy}>
-            {busy ? "Sending…" : "Request My Revenue Leakage Audit"}
-            <span aria-hidden="true">↗</span>
-          </button>
+          <div className="l-form-submit">
+            <button className="l-button" type="submit" disabled={busy}>
+              {busy ? "Sending…" : "Request My Revenue Leakage Audit"}
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </button>
+          </div>
         </form>
       )}
     </div>

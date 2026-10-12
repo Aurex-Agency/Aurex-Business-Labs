@@ -2,6 +2,7 @@ import { ResourceArt } from "@/components/learn/graphics";
 import { resources } from "@/content/resources";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { articles } from "@/content/articles";
 import { site } from "@/lib/site-config";
 import { pageMeta, organization } from "@/lib/seo";
@@ -13,6 +14,7 @@ import {
   FinalCTA,
   Schema,
 } from "@/components/authority/shared";
+import { TableOfContents } from "@/components/learn/toc";
 export function generateStaticParams() {
   return articles.map((a) => ({ slug: a.slug }));
 }
@@ -52,30 +54,36 @@ export default async function Page({
         }}
       />
       <PageHero
-        eyebrow="Contractor Insights"
+        eyebrow="Contractor insights"
         path={`/insights/${a.slug}`}
+        crumbs={[
+          { name: "Insights", path: "/insights" },
+          { name: a.title, path: `/insights/${a.slug}` },
+        ]}
         title={a.title}
         description={a.summary}
+        aside={
+          <figure className="l-art-frame l-article-art">
+            <ResourceArt kind={resource.visual} animate />
+            <figcaption>Field notes / {a.category}</figcaption>
+          </figure>
+        }
       >
         <AuthorBlock publishedAt={a.publishedAt} updatedAt={a.updatedAt} />
       </PageHero>
-      <div className="l-wrap l-article-illustration">
-        <ResourceArt kind={resource.visual} />
-        <p className="l-small">Field notes / {a.category}</p>
-      </div>
-      <article className="a-section a-light f-reading-paper">
-        <div className="a-wrap a-article-layout">
+      <article className="l-section is-paper l-sheet">
+        <div className="l-wrap l-article-layout">
           <aside>
-            <p className="a-label">In this guide</p>
-            <nav aria-label="Article contents">
-              {a.sections.map((s, i) => (
-                <a key={s.heading} href={`#section-${i}`}>
-                  {s.heading}
-                </a>
-              ))}
-            </nav>
+            <TableOfContents
+              title="In this guide"
+              label="Article contents"
+              items={a.sections.map((s, i) => ({
+                id: `section-${i}`,
+                text: s.heading,
+              }))}
+            />
           </aside>
-          <div className="a-reading">
+          <div className="l-prose">
             {a.sections.map((s, i) => (
               <section key={s.heading} id={`section-${i}`}>
                 <h2>{s.heading}</h2>
@@ -85,13 +93,13 @@ export default async function Page({
                 {s.list && <List items={s.list} />}
               </section>
             ))}
-            <p>
+            <p className="l-continue">
               Continue with the{" "}
-              <Link className="a-inline" href="/revenue-capture-system">
+              <Link className="l-inline" href="/revenue-capture-system">
                 Aurex Revenue Capture System
               </Link>{" "}
               or read our{" "}
-              <Link className="a-inline" href="/results/methodology">
+              <Link className="l-inline" href="/results/methodology">
                 results methodology
               </Link>
               .
@@ -100,22 +108,28 @@ export default async function Page({
               <p className="l-eyebrow">Put it into practice</p>
               <h2>{resource.title}</h2>
               <p>{resource.description}</p>
-              <Link className="l-button" href={`/resources/${resource.slug}`}>
-                Open the free resource ↗
+              <Link
+                className="l-button is-dark"
+                href={`/resources/${resource.slug}`}
+              >
+                Open the free resource <ArrowUpRight size={16} />
               </Link>
             </div>
-            <h2>Related guides</h2>
-            <ul>
-              {articles
-                .filter((b) => b.slug !== a.slug)
-                .map((b) => (
-                  <li key={b.slug}>
-                    <Link className="a-inline" href={`/insights/${b.slug}`}>
-                      {b.title}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
+            <section className="l-related-guides">
+              <h2>Related guides</h2>
+              <ul>
+                {articles
+                  .filter((b) => b.slug !== a.slug)
+                  .map((b) => (
+                    <li key={b.slug}>
+                      <Link href={`/insights/${b.slug}`}>
+                        <span>{b.title}</span>
+                        <ArrowUpRight size={17} aria-hidden="true" />
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </section>
           </div>
         </div>
       </article>
