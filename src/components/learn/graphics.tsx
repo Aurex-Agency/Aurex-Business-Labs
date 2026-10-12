@@ -1,6 +1,3 @@
-"use client";
-import { m } from "motion/react";
-import { useMotionPreference } from "./use-motion-preference";
 import {
   Check,
   MessageSquare,
@@ -12,6 +9,9 @@ import {
   Star,
 } from "lucide-react";
 
+// Original illustrations for each resource. They render complete and still.
+// With motion allowed, CSS plays a short build sequence once the art enters
+// the viewport (data-play) or mounts inside a journey scene.
 export function ResourceArt({
   kind,
   animate = false,
@@ -19,9 +19,12 @@ export function ResourceArt({
   kind: string;
   animate?: boolean;
 }) {
-  const reduce = useMotionPreference();
   return (
-    <div className={`l-resource-art l-art-${kind}`} aria-hidden="true">
+    <div
+      className={`l-resource-art l-art-${kind}`}
+      aria-hidden="true"
+      data-play={animate ? "" : undefined}
+    >
       <div className="l-art-grid" />
       {kind === "scorecard" ? (
         <div className="l-mini-scorecard">
@@ -33,14 +36,9 @@ export function ResourceArt({
             (label, i) => (
               <div className="l-score-line" key={label}>
                 <span>{label}</span>
-                <m.i
-                  initial={false}
-                  whileInView={animate && !reduce ? { scaleX: [0.2, 1] } : {}}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, delay: i * 0.12 }}
-                  style={{ width: `${70 - i * 13}%`, transformOrigin: "left" }}
-                />
-                <span>···</span>
+                <span className="l-score-track">
+                  <i style={{ width: `${88 - i * 17}%` }} />
+                </span>
               </div>
             ),
           )}
@@ -52,14 +50,7 @@ export function ResourceArt({
             <FileText size={13} /> Estimate delivered <Check size={12} />
           </span>
           <div className="l-message-thread" />
-          <m.div
-            className="l-message-card"
-            key={String(reduce)}
-            initial={false}
-            whileInView={animate && !reduce ? { y: [12, 0] } : {}}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9 }}
-          >
+          <div className="l-message-card">
             <div>
               <MessageSquare size={16} />
               <span>A useful check-in</span>
@@ -69,7 +60,7 @@ export function ResourceArt({
               <br />
               Happy to talk it through.
             </p>
-          </m.div>
+          </div>
           <span className="l-message-reply">
             <Check size={12} /> Conversation reopened
           </span>
@@ -83,18 +74,17 @@ export function ResourceArt({
               rx="115"
               ry="74"
               fill="none"
-              stroke="#2b414b"
+              stroke="currentColor"
+              strokeOpacity=".25"
               strokeDasharray="3 6"
             />
-            <m.path
+            <path
+              className="l-loop-path"
               d="M50 110 C50 12 280 12 280 110 C280 210 50 210 50 110"
               fill="none"
-              stroke="#8bdff6"
+              stroke="currentColor"
               strokeWidth="1.5"
-              initial={false}
-              whileInView={animate && !reduce ? { pathLength: [0, 1] } : {}}
-              viewport={{ once: true }}
-              transition={{ duration: 2.5 }}
+              pathLength={1}
             />
           </svg>
           <span className="l-loop-center">
