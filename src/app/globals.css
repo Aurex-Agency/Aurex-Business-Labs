@@ -6908,8 +6908,8 @@ small {
 }
 .l-vsl-length {
   position: absolute;
+  top: clamp(12px, 2.4vw, 24px);
   right: clamp(12px, 2.4vw, 24px);
-  bottom: clamp(12px, 2.4vw, 24px);
   padding: 6px 12px;
   border-radius: var(--r-pill);
   background: rgba(4, 8, 13, 0.72);
