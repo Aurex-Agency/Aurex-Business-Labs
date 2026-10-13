@@ -47,6 +47,7 @@ This block is written and re-added by `next dev` . verify at `node_modules/next/
 - Missing or failed production webhook delivery must return an error, never simulated success.
 - LEAD_DEV_MODE=true allows redacted local simulation only outside production.
 - Analytics must remain disabled without IDs. Conversions require confirmed submission, not a page view.
+- NEXT_PUBLIC_GHL_TRACKING_ID loads GoHighLevel external tracking site-wide with lazyOnload. It records visits and sends submitted form fields to GoHighLevel for attribution, so keep the privacy policy accurate if forms or tracking change.
 - Run npm run lint, npm run typecheck, npm run build, npm run test:e2e, npm run test:a11y, and npm run test:api.
 - Set PLAYWRIGHT_BASE_URL to test an existing production server. Browser tests use the approved GA4 ID explicitly, with GTM/Ads/Meta IDs and GHL/Zoom embed URLs unset. Analytics has no default enabled IDs. Google requests are intercepted so tests cannot send analytics traffic. The calendar and embed script are stubbed during regression tests. With the live webhook in .env.local, use a separate test server started with GHL_WEBHOOK_URL= on port 3002 to prevent test leads from reaching GHL.
 - Capture and inspect requested viewport screenshots in artifacts/. Do not publish test artifacts.

@@ -10,6 +10,8 @@ const origin = (value: string | undefined) => {
   }
 };
 const frameSources = [
+  // A calendar can redirect its own frame to /call/booked after a booking.
+  "'self'",
   "https://*.leadconnectorhq.com",
   "https://*.gohighlevel.com",
   "https://*.msgsndr.com",
@@ -23,7 +25,7 @@ const frameSources = [
   origin(process.env.NEXT_PUBLIC_GHL_CALENDAR_EMBED_URL),
 ];
 const csp = (frameAncestors: string) =>
-  `default-src 'self'; script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.google.com https://*.googletagmanager.com https://*.googleadservices.com https://*.doubleclick.net https://www.facebook.com; frame-src ${[...new Set(frameSources.filter(Boolean))].join(" ")}; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors ${frameAncestors}`;
+  `default-src 'self'; script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://connect.facebook.net https://link.msgsndr.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.google.com https://*.googletagmanager.com https://*.googleadservices.com https://*.doubleclick.net https://www.facebook.com https://backend.leadconnectorhq.com https://link.msgsndr.com; frame-src ${[...new Set(frameSources.filter(Boolean))].join(" ")}; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors ${frameAncestors}`;
 const config: NextConfig = {
   poweredByHeader: false,
   agentRules: false,

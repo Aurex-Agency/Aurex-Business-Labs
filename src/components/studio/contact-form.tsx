@@ -88,6 +88,7 @@ export function ContactForm() {
         </div>
       ) : (
         <form
+          data-name="Contact form"
           noValidate
           onSubmit={submit}
           onFocus={() => {

@@ -4,6 +4,7 @@ import { site } from "@/lib/site-config";
 import { FunnelShell, TrustStrip } from "@/components/funnel/chrome";
 import { VslPlayer } from "@/components/funnel/vsl-player";
 import { BookingDetails } from "@/components/funnel/booking-details";
+import { bookingScript } from "@/lib/funnel";
 
 export const metadata: Metadata = {
   ...pageMeta(
@@ -34,6 +35,7 @@ const prep = [
 export default function BookedPage() {
   return (
     <FunnelShell>
+      <script dangerouslySetInnerHTML={{ __html: bookingScript }} />
       <section className="l-call-hero is-booked" aria-labelledby="booked-title">
         <h1 id="booked-title">
           You’re booked. <em>Here’s what happens next.</em>
