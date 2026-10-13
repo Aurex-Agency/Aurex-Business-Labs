@@ -12,15 +12,15 @@ The paid traffic page for the Aurex Revenue Capture System. Meta ads point strai
 
 ## Environment variables
 
-| Variable                    | Purpose                                                                                                                                                                                                       |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `FUNNEL_VSL_URL`            | Vimeo or Wistia link for the 6 minute VSL. Any other host is ignored, so a bare YouTube embed cannot slip in. Unlisted Vimeo links with a hash work.                                                          |
-| `FUNNEL_VSL_POSTER`         | Optional local thumbnail, for example `/brand/vsl-thumb.webp` (1600x900, compressed). Without it a designed poster is shown.                                                                                  |
-| `FUNNEL_CALENDAR_URL`       | Calendly or GHL calendar booking URL shown as the last step. Falls back to `NEXT_PUBLIC_GHL_CALENDAR_EMBED_URL`. Its origin is added to the frame policy automatically, so white-label calendar domains work. |
-| `FUNNEL_CONFIRM_VIDEO_URL`  | Optional 60 to 90 second Vimeo or Wistia video for the booked page.                                                                                                                                           |
-| `NEXT_PUBLIC_META_PIXEL_ID` | Meta pixel. Without it no pixel loads.                                                                                                                                                                        |
-| `NEXT_PUBLIC_CONTACT_EMAIL` | Shown in the footer and on the not-a-fit message.                                                                                                                                                             |
-| `GHL_WEBHOOK_URL`           | Receives every submission, as it does for the other forms.                                                                                                                                                    |
+| Variable                    | Purpose                                                                                                                                                                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FUNNEL_VSL_URL`            | Vimeo or Wistia link for the 6 minute VSL. Any other host is ignored, so a bare YouTube embed cannot slip in. Unlisted Vimeo links with a hash work.                                                                              |
+| `FUNNEL_VSL_POSTER`         | Optional local thumbnail, for example `/brand/vsl-thumb.webp` (1600x900, compressed). Without it a designed poster is shown.                                                                                                      |
+| `FUNNEL_CALENDAR_URL`       | Calendly or GHL calendar booking URL shown as the last step. Falls back to `NEXT_PUBLIC_GHL_CALENDAR_EMBED_URL`. Its origin is added to the frame policy automatically, so white-label calendar domains work.                     |
+| `FUNNEL_CONFIRM_VIDEO_URL`  | Optional 60 to 90 second Vimeo or Wistia video for the booked page.                                                                                                                                                               |
+| `NEXT_PUBLIC_META_PIXEL_ID` | Meta pixel. Without it no pixel loads.                                                                                                                                                                                            |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Shown in the footer and on the not-a-fit message.                                                                                                                                                                                 |
+| `FUNNEL_WEBHOOK_URL`        | Server-only GHL inbound webhook for this funnel. Every `/call` submission goes here, and never to `GHL_WEBHOOK_URL`, the main website webhook. If it is missing or fails, the applicant sees an error instead of a false success. |
 
 These are read at build time. Redeploy after changing them.
 
@@ -46,13 +46,16 @@ Every submission also carries the tag `call-funnel`.
 
 ## What GHL receives
 
-The same webhook as the other forms, with `sourcePage: "/call"`. Fields: `firstName`, `lastName`, `email`, `phone`, `businessName`, `smsConsent`, `stage` (`partial` or `complete`), `trade`, `tradeOther`, `annualRevenue`, `monthlyLeads`, `leadSource`, `bottleneck`, `staff`, `jobValue`, `caseStudyInterest`, `attribution` (UTMs and click IDs, first and latest touch), `meta.fbp` and `meta.fbc`, `receipt`, `submittedAt`, and a `funnel` object:
+Its own webhook (`FUNNEL_WEBHOOK_URL`), with `sourcePage: "/call"`. Fields: `firstName`, `lastName`, `email`, `phone`, `businessName`, `smsConsent`, `stage` (`partial` or `complete`), `trade`, `tradeOther`, `annualRevenue`, `monthlyLeads`, `leadSource`, `bottleneck`, `staff`, `jobValue`, `caseStudyInterest`, `contactTimezone` (the browser's time zone, such as `America/Chicago`), `attribution` (UTMs and click IDs, first and latest touch), `meta.fbp` and `meta.fbc`, `receipt`, `submittedAt`, and a `funnel` object:
 
 - `funnel.route` and `funnel.tags`: apply the tags in the workflow.
 - `funnel.pipelineStage`: `New Lead` in the Lead to Job pipeline.
 - `funnel.callOpensOn`: Capture, Convert, Recover or Compound, from the bottleneck answer.
+- `funnel.bottleneckKey`: a stable code for the bottleneck answer (`not_enough_leads`, `slow_response`, `no_shows`, `low_close_rate`, `no_repeat_business`, `unknown_numbers`). Branch GHL workflows on this rather than the answer text.
 - `funnel.leadSource`, `funnel.campaignName`, `funnel.adName`: from `utm_source`, `utm_campaign` and `utm_content`. Map these to the Lead Source, Campaign Name and Ad Name custom fields.
 - `funnel.metaEventId`: set only for qualified and borderline applicants. Send it as the `event_id` on the CAPI Lead event so Meta deduplicates it against the browser Lead event.
+
+Answers arrive exactly as the dropdowns word them, for example `$1M to $3M`, `25 to 50`, `Yes, full-time staff` and `Maybe, I’d want details`. The full lists are in `src/lib/funnel.ts`. Match GHL conditions to these values, or to `funnel.route` and `funnel.bottleneckKey`.
 
 In the GHL workflow, create or update the contact by email and phone, so the partial and the complete submission land on one contact. Only send a CAPI Lead event when `funnel.route` is `qualified` or `borderline`.
 

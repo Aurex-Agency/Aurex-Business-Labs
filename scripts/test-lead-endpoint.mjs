@@ -42,6 +42,7 @@ const originalFetch = globalThis.fetch;
 const originalEnv = {
   NODE_ENV: process.env.NODE_ENV,
   GHL_WEBHOOK_URL: process.env.GHL_WEBHOOK_URL,
+  FUNNEL_WEBHOOK_URL: process.env.FUNNEL_WEBHOOK_URL,
   LEAD_DEV_MODE: process.env.LEAD_DEV_MODE,
 };
 const payload = {
@@ -343,6 +344,7 @@ try {
       utm_content: "Ad 3",
     },
     meta: { fbp: "fb.1.1700000000000.123456", fbc: "<script>" },
+    contactTimezone: "America/Chicago",
   };
   const answers = {
     trade: "Roofing",
@@ -354,11 +356,25 @@ try {
     jobValue: "$15,000 to $30,000",
     caseStudyInterest: "Maybe, I’d want details",
   };
+  // /call goes only to its own webhook, never to the main website webhook.
+  const mainWebhook = "https://example.invalid/webhook";
+  const funnelWebhook = "https://example.invalid/funnel-webhook";
+  process.env.GHL_WEBHOOK_URL = mainWebhook;
+  delete process.env.FUNNEL_WEBHOOK_URL;
   let funnelForwarded;
-  globalThis.fetch = async (_url, options) => {
+  let funnelDestination;
+  globalThis.fetch = async (url, options) => {
+    funnelDestination = String(url);
     funnelForwarded = JSON.parse(options.body);
     return new Response("{}", { status: 200 });
   };
+  funnelDestination = undefined;
+  const unconfigured = await POST(request({ ...funnelBase, stage: "partial" }));
+  assert.equal(unconfigured.status, 503);
+  assert.equal(funnelDestination, undefined);
+  process.env.FUNNEL_WEBHOOK_URL = funnelWebhook;
+  assert.equal((await POST(request())).status, 200);
+  assert.equal(funnelDestination, mainWebhook);
   const funnelCase = async (body, status = 200) => {
     funnelForwarded = undefined;
     const response = await POST(request({ ...funnelBase, ...body }));
@@ -366,6 +382,8 @@ try {
     return response.json();
   };
   let reply = await funnelCase({ stage: "partial" });
+  assert.equal(funnelDestination, funnelWebhook);
+  assert.equal(funnelForwarded.contactTimezone, "America/Chicago");
   assert.equal(reply.route, "partial");
   assert.deepEqual(funnelForwarded.funnel.tags, [
     "call-funnel",
@@ -378,7 +396,9 @@ try {
   reply = await funnelCase({ stage: "complete", ...answers });
   assert.equal(reply.route, "qualified");
   assert.equal(funnelForwarded.funnel.metaEventId, reply.receipt);
+  assert.equal(funnelDestination, funnelWebhook);
   assert.equal(funnelForwarded.funnel.callOpensOn, "Recover");
+  assert.equal(funnelForwarded.funnel.bottleneckKey, "low_close_rate");
   assert.equal(funnelForwarded.funnel.pipelineStage, "New Lead");
   assert.equal(funnelForwarded.funnel.campaignName, "Contractor VSL");
   assert.equal(funnelForwarded.funnel.adName, "Ad 3");
@@ -429,6 +449,9 @@ try {
     { stage: "complete", ...answers, annualRevenue: "Lots" },
     400,
   );
+  await funnelCase({ stage: "partial", contactTimezone: "<b>x</b>" });
+  assert.equal(funnelForwarded.contactTimezone, undefined);
+  delete process.env.FUNNEL_WEBHOOK_URL;
   delete process.env.GHL_WEBHOOK_URL;
   process.env.LEAD_DEV_MODE = "true";
   assert.equal((await POST(request())).status, 503);

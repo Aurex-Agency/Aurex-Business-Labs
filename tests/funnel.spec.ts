@@ -116,6 +116,7 @@ test("qualified applicant sends a partial, then fires Lead once", async ({
   ).toBeVisible();
   expect(posts[1].stage).toBe("complete");
   expect(posts[1].sourcePage).toBe("/call");
+  expect(posts[1].contactTimezone).toMatch(/^[A-Za-z_]+(\/[A-Za-z0-9_+-]+)*$/);
   expect(await standardEvents(page)).toEqual([
     ["track", "Lead", {}, { eventID: "receipt-2" }],
   ]);
