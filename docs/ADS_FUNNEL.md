@@ -69,6 +69,8 @@ Use these Meta URL parameters on every ad: `utm_source=facebook&utm_medium=paid&
 - Calendly bookings are also detected from Calendly's embed message and sent to the booked page.
 - Calendly's redirect puts the booker's name, email and answers in the page address. The booked page keeps only the time, host and first name in memory and removes the query from the address before the Meta pixel or Google tags run, so no personal details reach them.
 - Name, email and phone are prefilled in the calendar from the application.
+- The calendar starts loading as soon as an applicant passes the revenue question, hidden behind the form card and inert, so it is ready when a qualified or borderline application goes through (under a second after submit, against about six seconds when it loaded on submit). It is removed if the applicant is disqualified.
+- Calendly reports its content height and the frame is sized to match, so there is never a scroll bar inside the calendar. The event details header is hidden so the date picker shows first.
 
 ## Pixel events
 
