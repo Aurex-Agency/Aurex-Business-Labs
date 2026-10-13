@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CalendarCheck } from "lucide-react";
-import { metaStandard, track } from "@/lib/analytics";
+import { track } from "@/lib/analytics";
 import { keptParams } from "@/lib/funnel";
 
 type Details = { start?: string; host?: string; name?: string };
@@ -14,7 +14,9 @@ declare global {
 }
 
 // Shows the booked time when the calendar passes it (Calendly sends
-// event_start_time and assigned_to) and fires the Schedule event once.
+// event_start_time and assigned_to). Meta's Schedule event is sent from
+// GoHighLevel, which also sees bookings made later or outside this page, so
+// the browser sends nothing to Meta here beyond the page view.
 export function BookingDetails() {
   const [details, setDetails] = useState<Details>();
 
@@ -44,10 +46,9 @@ export function BookingDetails() {
       if (sessionStorage.getItem("aurex-call-booked")) return;
       sessionStorage.setItem("aurex-call-booked", "1");
     } catch {
-      /* Storage may be blocked. Fire once for this page view. */
+      /* Storage may be blocked. Count once for this page view. */
     }
-    metaStandard("Schedule");
-    track("calendar_booked", { form: "call" });
+    track("calendar_booked", { form: "call" }, { meta: false });
   }, []);
 
   return (

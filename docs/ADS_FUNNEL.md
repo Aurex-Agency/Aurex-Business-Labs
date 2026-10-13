@@ -5,8 +5,8 @@ The paid traffic page for the Aurex Revenue Capture System. Meta ads point strai
 ## Files
 
 - `src/app/call/page.tsx`: headline, video, application, trust strip.
-- `src/app/call/booked/page.tsx`: qualified confirmation page. Fires the Meta `Schedule` event.
-- `src/components/funnel/`: `application.tsx` (multi-step form), `vsl-player.tsx` (click-to-play Vimeo or Wistia), `booking-details.tsx` (booked time and the Schedule event), `chrome.tsx` (logo-only header, one-line footer, trust strip).
+- `src/app/call/booked/page.tsx`: qualified confirmation page. Shows the booked time. It sends no booking event to Meta: GoHighLevel sends `Schedule`.
+- `src/components/funnel/`: `application.tsx` (multi-step form), `vsl-player.tsx` (click-to-play Vimeo or Wistia), `booking-details.tsx` (booked time), `chrome.tsx` (logo-only header, one-line footer, trust strip).
 - `src/lib/funnel.ts`: answer options, routing rules and CRM tags, shared by the browser and the server.
 - Styles: the "Ads funnel" section at the end of `src/app/globals.css` (`l-call-` and `l-vsl-` classes).
 
@@ -74,18 +74,18 @@ Use these Meta URL parameters on every ad: `utm_source=facebook&utm_medium=paid&
 
 ## Pixel events
 
-| Moment                                                      | Event                                       |
-| ----------------------------------------------------------- | ------------------------------------------- |
-| Every page load                                             | `PageView` (base code)                      |
-| Qualified or borderline application submitted and delivered | `Lead`, with `eventID` equal to the receipt |
-| Booked page                                                 | `Schedule`, once per browser session        |
-| Disqualified path                                           | Nothing. No standard or custom Meta events  |
+| Moment                                                      | Event                                                                                                                    |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Every page load                                             | `PageView` (base code)                                                                                                   |
+| Qualified or borderline application submitted and delivered | `Lead`, with `eventID` equal to the receipt                                                                              |
+| Booked page                                                 | `PageView` only. `Schedule` is sent from GoHighLevel, server side, so bookings made later or outside this page count too |
+| Disqualified path                                           | Nothing. No standard or custom Meta events                                                                               |
 
 The form start is sent to Google only, not to Meta, so the pixel never learns from people who later turn out to be unqualified. Meta's automatic events (such as `SubscribedButtonClick`) are switched off with `fbq('set', 'autoConfig', false, ...)` for the same reason.
 
 The pixel sends larger events such as `Lead` by posting a form inside a hidden `www.facebook.com` frame, so the content security policy must allow `https://www.facebook.com` in `form-action`, `frame-src` and `connect-src`. Without it `Lead` is called but never delivered. A test checks the policy.
 
-Before launch, with Meta Pixel Helper: submit a qualified test application and confirm `Lead` fires, book a test time and confirm `Schedule` fires on the booked page, then submit a disqualified test application and confirm nothing fires.
+Before launch, with Meta Pixel Helper: submit a qualified test application and confirm `Lead` fires, book a test time and confirm the booked page sends only `PageView` (the `Schedule` event should arrive from GoHighLevel in Events Manager), then submit a disqualified test application and confirm nothing fires.
 
 ## Trust strip
 

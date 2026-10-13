@@ -169,7 +169,7 @@ test("Other trade asks which trade", async ({ page }) => {
   );
 });
 
-test("booked page fires Schedule once and clears personal details from the address", async ({
+test("booked page sends no booking event to Meta and clears personal details from the address", async ({
   page,
 }) => {
   await page.goto(
@@ -181,12 +181,14 @@ test("booked page fires Schedule once and clears personal details from the addre
     page.getByRole("heading", { level: 1, name: /You’re booked/ }),
   ).toBeVisible();
   await expect(page.getByText(/October 15/)).toBeVisible();
-  await expect
-    .poll(() => standardEvents(page))
-    .toEqual([["track", "Schedule", {}]]);
+  await page.waitForTimeout(1500);
+  // Schedule comes from GoHighLevel; the browser sends Meta nothing here.
+  const calls = await page.evaluate(() =>
+    JSON.stringify((window as unknown as { __pixel: unknown[][] }).__pixel),
+  );
+  expect(calls).not.toMatch(/Schedule|calendar_booked/);
   await page.reload();
   await expect(page.getByText("Booked and on the calendar")).toBeVisible();
-  expect(await standardEvents(page)).toEqual([]);
 });
 
 for (const path of ["/call", "/call/booked"])
