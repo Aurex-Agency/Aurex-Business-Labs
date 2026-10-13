@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { preconnect } from "react-dom";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { captureAttribution } from "@/lib/attribution";
 import { confirmedConversion, metaStandard, track } from "@/lib/analytics";
@@ -161,6 +162,10 @@ export function FunnelApplication({
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<"fit" | "unqualified">();
+  // The calendar starts loading out of sight while a likely fit answers the
+  // last questions, so it is ready the moment the application goes through.
+  const [calendarSrc, setCalendarSrc] = useState<string>();
+  const [calendarHeight, setCalendarHeight] = useState<number>();
   const startedAt = useRef(0);
   const moved = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -172,16 +177,24 @@ export function FunnelApplication({
     if (!moved.current) return;
     heading.current?.focus({ preventScroll: true });
     const top = card.current?.getBoundingClientRect().top ?? 0;
-    if (top < 0) card.current?.scrollIntoView({ block: "start" });
+    // Bring the calendar step fully into view; elsewhere only scroll back up.
+    if (result === "fit" || top < 0)
+      card.current?.scrollIntoView({ block: "start" });
+    if (result === "fit") track("calendar_open", { form: "call" });
   }, [step, result]);
 
   useEffect(() => {
-    if (result !== "fit" || !calendar || !isCalendly(calendar)) return;
-    const booked = (event: MessageEvent) => {
-      if (
-        event.origin === "https://calendly.com" &&
-        event.data?.event === "calendly.event_scheduled"
-      )
+    if (!calendarSrc || !isCalendly(calendarSrc)) return;
+    let fallback = 0;
+    const listen = (event: MessageEvent) => {
+      if (event.origin !== "https://calendly.com") return;
+      // Calendly reports its content height, so the frame fits it exactly
+      // and the booker never scrolls inside it.
+      if (event.data?.event === "calendly.page_height") {
+        const height = parseInt(event.data.payload?.height, 10);
+        if (height > 300 && height < 4000) setCalendarHeight(height);
+      }
+      if (event.data?.event === "calendly.event_scheduled")
         // Give Calendly's own redirect, which carries the booked time, a
         // moment to happen first. Without one, go to the booked page.
         fallback = window.setTimeout(
@@ -189,17 +202,20 @@ export function FunnelApplication({
           2500,
         );
     };
-    let fallback = 0;
-    window.addEventListener("message", booked);
+    window.addEventListener("message", listen);
     return () => {
       window.clearTimeout(fallback);
-      window.removeEventListener("message", booked);
+      window.removeEventListener("message", listen);
     };
-  }, [result, calendar]);
+  }, [calendarSrc]);
 
   function begin() {
     if (startedAt.current) return;
     startedAt.current = Date.now();
+    if (calendar) {
+      preconnect(new URL(calendar).origin);
+      if (isCalendly(calendar)) preconnect("https://assets.calendly.com");
+    }
     track("application_start", { form: "call" }, { meta: false });
   }
 
@@ -294,6 +310,7 @@ export function FunnelApplication({
     const route = routeApplication(values);
     if (route === "unqualified" || step === steps.length - 1)
       return finish(route ?? "qualified");
+    if (!calendarSrc) setCalendarSrc(bookingUrl());
     go(step + 1);
   }
 
@@ -341,7 +358,7 @@ export function FunnelApplication({
     }
   }
 
-  const calendarSrc = (() => {
+  function bookingUrl() {
     if (!calendar) return undefined;
     const url = new URL(calendar);
     const prefill: Record<string, string | undefined> = {
@@ -353,12 +370,15 @@ export function FunnelApplication({
     };
     for (const [key, value] of Object.entries(prefill))
       if (value) url.searchParams.set(key, value);
-    if (isCalendly(calendar) && typeof window !== "undefined") {
+    if (isCalendly(calendar)) {
       url.searchParams.set("embed_domain", window.location.host);
       url.searchParams.set("embed_type", "Inline");
+      // Open straight on the date picker; the step heading names the call.
+      url.searchParams.set("hide_event_type_details", "1");
+      url.searchParams.set("hide_landing_page_details", "1");
     }
     return url.href;
-  })();
+  }
 
   const total = steps.length;
   return (
@@ -396,29 +416,10 @@ export function FunnelApplication({
             Last step: pick a time for your call
           </h3>
           {calendarSrc ? (
-            <>
-              <p>
-                Choose a time that works below. You will get a confirmation by
-                email as soon as it is booked.
-              </p>
-              <iframe
-                className="l-call-calendar"
-                src={calendarSrc}
-                title="Book your strategy call"
-                onLoad={() => track("calendar_open", { form: "call" })}
-              />
-              <p className="l-small">
-                Calendar not loading?{" "}
-                <a
-                  className="l-inline"
-                  href={calendarSrc}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Open it in a new tab
-                </a>
-              </p>
-            </>
+            <p>
+              Choose a time that works below. You will get a confirmation by
+              email as soon as it is booked.
+            </p>
           ) : (
             <p>
               We will call you at the number you gave us to set up a time that
@@ -544,6 +545,37 @@ export function FunnelApplication({
             </p>
           )}
         </form>
+      )}
+      {calendarSrc && result !== "unqualified" && (
+        // Kept in the same place in the tree from the moment it starts
+        // loading, so revealing it never reloads the calendar.
+        <div
+          key="calendar"
+          className={result === "fit" ? "l-call-cal" : "l-call-cal is-loading"}
+          aria-hidden={result === "fit" ? undefined : true}
+          inert={result !== "fit"}
+        >
+          <iframe
+            className="l-call-calendar"
+            src={calendarSrc}
+            title="Book your strategy call"
+            scrolling={calendarHeight ? "no" : undefined}
+            style={calendarHeight ? { height: calendarHeight } : undefined}
+          />
+          {result === "fit" && (
+            <p className="l-small">
+              Calendar not loading?{" "}
+              <a
+                className="l-inline"
+                href={calendarSrc}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open it in a new tab
+              </a>
+            </p>
+          )}
+        </div>
       )}
     </div>
   );
