@@ -182,3 +182,18 @@ export function isCalendly(url: string) {
 
 export const funnelPath = "/call";
 export const bookedPath = "/call/booked";
+
+export const keptParams = [
+  "event_start_time",
+  "start_time",
+  "assigned_to",
+  "invitee_first_name",
+] as const;
+
+// Runs while the page is parsed, before hydration and before any analytics
+// script. Calendly's redirect puts the booker's name, email and answers in
+// the address, and Meta and Google record page addresses, so the few details
+// shown here are kept in memory and the query is removed from the address.
+// If the calendar redirected inside its own frame, the full window takes over
+// with the original address, and this runs again there.
+export const bookingScript = `(function(){try{if(window.top!==window.self){window.top.location.href=location.href;return}var q=new URLSearchParams(location.search),k={};${JSON.stringify(keptParams)}.forEach(function(n){var v=q.get(n);if(v)k[n]=v.slice(0,80)});window.__aurexBooking=k;if(location.search)history.replaceState(history.state,"",location.pathname+location.hash)}catch(e){}})()`;

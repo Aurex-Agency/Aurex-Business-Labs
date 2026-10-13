@@ -182,10 +182,19 @@ export function FunnelApplication({
         event.origin === "https://calendly.com" &&
         event.data?.event === "calendly.event_scheduled"
       )
-        window.location.assign(bookedPath);
+        // Give Calendly's own redirect, which carries the booked time, a
+        // moment to happen first. Without one, go to the booked page.
+        fallback = window.setTimeout(
+          () => window.location.assign(bookedPath),
+          2500,
+        );
     };
+    let fallback = 0;
     window.addEventListener("message", booked);
-    return () => window.removeEventListener("message", booked);
+    return () => {
+      window.clearTimeout(fallback);
+      window.removeEventListener("message", booked);
+    };
   }, [result, calendar]);
 
   function begin() {

@@ -2,24 +2,28 @@
 import { useEffect, useState } from "react";
 import { CalendarCheck } from "lucide-react";
 import { metaStandard, track } from "@/lib/analytics";
+import { keptParams } from "@/lib/funnel";
 
 type Details = { start?: string; host?: string; name?: string };
+type Kept = Partial<Record<(typeof keptParams)[number], string>>;
 
-// Shows the booked time when the calendar passes it in the redirect (Calendly
-// sends event_start_time and assigned_to), and fires the Schedule event once.
-// If the calendar redirected inside its own frame, move to the full page first.
+declare global {
+  interface Window {
+    __aurexBooking?: Kept;
+  }
+}
+
+// Shows the booked time when the calendar passes it (Calendly sends
+// event_start_time and assigned_to) and fires the Schedule event once.
 export function BookingDetails() {
   const [details, setDetails] = useState<Details>();
 
   useEffect(() => {
-    if (window.top && window.top !== window.self) {
-      window.top.location.href = window.location.href;
-      return;
-    }
-    const params = new URLSearchParams(window.location.search);
-    const raw = params.get("event_start_time") || params.get("start_time");
+    if (window.top && window.top !== window.self) return;
+    const kept = window.__aurexBooking ?? {};
+    const raw = kept.event_start_time || kept.start_time;
     const date = raw ? new Date(raw) : undefined;
-    // Reading the address and session flag only exists in the browser.
+    // The booking details and session flag only exist in the browser.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setDetails({
       start:
@@ -33,8 +37,8 @@ export function BookingDetails() {
               timeZoneName: "short",
             }).format(date)
           : undefined,
-      host: params.get("assigned_to")?.slice(0, 80) || undefined,
-      name: params.get("invitee_first_name")?.slice(0, 40) || undefined,
+      host: kept.assigned_to,
+      name: kept.invitee_first_name?.slice(0, 40),
     });
     try {
       if (sessionStorage.getItem("aurex-call-booked")) return;

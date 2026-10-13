@@ -10,6 +10,8 @@ const origin = (value: string | undefined) => {
   }
 };
 const frameSources = [
+  // A calendar can redirect its own frame to /call/booked after a booking.
+  "'self'",
   "https://*.leadconnectorhq.com",
   "https://*.gohighlevel.com",
   "https://*.msgsndr.com",

@@ -169,10 +169,14 @@ test("Other trade asks which trade", async ({ page }) => {
   );
 });
 
-test("booked page fires Schedule once per session", async ({ page }) => {
+test("booked page fires Schedule once and clears personal details from the address", async ({
+  page,
+}) => {
   await page.goto(
-    "/call/booked?event_start_time=2026-10-15T15:00:00Z&assigned_to=Aurex",
+    "/call/booked?event_start_time=2026-10-15T15:00:00Z&assigned_to=Aurex&invitee_first_name=Alex&invitee_email=alex%40example.com&answer_1=6625550100",
   );
+  await expect(page).toHaveURL(/\/call\/booked$/);
+  await expect(page.getByText(/^Alex, the calendar invite/)).toBeVisible();
   await expect(
     page.getByRole("heading", { level: 1, name: /You’re booked/ }),
   ).toBeVisible();
@@ -181,7 +185,7 @@ test("booked page fires Schedule once per session", async ({ page }) => {
     .poll(() => standardEvents(page))
     .toEqual([["track", "Schedule", {}]]);
   await page.reload();
-  await expect(page.getByText(/October 15/)).toBeVisible();
+  await expect(page.getByText("Booked and on the calendar")).toBeVisible();
   expect(await standardEvents(page)).toEqual([]);
 });
 

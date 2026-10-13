@@ -66,6 +66,7 @@ Use these Meta URL parameters on every ad: `utm_source=facebook&utm_medium=paid&
 - Availability: Tuesday and Thursday blocks, set in the calendar itself.
 - Set the calendar's post-booking redirect to `https://aurexbusinesslab.com/call/booked`. In Calendly, turn on "pass event details" so the booked time shows on the page. If a calendar redirects inside its own frame, the booked page moves itself to the full window.
 - Calendly bookings are also detected from Calendly's embed message and sent to the booked page.
+- Calendly's redirect puts the booker's name, email and answers in the page address. The booked page keeps only the time, host and first name in memory and removes the query from the address before the Meta pixel or Google tags run, so no personal details reach them.
 - Name, email and phone are prefilled in the calendar from the application.
 
 ## Pixel events
