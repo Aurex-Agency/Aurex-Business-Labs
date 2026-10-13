@@ -14,11 +14,14 @@ export function AnalyticsScripts() {
     .join("");
   return (
     <>
+      {/* autoConfig is off so Meta sends only the events the site chooses,
+          never automatic button clicks from applicants who are later
+          disqualified. */}
       {metaPixelId && (
         <Script
           id="meta-pixel"
           strategy="afterInteractive"
-        >{`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init',${JSON.stringify(metaPixelId)});fbq('track','PageView');`}</Script>
+        >{`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('set','autoConfig',false,${JSON.stringify(metaPixelId)});fbq('init',${JSON.stringify(metaPixelId)});fbq('track','PageView');`}</Script>
       )}
       {ghlTrackingId && (
         // About 340 KB, so it loads once the page is idle. It records visits

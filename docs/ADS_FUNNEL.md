@@ -81,7 +81,9 @@ Use these Meta URL parameters on every ad: `utm_source=facebook&utm_medium=paid&
 | Booked page                                                 | `Schedule`, once per browser session        |
 | Disqualified path                                           | Nothing. No standard or custom Meta events  |
 
-The form start is sent to Google only, not to Meta, so the pixel never learns from people who later turn out to be unqualified.
+The form start is sent to Google only, not to Meta, so the pixel never learns from people who later turn out to be unqualified. Meta's automatic events (such as `SubscribedButtonClick`) are switched off with `fbq('set', 'autoConfig', false, ...)` for the same reason.
+
+The pixel sends larger events such as `Lead` by posting a form inside a hidden `www.facebook.com` frame, so the content security policy must allow `https://www.facebook.com` in `form-action`, `frame-src` and `connect-src`. Without it `Lead` is called but never delivered. A test checks the policy.
 
 Before launch, with Meta Pixel Helper: submit a qualified test application and confirm `Lead` fires, book a test time and confirm `Schedule` fires on the booked page, then submit a disqualified test application and confirm nothing fires.
 

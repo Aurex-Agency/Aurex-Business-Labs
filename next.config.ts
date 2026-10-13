@@ -21,11 +21,14 @@ const frameSources = [
   "https://fast.wistia.net",
   "https://fast.wistia.com",
   "https://calendly.com",
+  // The Meta pixel sends larger events, such as Lead with advanced matching,
+  // by posting a form inside a hidden facebook.com frame.
+  "https://www.facebook.com",
   origin(process.env.FUNNEL_CALENDAR_URL),
   origin(process.env.NEXT_PUBLIC_GHL_CALENDAR_EMBED_URL),
 ];
 const csp = (frameAncestors: string) =>
-  `default-src 'self'; script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://connect.facebook.net https://link.msgsndr.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.google.com https://*.googletagmanager.com https://*.googleadservices.com https://*.doubleclick.net https://www.facebook.com https://backend.leadconnectorhq.com https://link.msgsndr.com; frame-src ${[...new Set(frameSources.filter(Boolean))].join(" ")}; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors ${frameAncestors}`;
+  `default-src 'self'; script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://connect.facebook.net https://link.msgsndr.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.google.com https://*.googletagmanager.com https://*.googleadservices.com https://*.doubleclick.net https://www.facebook.com https://connect.facebook.net https://backend.leadconnectorhq.com https://link.msgsndr.com; frame-src ${[...new Set(frameSources.filter(Boolean))].join(" ")}; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self' https://www.facebook.com; frame-ancestors ${frameAncestors}`;
 const config: NextConfig = {
   poweredByHeader: false,
   agentRules: false,
