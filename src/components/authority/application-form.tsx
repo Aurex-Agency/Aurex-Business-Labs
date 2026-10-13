@@ -177,7 +177,12 @@ export function ApplicationForm({
           )}
         </div>
       ) : (
-        <form noValidate onSubmit={submit} onFocus={begin}>
+        <form
+          noValidate
+          onSubmit={submit}
+          onFocus={begin}
+          data-name="Revenue Leakage Audit application"
+        >
           <ol className="l-form-steps" aria-hidden="true">
             {groups.map((g, i) => (
               <li key={g.legend} data-active={step === i ? "" : undefined}>

@@ -427,7 +427,12 @@ export function FunnelApplication({
           )}
         </div>
       ) : (
-        <form noValidate onSubmit={next} onFocus={begin}>
+        <form
+          noValidate
+          onSubmit={next}
+          onFocus={begin}
+          data-name={`Call funnel step ${step + 1}`}
+        >
           <div className="l-call-apply-head">
             <h2 id="apply-title">See if your business is a fit</h2>
             <p>Apply for a strategy call. Takes about two minutes.</p>

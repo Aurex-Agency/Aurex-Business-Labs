@@ -13,7 +13,7 @@ export const metadata = pageMeta(
   "/privacy",
 );
 
-const updated = "October 12, 2026";
+const updated = "October 13, 2026";
 
 export default function Page() {
   return (
@@ -171,6 +171,20 @@ export default function Page() {
                 random receipt number). Your form answers are never included in
                 these events. Services we have not configured do not load.
               </p>
+              <h3>CRM visit and attribution tracking</h3>
+              <p>
+                When we enable it, the website loads a tracking script from our
+                CRM provider, GoHighLevel, so we can see which visits, pages and
+                campaigns led to an inquiry. It records the pages you visit, the
+                page you arrived from and campaign tags, and keeps a session
+                identifier in a cookie and in your browser&rsquo;s storage. When
+                you submit a form on the website, it also sends the fields you
+                entered, such as your name, email, phone number and answers,
+                directly to GoHighLevel and links them to your visit. It does
+                not collect password or payment card fields. This information is
+                handled by GoHighLevel as our service provider, as described in
+                section 6.
+              </p>
               <h3>Hosting logs</h3>
               <p>
                 Like most websites, our hosting provider automatically records
@@ -225,10 +239,11 @@ export default function Page() {
                 information on our behalf and only for those purposes. They
                 include our website hosting provider, our customer relationship
                 management (CRM) and messaging platform, which receives form
-                submissions and sends any text messages, scheduling and video
-                meeting tools if you book a call, video hosting providers when
-                you press play on an embedded video, and the analytics and
-                advertising services described above when they are enabled.
+                submissions and visit tracking and sends any text messages,
+                scheduling and video meeting tools if you book a call, video
+                hosting providers when you press play on an embedded video, and
+                the analytics and advertising services described above when they
+                are enabled.
               </p>
               <h3>Advertising measurement</h3>
               <p>
@@ -277,11 +292,12 @@ export default function Page() {
           body: (
             <>
               <p>
-                The website itself does not set cookies. It uses your
+                The website&rsquo;s own code does not set cookies. It uses your
                 browser&rsquo;s local and session storage only for the campaign
-                details described in section 3. When analytics or advertising
-                services are enabled, they set their own cookies to measure
-                visits and conversions.
+                details described in section 3. When analytics, advertising or
+                CRM tracking services are enabled, they set their own cookies
+                and browser storage to measure visits, attribute inquiries and
+                count conversions.
               </p>
               <p>
                 You can block or delete cookies and local storage in your

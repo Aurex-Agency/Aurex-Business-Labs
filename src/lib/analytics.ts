@@ -52,6 +52,12 @@ export const metaPixelId = /^\d+$/.test(
 )
   ? process.env.NEXT_PUBLIC_META_PIXEL_ID
   : undefined;
+// GoHighLevel external tracking, for attribution in the CRM.
+export const ghlTrackingId = /^tk_[a-z0-9]+$/i.test(
+  process.env.NEXT_PUBLIC_GHL_TRACKING_ID || "",
+)
+  ? process.env.NEXT_PUBLIC_GHL_TRACKING_ID
+  : undefined;
 export function track(
   event: AnalyticsEvent,
   details?: Record<string, string>,
