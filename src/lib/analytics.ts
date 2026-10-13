@@ -94,11 +94,12 @@ export function confirmedConversion(receipt: string) {
     });
 }
 
-// Sends a Meta standard event, such as Lead or Schedule. The pixel loads after
+// Sends a Meta standard event. Only Lead is sent from the browser; Schedule
+// comes from GoHighLevel. The pixel loads after
 // hydration, so wait briefly for it rather than drop an event fired on load.
 // The event ID lets Meta deduplicate the matching server (CAPI) event.
 export function metaStandard(
-  event: "Lead" | "Schedule",
+  event: "Lead",
   eventID?: string,
   params: Record<string, string> = {},
 ) {

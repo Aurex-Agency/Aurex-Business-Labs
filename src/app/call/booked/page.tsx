@@ -30,8 +30,8 @@ const prep = [
   },
 ];
 
-// Point the calendar's post-booking redirect here. This page fires the Meta
-// Schedule event, so it is the only place a booking is counted.
+// Point the calendar's post-booking redirect here. Meta's Schedule event is
+// sent from GoHighLevel, not from this page.
 export default function BookedPage() {
   return (
     <FunnelShell>
