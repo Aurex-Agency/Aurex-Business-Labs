@@ -217,3 +217,15 @@ test("@a11y funnel errors and later steps", async ({ page }) => {
     (await new AxeBuilder({ page }).withTags(tags).analyze()).violations,
   ).toEqual([]);
 });
+
+// The Meta pixel posts larger events, such as Lead, as a form inside a
+// facebook.com frame. A policy without these silently drops the Lead event.
+test("security policy lets the Meta pixel deliver Lead", async ({
+  request,
+}) => {
+  const policy =
+    (await request.get("/call")).headers()["content-security-policy"] ?? "";
+  expect(policy).toMatch(/form-action [^;]*https:\/\/www\.facebook\.com/);
+  expect(policy).toMatch(/frame-src [^;]*https:\/\/www\.facebook\.com/);
+  expect(policy).toMatch(/connect-src [^;]*https:\/\/www\.facebook\.com/);
+});
