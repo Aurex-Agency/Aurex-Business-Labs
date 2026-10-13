@@ -139,6 +139,14 @@ function metaIds(fbclid?: string) {
   return fbp || fbc ? { fbp, fbc } : undefined;
 }
 
+function timeZone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function FunnelApplication({
   calendar,
   contactEmail,
@@ -214,6 +222,7 @@ export function FunnelApplication({
       sourcePage: "/call",
       attribution,
       meta: metaIds(attribution.fbclid),
+      contactTimezone: timeZone(),
     };
   }
 

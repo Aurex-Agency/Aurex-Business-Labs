@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { submissionSchema, type GhlLeadPayload } from "@/lib/lead-schema";
 import {
+  bottleneckKey,
   bottleneckPhase,
   routeApplication,
   routeTags,
@@ -118,7 +119,12 @@ export async function POST(request: NextRequest) {
   const receipt = crypto.randomUUID();
   const funnel: Partial<ReturnType<typeof funnelDetails>> =
     lead.sourcePage === "/call" ? funnelDetails(lead, receipt) : {};
-  const webhook = process.env.GHL_WEBHOOK_URL;
+  // The /call ads funnel has its own GHL workflow. It never falls back to the
+  // main website webhook: a missing funnel webhook fails like any other.
+  const webhook =
+    lead.sourcePage === "/call"
+      ? process.env.FUNNEL_WEBHOOK_URL
+      : process.env.GHL_WEBHOOK_URL;
   if (!webhook) {
     if (
       process.env.NODE_ENV !== "production" &&
@@ -189,6 +195,9 @@ function funnelDetails(lead: FunnelLead, receipt: string) {
       pipelineStage: "New Lead",
       callOpensOn: lead.bottleneck
         ? bottleneckPhase[lead.bottleneck as FunnelBottleneck]
+        : undefined,
+      bottleneckKey: lead.bottleneck
+        ? bottleneckKey[lead.bottleneck as FunnelBottleneck]
         : undefined,
       trade: lead.trade === "Other" ? lead.tradeOther : lead.trade,
       leadSource: lead.attribution.utm_source,

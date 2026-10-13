@@ -182,6 +182,13 @@ export const funnelSchema = funnelContactSchema
     staff: optionalChoice(funnelStaff),
     jobValue: optionalChoice(funnelJobValue),
     caseStudyInterest: optionalChoice(funnelCaseStudy),
+    // The browser's IANA time zone, such as America/Chicago.
+    contactTimezone: z
+      .string()
+      .max(64)
+      .regex(/^[A-Za-z_]+(\/[A-Za-z0-9_+-]+){0,2}$/)
+      .optional()
+      .catch(undefined),
     meta: z.object({ fbp: metaId, fbc: metaId }).optional().catch(undefined),
   })
   .superRefine((v, ctx) => {
@@ -235,6 +242,7 @@ export type GhlLeadPayload = Omit<
     tags: string[];
     pipelineStage: string;
     callOpensOn?: string;
+    bottleneckKey?: string;
     trade?: string;
     leadSource?: string;
     campaignName?: string;

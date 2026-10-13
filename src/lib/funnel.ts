@@ -61,6 +61,17 @@ export const bottleneckPhase: Record<FunnelBottleneck, string> = {
   "We don’t know our numbers well enough to know what’s broken": "Capture",
 };
 
+// Stable keys for GHL conditions, so workflow branches survive copy edits.
+export const bottleneckKey: Record<FunnelBottleneck, string> = {
+  "Not enough leads coming in": "not_enough_leads",
+  "Leads come in but we don’t respond fast enough": "slow_response",
+  "We book appointments but too many no-show": "no_shows",
+  "Estimates go out but too few close": "low_close_rate",
+  "Customers buy once and never come back": "no_repeat_business",
+  "We don’t know our numbers well enough to know what’s broken":
+    "unknown_numbers",
+};
+
 export const funnelStaff = [
   "Yes, full-time staff",
   "Yes, part-time staff",
