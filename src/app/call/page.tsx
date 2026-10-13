@@ -33,7 +33,7 @@ export default function CallPage() {
           poster={site.funnel.poster}
           title="Where contractor revenue leaks, and how to stop it"
           caption="Where your leads go between the phone call and the signed contract"
-          length="6 min"
+          length="8 min"
           priority
         />
       </section>
