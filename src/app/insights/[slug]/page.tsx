@@ -27,7 +27,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const a = articles.find((a) => a.slug === slug);
   if (!a) return {};
-  return pageMeta(a.title, a.summary, `/insights/${a.slug}`);
+  const metadata = pageMeta(a.title, a.summary, `/insights/${a.slug}`);
+  return {
+    ...metadata,
+    openGraph: {
+      ...metadata.openGraph,
+      type: "article" as const,
+      publishedTime: a.publishedAt,
+      modifiedTime: a.updatedAt,
+    },
+  };
 }
 export default async function Page({
   params,
@@ -43,6 +52,9 @@ export default async function Page({
       <Schema
         data={{
           "@type": "BlogPosting",
+          "@id": `${site.url}/insights/${a.slug}#article`,
+          url: `${site.url}/insights/${a.slug}`,
+          inLanguage: "en-US",
           headline: a.title,
           description: a.summary,
           datePublished: a.publishedAt,
